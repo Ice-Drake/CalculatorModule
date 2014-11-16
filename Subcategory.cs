@@ -7,42 +7,22 @@ namespace MultiDesktop
 {
     public class Subcategory
     {
-        private int id;
-        private string name;
-        private Category category;
-
-        public Subcategory(int id, Category category)
+        public Subcategory(string name, Category category)
         {
-            this.id = id;
-            this.category = category;
-        }
-
-        public int ID
-        {
-            get
-            {
-                return id;
-            }
+            Name = name;
+            Category = category;
         }
 
         public string Name
         {
-            get
-            {
-                return name;
-            }
-            set
-            {
-                name = value;
-            }
+            get;
+            internal set;
         }
 
         public Category Category
         {
-            get
-            {
-                return category;
-            }
+            get;
+            internal set;
         }
     }
 }

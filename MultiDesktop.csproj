@@ -16,6 +16,8 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>2.0</OldToolsVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -28,10 +30,8 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -77,11 +77,46 @@
     <Compile Include="Calculator.Designer.cs">
       <DependentUpon>Calculator.cs</DependentUpon>
     </Compile>
+    <Compile Include="Calendar.cs" />
+    <Compile Include="GanttChartPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PredecessorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LGoalForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SGoalForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GoalPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Vision.cs" />
+    <Compile Include="VisionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CalendarForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GoalPlanner.cs" />
+    <Compile Include="GTask.cs" />
+    <Compile Include="MainPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SGoal.cs" />
+    <Compile Include="TaskManager.cs" />
+    <Compile Include="TodoManager.cs" />
+    <Compile Include="JournalManager.cs" />
+    <Compile Include="EventManager.cs" />
     <Compile Include="CalendarManager.cs" />
     <Compile Include="CalendarPanel.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Category.cs" />
+    <Compile Include="CategoryManager.cs" />
     <Compile Include="DateItemArgs.cs" />
     <Compile Include="EventForm.cs">
       <SubType>Form</SubType>
@@ -100,7 +135,7 @@
     <Compile Include="RecurrenceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Setting.cs" />
+    <Compile Include="SettingManager.cs" />
     <Compile Include="SettingDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,9 +158,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="SchedulePanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="VisionManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Calendars\Birthdays.ics">
@@ -146,9 +179,37 @@
       <SubType>Designer</SubType>
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GanttChartPanel.resx">
+      <DependentUpon>GanttChartPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PredecessorDialog.resx">
+      <DependentUpon>PredecessorDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LGoalForm.resx">
+      <DependentUpon>LGoalForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SGoalForm.resx">
+      <DependentUpon>SGoalForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GoalPanel.resx">
+      <DependentUpon>GoalPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VisionForm.resx">
+      <DependentUpon>VisionForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="CalendarPanel.resx">
       <SubType>Designer</SubType>
       <DependentUpon>CalendarPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CalendarForm.resx">
+      <DependentUpon>CalendarForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="EventForm.resx">
       <SubType>Designer</SubType>
@@ -157,6 +218,9 @@
     <EmbeddedResource Include="MultiDesktopBar.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MultiDesktopBar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlannerPanel.resx">
+      <DependentUpon>PlannerPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
@@ -167,12 +231,14 @@
       <SubType>Designer</SubType>
       <DependentUpon>RecurrenceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SchedulePanel.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>SchedulePanel.cs</DependentUpon>
+    <EmbeddedResource Include="SettingDialog.resx">
+      <DependentUpon>SettingDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SplashScreen.resx">
       <DependentUpon>SplashScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TaskForm.resx">
+      <DependentUpon>TaskForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TodoForm.resx">
       <SubType>Designer</SubType>
@@ -262,6 +328,23 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\NewCalendar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Goal.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Goal_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>Goal.mdf</DependentUpon>
+    </Content>
+    <None Include="Resources\Convert.png" />
+    <Content Include="Setting.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Setting_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>Setting.mdf</DependentUpon>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

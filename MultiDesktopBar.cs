@@ -16,6 +16,8 @@ namespace MultiDesktop
 {
     public class MultiDesktopBar : Form
     {
+        #region Component Designer variables
+
         private ToolStripButton computerButton;
         private ToolStripButton documentButton;
         private ToolStripButton pictureButton;
@@ -32,24 +34,20 @@ namespace MultiDesktop
         private ToolStripDropDownButton panelDropDownButton;
         private ToolStripButton desktopButton;
         private ToolStripMenuItem calculatorMenu;
-        private ToolStripMenuItem calendarMenu;
         private ToolStripMenuItem musicPlayerMenu;
         private ToolStripMenuItem pictureGalleryMenu;
         private ToolStripMenuItem rssFeedMenu;
-        private ToolStripMenuItem todosMenu;
         private ToolStripSeparator menuToolSeparator;
         private ToolStripDropDownButton pluginDropDownButton;
         private ToolStripMenuItem weatherMenu;
         private ToolStripButton newJournalButton;
         private ToolStripButton newCalendarButton;
-        private ToolStripMenuItem schedulerMenu;
-        private ToolStripMenuItem plannerMenu;
 
+        #endregion
+
+        private SettingManager settingManager;
         private SettingDialog settingDialog;
-        private PlannerPanel plannerPanel;
-        private CalendarPanel calendarPanel;
-        private TodoPanel todoPanel;
-        private List<IProjectPlugin> projectPlugins;
+        private List<IProjDBManager> projectPlugins;
         private List<IPanelPlugin> panelPlugins;
 
         //Member variables
@@ -64,11 +62,6 @@ namespace MultiDesktop
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            foreach (IProjectPlugin plugin in projectPlugins)
-            {
-                plugin.CloseDatabase();
-            }
-
             if (disposing && (components != null))
             {
                 components.Dispose();
@@ -100,19 +93,15 @@ namespace MultiDesktop
             this.newCalendarButton = new System.Windows.Forms.ToolStripButton();
             this.panelDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.calculatorMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.calendarMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.musicPlayerMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureGalleryMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.rssFeedMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.schedulerMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.todosMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.weatherMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.pluginDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.menuToolSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.settingButton = new System.Windows.Forms.ToolStripButton();
             this.aboutButton = new System.Windows.Forms.ToolStripButton();
             this.exitButton = new System.Windows.Forms.ToolStripButton();
-            this.plannerMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.sideToolbar.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -258,13 +247,9 @@ namespace MultiDesktop
             this.panelDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.panelDropDownButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.calculatorMenu,
-            this.calendarMenu,
             this.musicPlayerMenu,
             this.pictureGalleryMenu,
-            this.plannerMenu,
             this.rssFeedMenu,
-            /*this.schedulerMenu,*/
-            this.todosMenu,
             this.weatherMenu});
             this.panelDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.panelDropDownButton.Name = "panelDropDownButton";
@@ -278,14 +263,6 @@ namespace MultiDesktop
             this.calculatorMenu.Size = new System.Drawing.Size(152, 22);
             this.calculatorMenu.Text = "Calculator";
             this.calculatorMenu.Click += new System.EventHandler(this.calculatorMenu_Click);
-            // 
-            // calendarMenu
-            // 
-            this.calendarMenu.CheckOnClick = true;
-            this.calendarMenu.Name = "calendarMenu";
-            this.calendarMenu.Size = new System.Drawing.Size(152, 22);
-            this.calendarMenu.Text = "Calendar";
-            this.calendarMenu.Click += new System.EventHandler(this.calendarMenu_Click);
             // 
             // musicPlayerMenu
             // 
@@ -310,22 +287,6 @@ namespace MultiDesktop
             this.rssFeedMenu.Size = new System.Drawing.Size(152, 22);
             this.rssFeedMenu.Text = "RSS Feed";
             this.rssFeedMenu.Click += new System.EventHandler(this.rssFeedMenu_Click);
-            // 
-            // schedulerMenu
-            // 
-            this.schedulerMenu.CheckOnClick = true;
-            this.schedulerMenu.Name = "schedulerMenu";
-            this.schedulerMenu.Size = new System.Drawing.Size(152, 22);
-            this.schedulerMenu.Text = "Scheduler";
-            this.schedulerMenu.Click += new System.EventHandler(this.schedulerMenu_Click);
-            // 
-            // todosMenu
-            // 
-            this.todosMenu.CheckOnClick = true;
-            this.todosMenu.Name = "todosMenu";
-            this.todosMenu.Size = new System.Drawing.Size(152, 22);
-            this.todosMenu.Text = "To-dos";
-            this.todosMenu.Click += new System.EventHandler(this.todosMenu_Click);
             // 
             // weatherMenu
             // 
@@ -356,7 +317,7 @@ namespace MultiDesktop
             this.settingButton.Name = "settingButton";
             this.settingButton.Size = new System.Drawing.Size(24, 20);
             this.settingButton.Text = "Setting";
-            this.settingButton.Click += new EventHandler(settingButton_Click);
+            this.settingButton.Click += new System.EventHandler(this.settingButton_Click);
             // 
             // aboutButton
             // 
@@ -375,14 +336,6 @@ namespace MultiDesktop
             this.exitButton.Size = new System.Drawing.Size(24, 20);
             this.exitButton.Text = "Exit";
             this.exitButton.Click += new System.EventHandler(this.exitButton_Click);
-            // 
-            // plannerMenu
-            // 
-            this.plannerMenu.CheckOnClick = true;
-            this.plannerMenu.Name = "plannerMenu";
-            this.plannerMenu.Size = new System.Drawing.Size(152, 22);
-            this.plannerMenu.Text = "Planner";
-            this.plannerMenu.Click += new EventHandler(plannerMenu_Click);
             // 
             // MultiDesktopBar
             // 
@@ -436,59 +389,64 @@ namespace MultiDesktop
             InitializeComponent();
             Height = Screen.PrimaryScreen.WorkingArea.Size.Height;
             Location = new System.Drawing.Point(Screen.PrimaryScreen.WorkingArea.Width - Width, 0);
+        }
 
-            SplashScreen.SetStatus("now initializing calendar panel");
-            SplashScreen.Progress = 0.12;
-            calendarPanel = new CalendarPanel(CalendarManager.Calendar);
-            calendarPanel.FormClosing += new FormClosingEventHandler(calendarPanel_Closing);
+        public void loadSetting()
+        {
+            settingManager = new SettingManager();
+            settingManager.loadDatabase();
+            settingManager.CategoryManager.loadDatabase();
+        }
 
-            SplashScreen.SetStatus("now initializing todo panel");
-            SplashScreen.Progress = 0.14;
-            todoPanel = new TodoPanel();
-            todoPanel.FormClosing += new FormClosingEventHandler(todoPanel_Closing);
+        public void loadCalendars()
+        {
+            settingManager.CalendarManager.loadDatabase();
+        }
 
-            //SchedulerPanel.initialize();
-            //SchedulerPanel.Panel.FormClosing += new FormClosingEventHandler(schedulerPanel_FormClosing);
+        public void loadGoals()
+        {
+            settingManager.GoalManager.loadDatabase();
+        }
 
-            SplashScreen.SetStatus("now initializing remaining panels");
-            SplashScreen.Progress = 0.45;
+        public void loadPanels()
+        {
+            CalendarManager calendarManager = settingManager.CalendarManager;
+            GoalPlanner goalPlanner = settingManager.GoalManager;
 
-            settingDialog = new SettingDialog();
+            settingDialog = new SettingDialog(settingManager);            
 
-            plannerPanel = new PlannerPanel();
-            plannerPanel.FormClosing += new FormClosingEventHandler(plannerPanel_FormClosing);
+            CalendarPanel calendarPanel = new CalendarPanel(calendarManager.EventManager);
+            panelDropDownButton.DropDownItems.Add(calendarPanel.MenuItem);
 
-            SplashScreen.SetStatus("now loading plugins");
-            SplashScreen.Progress = 0.55;
-            LoadPlugins();
+            TodoPanel todoPanel = new TodoPanel(calendarManager.TodoManager);
+            panelDropDownButton.DropDownItems.Add(todoPanel.MenuItem);
+            
+            PlannerPanel plannerPanel = new PlannerPanel(calendarManager.EventManager, calendarManager.TodoManager, settingManager.GoalManager.TaskManager);
+            panelDropDownButton.DropDownItems.Add(plannerPanel.MenuItem);
 
-            SplashScreen.SetStatus("now loading plugin database");
-            SplashScreen.Progress = 0.75;
-            foreach (IProjectPlugin plugin in projectPlugins)
-            {
-                plugin.LoadDatabase();
-            }
+            GoalPanel goalPanel = new GoalPanel(goalPlanner);
+            panelDropDownButton.DropDownItems.Add(goalPanel.MenuItem);
 
-            SplashScreen.SetStatus("now opening schedule panel");
-            SplashScreen.Progress = 0.95;
-
-            SplashScreen.SetStatus("now updating the schedule for today");
-            SplashScreen.Progress = 0.96;
-
-            SplashScreen.Progress = 1;
-            SplashScreen.CloseForm();
-
-            //Remove all eventhandlers associated with IDatabasePlugins
+            CalendarForm.SettingController = settingManager;
+            TodoForm.SettingController = settingManager;
+            EventForm.SettingController = settingManager;
+            VisionForm.Controller = goalPlanner.VisionManager;
+            LGoalForm.GoalController = goalPlanner;
+            LGoalForm.CategoryController = settingManager.CategoryManager;
+            SGoalForm.GoalController = goalPlanner;
+            SGoalForm.CategoryController = settingManager.CategoryManager;
+            TaskForm.TaskController = goalPlanner.TaskManager;
+            TaskForm.SettingController = settingManager;
         }
 
 
         #region LoadPlugins
 
-        private void LoadPlugins()
+        public void loadPlugins()
         {
             //Retrieve a plugin collection using our custom Configuration section handler
             Dictionary<string, ArrayList> plugins = (Dictionary<string, ArrayList>)System.Configuration.ConfigurationManager.GetSection("plugins");
-            projectPlugins = new List<IProjectPlugin>();
+            projectPlugins = new List<IProjDBManager>();
             panelPlugins = new List<IPanelPlugin>();
 
             pluginDropDownButton.DropDownItems.Clear();
@@ -498,7 +456,7 @@ namespace MultiDesktop
             EventHandler projectHandler = new EventHandler(OnProjectPluginClick);
             EventHandler panelHandler = new EventHandler(OnPanelPluginClick);
 
-            foreach (IProjectPlugin plugin in plugins["IProjectPlugin"])
+            foreach (IProjDBManager plugin in plugins["IProjDBManager"])
             {
                 projectPlugins.Add(plugin);
                 ToolStripMenuItem item = new ToolStripMenuItem();
@@ -508,7 +466,6 @@ namespace MultiDesktop
                 item.Text = plugin.PanelName;
                 item.Click += new System.EventHandler(projectHandler);
                 pluginDropDownButton.DropDownItems.Add(item);
-                plugin.LoadingStatusChanged += new LoadingStatusChangedHandler(plugin_LoadingStatusChanged);
                 plugin.PanelClosing += new FormClosingEventHandler(plugin_PanelClosing);
             }
 
@@ -526,12 +483,15 @@ namespace MultiDesktop
             }
         }
 
-        private void plugin_LoadingStatusChanged(object sender, StatusArgs e)
-        {
-            SplashScreen.AddStatusDetail(e.Progress);
-        }
-
         #endregion
+
+        public void loadPluginDatabase()
+        {
+            foreach (IProjDBManager plugin in projectPlugins)
+            {
+                plugin.LoadDatabase();
+            }
+        }
 
         #region Plugin Event Handler
 
@@ -539,17 +499,17 @@ namespace MultiDesktop
         {
             string pluginName = ((ToolStripMenuItem)sender).Text;
 
-            foreach (IProjectPlugin plugin in projectPlugins)
+            foreach (IProjDBManager plugin in projectPlugins)
             {
                 if (plugin.PanelName == pluginName)
                 {
                     if (((ToolStripMenuItem)sender).Checked)
                     {
-                        plugin.ShowPanel();
+                        plugin.showPanel();
                     }
                     else
                     {
-                        plugin.HidePanel();
+                        plugin.hidePanel();
                     }
                 }
             }
@@ -565,11 +525,11 @@ namespace MultiDesktop
                 {
                     if (((ToolStripMenuItem)sender).Checked)
                     {
-                        plugin.ShowPanel();
+                        plugin.showPanel();
                     }
                     else
                     {
-                        plugin.HidePanel();
+                        plugin.hidePanel();
                     }
                 }
             }
@@ -578,7 +538,7 @@ namespace MultiDesktop
         private void plugin_PanelClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
-            ((IPanelPlugin)sender).HidePanel();
+            ((IPanelPlugin)sender).hidePanel();
             ((ToolStripMenuItem)pluginDropDownButton.DropDownItems[((IPanelPlugin)sender).PanelName]).Checked = false;
         }
 
@@ -613,8 +573,8 @@ namespace MultiDesktop
 
         private void newCalendarButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Not implemented till Beta Version");
-            calendarMenu.Checked = false;
+            CalendarForm newForm = new CalendarForm();
+            newForm.Show();
         }
 
         private void newEventButton_Click(object sender, EventArgs e)
@@ -635,18 +595,6 @@ namespace MultiDesktop
             calculatorMenu.Checked = false;
         }
 
-        private void calendarMenu_Click(object sender, EventArgs e)
-        {
-            if (calendarMenu.Checked)
-            {
-                calendarPanel.Show();
-            }
-            else
-            {
-                calendarPanel.Hide();
-            }
-        }
-
         private void musicPlayerMenu_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Not implemented till Gamma Version");
@@ -665,60 +613,10 @@ namespace MultiDesktop
             rssFeedMenu.Checked = false;
         }
 
-        private void schedulerMenu_Click(object sender, EventArgs e)
-        {
-            if (schedulerMenu.Checked)
-            {
-                //SchedulerPanel.Panel.Show();
-            }
-            else
-            {
-                //SchedulerPanel.Panel.Hide();
-            }
-        }
-
-        private void schedulerPanel_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            /*e.Cancel = true;
-            SchedulerPanel.Panel.Hide();
-            schedulerMenu.Checked = false;*/
-        }
-
-        private void plannerMenu_Click(object sender, EventArgs e)
-        {
-            if (plannerMenu.Checked)
-            {
-                plannerPanel.Show();
-            }
-            else
-            {
-                plannerPanel.Hide();
-            }
-        }
-
-        private void plannerPanel_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            e.Cancel = true;
-            plannerPanel.Hide();
-            plannerMenu.Checked = false;
-        }
-
         private void weatherMenu_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Not implemented till Beta Version");
             weatherMenu.Checked = false;
-        }
-
-        private void todosMenu_Click(object sender, EventArgs e)
-        {
-            if (todosMenu.Checked)
-            {
-                todoPanel.Show();
-            }
-            else
-            {
-                todoPanel.Hide();
-            }
         }
 
         private void settingButton_Click(object sender, EventArgs e)
@@ -738,28 +636,6 @@ namespace MultiDesktop
         private void exitButton_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        #endregion
-
-        #region Calendar Panel Event Handler
-
-        private void calendarPanel_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;
-            calendarPanel.Hide();
-            calendarMenu.Checked = false;
-        }
-
-        #endregion
-
-        #region Todo Panel Event Handler
-
-        private void todoPanel_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;
-            todoPanel.Hide();
-            todosMenu.Checked = false;
         }
 
         #endregion

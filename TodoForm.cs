@@ -12,9 +12,11 @@ namespace MultiDesktop
 {
     public class TodoForm : Form
     {
+        public static SettingManager SettingController { private get; set; }
+
         private ITodo m_todo;
-        private IRecurrencePattern m_recurrence;
         private TimeSpan m_duration;
+        private IRecurrencePattern m_recurrence;
 
         #region Component Designer variables
 
@@ -27,11 +29,9 @@ namespace MultiDesktop
         private Library.NullableDateTimePicker startDateBox;
         private Library.NullableDateTimePicker dueDateBox;
         private Label dueDateLabel;
-        private ComboBox statusComboBox;
-        private Label statusLabel;
-        private Label priorityLabel;
+        private Label importanceLabel;
         private Label categoryLabel;
-        private ComboBox priorityComboBox;
+        private ComboBox importanceComboBox;
         private RichTextBox descriptionTextBox;
         private ComboBox categoryComboBox;
         private CheckBox reminderCheckBox;
@@ -46,6 +46,10 @@ namespace MultiDesktop
         private TableLayoutPanel tableLayoutPanel;
         private Panel topPanel;
         private Panel bottomPanel;
+        private CheckBox completedCheckBox;
+        private ComboBox urgencyComboBox;
+        private Label urgencyLabel;
+        private ToolStripButton convertToTaskButton;
         private Label recurLabel;
 
         #endregion
@@ -77,28 +81,30 @@ namespace MultiDesktop
             this.summaryField = new System.Windows.Forms.TextBox();
             this.startDateLabel = new System.Windows.Forms.Label();
             this.dueDateLabel = new System.Windows.Forms.Label();
-            this.statusComboBox = new System.Windows.Forms.ComboBox();
-            this.statusLabel = new System.Windows.Forms.Label();
-            this.priorityLabel = new System.Windows.Forms.Label();
+            this.importanceLabel = new System.Windows.Forms.Label();
             this.categoryLabel = new System.Windows.Forms.Label();
-            this.priorityComboBox = new System.Windows.Forms.ComboBox();
+            this.importanceComboBox = new System.Windows.Forms.ComboBox();
             this.descriptionTextBox = new System.Windows.Forms.RichTextBox();
             this.categoryComboBox = new System.Windows.Forms.ComboBox();
             this.reminderCheckBox = new System.Windows.Forms.CheckBox();
             this.reminderDate = new System.Windows.Forms.DateTimePicker();
             this.reminderTime = new System.Windows.Forms.DateTimePicker();
-            this.alarmButton = new System.Windows.Forms.Button();
             this.eventToolStrip = new System.Windows.Forms.ToolStrip();
             this.saveButton = new System.Windows.Forms.ToolStripButton();
             this.deleteButton = new System.Windows.Forms.ToolStripButton();
             this.recurrenceButton = new System.Windows.Forms.ToolStripButton();
+            this.convertToTaskButton = new System.Windows.Forms.ToolStripButton();
             this.privateCheckBox = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.recurLabel = new System.Windows.Forms.Label();
             this.topPanel = new System.Windows.Forms.Panel();
+            this.completedCheckBox = new System.Windows.Forms.CheckBox();
             this.startDateBox = new Library.NullableDateTimePicker();
             this.dueDateBox = new Library.NullableDateTimePicker();
             this.bottomPanel = new System.Windows.Forms.Panel();
+            this.urgencyComboBox = new System.Windows.Forms.ComboBox();
+            this.urgencyLabel = new System.Windows.Forms.Label();
+            this.alarmButton = new System.Windows.Forms.Button();
             this.eventToolStrip.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
             this.topPanel.SuspendLayout();
@@ -109,108 +115,87 @@ namespace MultiDesktop
             // 
             this.calendarLabel.Location = new System.Drawing.Point(7, 6);
             this.calendarLabel.Name = "calendarLabel";
-            this.calendarLabel.Size = new System.Drawing.Size(71, 13);
+            this.calendarLabel.Size = new System.Drawing.Size(57, 13);
             this.calendarLabel.TabIndex = 0;
             this.calendarLabel.Text = "Calendar:";
             // 
             // calendarComboBox
             // 
             this.calendarComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.calendarComboBox.Location = new System.Drawing.Point(84, 3);
+            this.calendarComboBox.Location = new System.Drawing.Point(70, 3);
             this.calendarComboBox.Name = "calendarComboBox";
-            this.calendarComboBox.Size = new System.Drawing.Size(237, 21);
+            this.calendarComboBox.Size = new System.Drawing.Size(251, 21);
             this.calendarComboBox.TabIndex = 1;
             // 
             // summaryLabel
             // 
             this.summaryLabel.Location = new System.Drawing.Point(7, 33);
             this.summaryLabel.Name = "summaryLabel";
-            this.summaryLabel.Size = new System.Drawing.Size(71, 13);
+            this.summaryLabel.Size = new System.Drawing.Size(57, 13);
             this.summaryLabel.TabIndex = 2;
             this.summaryLabel.Text = "Summary:";
             // 
             // summaryField
             // 
-            this.summaryField.Location = new System.Drawing.Point(84, 30);
+            this.summaryField.Location = new System.Drawing.Point(70, 30);
             this.summaryField.Name = "summaryField";
-            this.summaryField.Size = new System.Drawing.Size(237, 20);
+            this.summaryField.Size = new System.Drawing.Size(251, 20);
             this.summaryField.TabIndex = 3;
             // 
             // startDateLabel
             // 
             this.startDateLabel.Location = new System.Drawing.Point(7, 59);
             this.startDateLabel.Name = "startDateLabel";
-            this.startDateLabel.Size = new System.Drawing.Size(71, 13);
+            this.startDateLabel.Size = new System.Drawing.Size(57, 13);
             this.startDateLabel.TabIndex = 4;
             this.startDateLabel.Text = "Start date:";
             // 
             // dueDateLabel
             // 
-            this.dueDateLabel.Location = new System.Drawing.Point(7, 85);
+            this.dueDateLabel.Location = new System.Drawing.Point(166, 59);
             this.dueDateLabel.Name = "dueDateLabel";
-            this.dueDateLabel.Size = new System.Drawing.Size(71, 13);
+            this.dueDateLabel.Size = new System.Drawing.Size(57, 13);
             this.dueDateLabel.TabIndex = 7;
             this.dueDateLabel.Text = "Due date:";
             // 
-            // statusComboBox
+            // importanceLabel
             // 
-            this.statusComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.statusComboBox.Items.AddRange(new object[] {
-            "Not Started",
-            "In Progress",
-            "Completed"});
-            this.statusComboBox.Location = new System.Drawing.Point(229, 56);
-            this.statusComboBox.Name = "statusComboBox";
-            this.statusComboBox.Size = new System.Drawing.Size(92, 21);
-            this.statusComboBox.TabIndex = 8;
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.Location = new System.Drawing.Point(183, 59);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(40, 13);
-            this.statusLabel.TabIndex = 9;
-            this.statusLabel.Text = "Status:";
-            // 
-            // priorityLabel
-            // 
-            this.priorityLabel.AutoSize = true;
-            this.priorityLabel.Location = new System.Drawing.Point(182, 85);
-            this.priorityLabel.Name = "priorityLabel";
-            this.priorityLabel.Size = new System.Drawing.Size(41, 13);
-            this.priorityLabel.TabIndex = 10;
-            this.priorityLabel.Text = "Priority:";
+            this.importanceLabel.AutoSize = true;
+            this.importanceLabel.Location = new System.Drawing.Point(7, 6);
+            this.importanceLabel.Name = "importanceLabel";
+            this.importanceLabel.Size = new System.Drawing.Size(63, 13);
+            this.importanceLabel.TabIndex = 10;
+            this.importanceLabel.Text = "Importance:";
             // 
             // categoryLabel
             // 
-            this.categoryLabel.Location = new System.Drawing.Point(7, 3);
+            this.categoryLabel.Location = new System.Drawing.Point(7, 85);
             this.categoryLabel.Name = "categoryLabel";
-            this.categoryLabel.Size = new System.Drawing.Size(71, 13);
+            this.categoryLabel.Size = new System.Drawing.Size(57, 13);
             this.categoryLabel.TabIndex = 11;
             this.categoryLabel.Text = "Category:";
             // 
-            // priorityComboBox
+            // importanceComboBox
             // 
-            this.priorityComboBox.AutoCompleteCustomSource.AddRange(new string[] {
+            this.importanceComboBox.AutoCompleteCustomSource.AddRange(new string[] {
             "Low",
             "Normal",
             "High"});
-            this.priorityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.priorityComboBox.Items.AddRange(new object[] {
-            "Low",
-            "Normal",
-            "High"});
-            this.priorityComboBox.Location = new System.Drawing.Point(229, 83);
-            this.priorityComboBox.Name = "priorityComboBox";
-            this.priorityComboBox.Size = new System.Drawing.Size(92, 21);
-            this.priorityComboBox.TabIndex = 12;
+            this.importanceComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.importanceComboBox.Items.AddRange(new object[] {
+            "High",
+            "Medium",
+            "Low"});
+            this.importanceComboBox.Location = new System.Drawing.Point(70, 3);
+            this.importanceComboBox.Name = "importanceComboBox";
+            this.importanceComboBox.Size = new System.Drawing.Size(92, 21);
+            this.importanceComboBox.TabIndex = 12;
             // 
             // descriptionTextBox
             // 
-            this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.descriptionTextBox.Location = new System.Drawing.Point(3, 137);
             this.descriptionTextBox.Name = "descriptionTextBox";
             this.descriptionTextBox.Size = new System.Drawing.Size(325, 116);
@@ -227,9 +212,9 @@ namespace MultiDesktop
             "Family/Friends",
             "Contact",
             "Entertainment"});
-            this.categoryComboBox.Location = new System.Drawing.Point(84, 0);
+            this.categoryComboBox.Location = new System.Drawing.Point(70, 82);
             this.categoryComboBox.Name = "categoryComboBox";
-            this.categoryComboBox.Size = new System.Drawing.Size(172, 21);
+            this.categoryComboBox.Size = new System.Drawing.Size(106, 21);
             this.categoryComboBox.TabIndex = 15;
             // 
             // reminderCheckBox
@@ -261,16 +246,6 @@ namespace MultiDesktop
             this.reminderTime.Size = new System.Drawing.Size(92, 20);
             this.reminderTime.TabIndex = 18;
             // 
-            // alarmButton
-            // 
-            this.alarmButton.Enabled = false;
-            this.alarmButton.Image = global::MultiDesktop.Properties.Resources.Alarm;
-            this.alarmButton.Location = new System.Drawing.Point(296, 26);
-            this.alarmButton.Name = "alarmButton";
-            this.alarmButton.Size = new System.Drawing.Size(23, 23);
-            this.alarmButton.TabIndex = 19;
-            this.alarmButton.UseVisualStyleBackColor = true;
-            // 
             // eventToolStrip
             // 
             this.eventToolStrip.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
@@ -278,7 +253,8 @@ namespace MultiDesktop
             this.eventToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveButton,
             this.deleteButton,
-            this.recurrenceButton});
+            this.recurrenceButton,
+            this.convertToTaskButton});
             this.eventToolStrip.Location = new System.Drawing.Point(0, 0);
             this.eventToolStrip.Name = "eventToolStrip";
             this.eventToolStrip.Size = new System.Drawing.Size(331, 25);
@@ -312,10 +288,19 @@ namespace MultiDesktop
             this.recurrenceButton.Text = "Recurrence";
             this.recurrenceButton.Click += new System.EventHandler(this.recurrenceButton_Click);
             // 
+            // convertToTaskButton
+            // 
+            this.convertToTaskButton.Image = global::MultiDesktop.Properties.Resources.Convert;
+            this.convertToTaskButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.convertToTaskButton.Name = "convertToTaskButton";
+            this.convertToTaskButton.Size = new System.Drawing.Size(68, 22);
+            this.convertToTaskButton.Text = "To Task";
+            this.convertToTaskButton.Click += new System.EventHandler(this.convertToTaskButton_Click);
+            // 
             // privateCheckBox
             // 
             this.privateCheckBox.AutoSize = true;
-            this.privateCheckBox.Location = new System.Drawing.Point(262, 2);
+            this.privateCheckBox.Location = new System.Drawing.Point(262, 84);
             this.privateCheckBox.Name = "privateCheckBox";
             this.privateCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.privateCheckBox.Size = new System.Drawing.Size(59, 17);
@@ -353,56 +338,99 @@ namespace MultiDesktop
             // 
             // topPanel
             // 
+            this.topPanel.Controls.Add(this.completedCheckBox);
             this.topPanel.Controls.Add(this.calendarLabel);
+            this.topPanel.Controls.Add(this.privateCheckBox);
+            this.topPanel.Controls.Add(this.categoryLabel);
             this.topPanel.Controls.Add(this.calendarComboBox);
             this.topPanel.Controls.Add(this.summaryLabel);
+            this.topPanel.Controls.Add(this.categoryComboBox);
             this.topPanel.Controls.Add(this.summaryField);
             this.topPanel.Controls.Add(this.startDateLabel);
             this.topPanel.Controls.Add(this.startDateBox);
             this.topPanel.Controls.Add(this.dueDateBox);
             this.topPanel.Controls.Add(this.dueDateLabel);
-            this.topPanel.Controls.Add(this.statusComboBox);
-            this.topPanel.Controls.Add(this.priorityComboBox);
-            this.topPanel.Controls.Add(this.statusLabel);
-            this.topPanel.Controls.Add(this.priorityLabel);
             this.topPanel.Location = new System.Drawing.Point(3, 23);
             this.topPanel.Name = "topPanel";
             this.topPanel.Size = new System.Drawing.Size(325, 108);
             this.topPanel.TabIndex = 0;
             // 
+            // completedCheckBox
+            // 
+            this.completedCheckBox.AutoSize = true;
+            this.completedCheckBox.Location = new System.Drawing.Point(180, 84);
+            this.completedCheckBox.Name = "completedCheckBox";
+            this.completedCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.completedCheckBox.Size = new System.Drawing.Size(76, 17);
+            this.completedCheckBox.TabIndex = 22;
+            this.completedCheckBox.Text = "Completed";
+            this.completedCheckBox.UseVisualStyleBackColor = true;
+            // 
             // startDateBox
             // 
             this.startDateBox.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.startDateBox.Location = new System.Drawing.Point(84, 56);
+            this.startDateBox.Location = new System.Drawing.Point(70, 56);
             this.startDateBox.Name = "startDateBox";
             this.startDateBox.Size = new System.Drawing.Size(92, 20);
             this.startDateBox.TabIndex = 5;
-            this.startDateBox.Value = DateTime.MinValue;
-            this.startDateBox.ValueChanged += new System.EventHandler(this.startDateBox_ValueChanged);
             // 
             // dueDateBox
             // 
             this.dueDateBox.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dueDateBox.Location = new System.Drawing.Point(84, 82);
+            this.dueDateBox.Location = new System.Drawing.Point(229, 56);
             this.dueDateBox.Name = "dueDateBox";
             this.dueDateBox.Size = new System.Drawing.Size(92, 20);
             this.dueDateBox.TabIndex = 6;
-            this.dueDateBox.Value = DateTime.MinValue;
-            this.dueDateBox.ValueChanged += new System.EventHandler(this.dueDateBox_ValueChanged);
             // 
             // bottomPanel
             // 
-            this.bottomPanel.Controls.Add(this.categoryLabel);
-            this.bottomPanel.Controls.Add(this.privateCheckBox);
-            this.bottomPanel.Controls.Add(this.categoryComboBox);
+            this.bottomPanel.Controls.Add(this.urgencyComboBox);
+            this.bottomPanel.Controls.Add(this.urgencyLabel);
             this.bottomPanel.Controls.Add(this.reminderCheckBox);
             this.bottomPanel.Controls.Add(this.alarmButton);
             this.bottomPanel.Controls.Add(this.reminderDate);
             this.bottomPanel.Controls.Add(this.reminderTime);
+            this.bottomPanel.Controls.Add(this.importanceComboBox);
+            this.bottomPanel.Controls.Add(this.importanceLabel);
             this.bottomPanel.Location = new System.Drawing.Point(3, 259);
             this.bottomPanel.Name = "bottomPanel";
             this.bottomPanel.Size = new System.Drawing.Size(325, 55);
             this.bottomPanel.TabIndex = 14;
+            // 
+            // urgencyComboBox
+            // 
+            this.urgencyComboBox.AutoCompleteCustomSource.AddRange(new string[] {
+            "Low",
+            "Normal",
+            "High"});
+            this.urgencyComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.urgencyComboBox.Items.AddRange(new object[] {
+            "High",
+            "Normal",
+            "Low"});
+            this.urgencyComboBox.Location = new System.Drawing.Point(229, 3);
+            this.urgencyComboBox.Name = "urgencyComboBox";
+            this.urgencyComboBox.Size = new System.Drawing.Size(92, 21);
+            this.urgencyComboBox.TabIndex = 21;
+            // 
+            // urgencyLabel
+            // 
+            this.urgencyLabel.AutoSize = true;
+            this.urgencyLabel.Location = new System.Drawing.Point(166, 6);
+            this.urgencyLabel.Name = "urgencyLabel";
+            this.urgencyLabel.Size = new System.Drawing.Size(50, 13);
+            this.urgencyLabel.TabIndex = 20;
+            this.urgencyLabel.Text = "Urgency:";
+            // 
+            // alarmButton
+            // 
+            this.alarmButton.Enabled = false;
+            this.alarmButton.Image = global::MultiDesktop.Properties.Resources.Alarm;
+            this.alarmButton.Location = new System.Drawing.Point(296, 26);
+            this.alarmButton.Name = "alarmButton";
+            this.alarmButton.Size = new System.Drawing.Size(23, 23);
+            this.alarmButton.TabIndex = 19;
+            this.alarmButton.UseVisualStyleBackColor = true;
             // 
             // TodoForm
             // 
@@ -435,19 +463,23 @@ namespace MultiDesktop
             tableLayoutPanel.RowStyles[0].Height = 0F;
             tableLayoutPanel.RowStyles[2].Height = 142F;
 
-            foreach (string calendarName in Setting.CalendarList.Keys)
+            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
             {
                 calendarComboBox.Items.Add(calendarName);
             }
             calendarComboBox.SelectedItem = "Personal";
-            statusComboBox.SelectedIndex = 0;
-            priorityComboBox.SelectedIndex = 0;
-            foreach (Category category in Setting.CategoryList)
+            importanceComboBox.SelectedIndex = 1;
+            urgencyComboBox.SelectedIndex = 1;
+            foreach (string categoryName in SettingController.CategoryManager.getCategoryList())
             {
-                categoryComboBox.Items.Add(category.Name);
+                categoryComboBox.Items.Add(categoryName);
             }
             categoryComboBox.SelectedIndex = 0;
             deleteButton.Enabled = false;
+            convertToTaskButton.Enabled = false;
+
+            startDateBox.ValueChanged += new EventHandler(startDateBox_ValueChanged);
+            dueDateBox.ValueChanged += new EventHandler(dueDateBox_ValueChanged);
         }
 
         public TodoForm(ITodo todo)
@@ -467,91 +499,77 @@ namespace MultiDesktop
                 tableLayoutPanel.RowStyles[2].Height = 142F;
             }
 
-            foreach (string calendarName in Setting.CalendarList.Keys)
+            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
             {
                 calendarComboBox.Items.Add(calendarName);
             }
-            calendarComboBox.SelectedItem = Setting.findCalendarName(CalendarManager.findCalendarFileName(m_todo.Calendar));
+            calendarComboBox.SelectedItem = SettingController.CalendarManager.findCalendarName(m_todo.Calendar);
 
             calendarComboBox.Enabled = false;
             summaryField.Text = m_todo.Summary;
-            if(m_todo.Start != null)
+            if(m_todo.Start != null && m_todo.Start.Date != DateTime.MinValue)
                 startDateBox.Value = m_todo.Start.Date;
             else
                 startDateBox.Value = DateTime.MinValue;
-            if (m_todo.Due != null)
+            if (m_todo.Due != null && m_todo.Due.Date != DateTime.MinValue)
                 dueDateBox.Value = m_todo.Due.Date;
             else
                 dueDateBox.Value = DateTime.MinValue;
             if (startDateBox.Value != DateTime.MinValue && dueDateBox.Value != DateTime.MinValue)
                 m_duration = dueDateBox.Value - startDateBox.Value;
-            switch (m_todo.Status)
+            
+            completedCheckBox.Checked = m_todo.Status == TodoStatus.Completed;
+
+            if (m_todo.Priority != 0)
             {
-                case TodoStatus.NeedsAction:
-                    statusComboBox.SelectedIndex = 0;
-                    break;
-                case TodoStatus.InProcess:
-                    statusComboBox.SelectedIndex = 1;
-                    break;
-                case TodoStatus.Completed:
-                    statusComboBox.SelectedIndex = 2;
-                    break;
-                case TodoStatus.Cancelled:
-                    statusComboBox.SelectedIndex = 0;
-                    break;
+                importanceComboBox.SelectedIndex = (m_todo.Priority - 1) / 3;
+                urgencyComboBox.SelectedIndex = (m_todo.Priority - 1) % 3;
             }
-            if (m_todo.Priority != 0 && m_todo.Priority <= 3)
-                priorityComboBox.SelectedIndex = 2;
-            else if (m_todo.Priority != 0 && m_todo.Priority <= 6)
-                priorityComboBox.SelectedIndex = 1;
             else
-                priorityComboBox.SelectedIndex = 0;
-            descriptionTextBox.Text = m_todo.Description;
-            foreach (Category category in Setting.CategoryList)
             {
-                categoryComboBox.Items.Add(category.Name);
+                importanceComboBox.SelectedIndex = 1;
+                urgencyComboBox.SelectedIndex = 1;
+            }
+            descriptionTextBox.Text = m_todo.Description;
+            foreach (string categoryName in SettingController.CategoryManager.getCategoryList())
+            {
+                categoryComboBox.Items.Add(categoryName);
             }
             if (m_todo.Categories.Count != 0)
                 categoryComboBox.SelectedItem = m_todo.Categories[0];
             else
                 categoryComboBox.SelectedItem = "Personal";
             privateCheckBox.Checked = (m_todo.Class != null && m_todo.Class.ToUpper() == "PRIVATE");
+
+            startDateBox.ValueChanged += new EventHandler(startDateBox_ValueChanged);
+            dueDateBox.ValueChanged += new EventHandler(dueDateBox_ValueChanged);
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            string calendarName = Setting.CalendarList.Keys[calendarComboBox.SelectedIndex];
+            string calendarName = calendarComboBox.SelectedItem.ToString();
             if (m_todo == null)
             {
-                ITodo newTodo = CalendarManager.createTodo(Setting.CalendarList[calendarName]);
+                ITodo newTodo = SettingController.CalendarManager.TodoManager.createTodo(calendarName);
                 newTodo.Summary = summaryField.Text;
                 if (startDateBox.Value != DateTime.MinValue)
+                {
                     newTodo.Start = new iCalDateTime(startDateBox.Value);
+                    newTodo.Start.IsUniversalTime = true;
+                }
                 if (dueDateBox.Value != DateTime.MinValue)
                 {
                     if(startDateBox.Value == dueDateBox.Value)
                         newTodo.Due = new iCalDateTime(dueDateBox.Value.Add(new TimeSpan(1, 0, 0)));
                     else
                         newTodo.Due = new iCalDateTime(dueDateBox.Value);
+                    newTodo.Due.IsUniversalTime = true;
                 }
-                switch (statusComboBox.SelectedItem.ToString())
-                {
-                    case "Not Started":
-                        newTodo.Status = TodoStatus.NeedsAction;
-                        break;
-                    case "In Progress":
-                        newTodo.Status = TodoStatus.InProcess;
-                        break;
-                    case "Completed":
-                        newTodo.Status = TodoStatus.Completed;
-                        break;
-                }
-                if (priorityComboBox.SelectedIndex == 0)
-                    newTodo.Priority = 8;
-                else if (priorityComboBox.SelectedIndex == 1)
-                    newTodo.Priority = 5;
+                if (completedCheckBox.Checked)
+                    newTodo.Status = TodoStatus.Completed;
                 else
-                    newTodo.Priority = 2;
+                    newTodo.Status = TodoStatus.NeedsAction;
+                newTodo.Priority = importanceComboBox.SelectedIndex * 3 + urgencyComboBox.SelectedIndex + 1;
                 newTodo.Description = descriptionTextBox.Text;
                 newTodo.Categories.Add(categoryComboBox.SelectedItem.ToString());
                 if (privateCheckBox.Checked)
@@ -561,42 +579,40 @@ namespace MultiDesktop
                 if (m_recurrence != null)
                     newTodo.RecurrenceRules.Add(m_recurrence);
 
-                CalendarManager.addTodo(newTodo);
+                SettingController.CalendarManager.TodoManager.addTodo(newTodo);
             }
             else
             {
                 m_todo.Summary = summaryField.Text;
                 if (startDateBox.Value != DateTime.MinValue)
+                {
                     m_todo.Start = new iCalDateTime(startDateBox.Value);
-                else
-                    m_todo.Start = null;
+                    m_todo.Start.IsUniversalTime = true;
+                }
+                else if (m_todo.Start != null)
+                {
+                    m_todo.Start = new iCalDateTime(DateTime.MinValue);
+                    m_todo.Start.IsUniversalTime = true;
+                }
                 if (dueDateBox.Value != DateTime.MinValue)
                 {
                     if (startDateBox.Value == dueDateBox.Value)
                         m_todo.Due = new iCalDateTime(dueDateBox.Value.Add(new TimeSpan(1, 0, 0)));
                     else
                         m_todo.Due = new iCalDateTime(dueDateBox.Value);
+                    m_todo.Due.IsUniversalTime = true;
                 }
-                else
-                    m_todo.Due = null;
-                switch (statusComboBox.SelectedItem.ToString())
+                else if (m_todo.Due != null)
                 {
-                    case "Not Started":
-                        m_todo.Status = TodoStatus.NeedsAction;
-                        break;
-                    case "In Progress":
-                        m_todo.Status = TodoStatus.InProcess;
-                        break;
-                    case "Completed":
-                        m_todo.Status = TodoStatus.Completed;
-                        break;
+                    m_todo.Due = new iCalDateTime(DateTime.MinValue);
+                    m_todo.Due.IsUniversalTime = true;
                 }
-                if (priorityComboBox.SelectedIndex == 0)
-                    m_todo.Priority = 8;
-                else if (priorityComboBox.SelectedIndex == 1)
-                    m_todo.Priority = 5;
+                                
+                if (completedCheckBox.Checked)
+                    m_todo.Status = TodoStatus.Completed;
                 else
-                    m_todo.Priority = 2;
+                    m_todo.Status = TodoStatus.NeedsAction;
+                m_todo.Priority = importanceComboBox.SelectedIndex * 3 + urgencyComboBox.SelectedIndex + 1;
                 m_todo.Description = descriptionTextBox.Text;
                 m_todo.Categories.Clear();
                 m_todo.Categories.Add(categoryComboBox.SelectedItem.ToString());
@@ -610,22 +626,15 @@ namespace MultiDesktop
                     m_todo.RecurrenceRules.Add(m_recurrence);
                 }
 
-                CalendarManager.updateTodo(m_todo.UID);
+                SettingController.CalendarManager.TodoManager.updateTodo(m_todo);
             }
-
-            CalendarManager.saveCalendar(Setting.CalendarList[calendarName]);
 
             Close();
         }
 
         private void deleteButton_Click(object sender, EventArgs e)
         {
-            string filename = CalendarManager.findCalendarFileName(m_todo.Calendar);
-            CalendarManager.removeTodo(m_todo.UID);
-            m_todo.Calendar.RemoveChild(m_todo);
-
-            CalendarManager.saveCalendar(filename);
-
+            SettingController.CalendarManager.TodoManager.removeTodo(m_todo.UID);
             Close();
         }
 
@@ -710,6 +719,13 @@ namespace MultiDesktop
                     dueDateBox.Value = startDateBox.Value.Add(m_duration);
                 }
             }
+        }
+
+        private void convertToTaskButton_Click(object sender, EventArgs e)
+        {
+            TaskForm newForm = new TaskForm(m_todo);
+            newForm.Show();
+            Close();
         }
     }
 }

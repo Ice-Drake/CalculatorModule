@@ -12,9 +12,11 @@ namespace MultiDesktop
 {
     public class SettingDialog : Form
     {
+        private SettingManager controller;
+
         private TreeView treeView;
         private Label nameLabel;
-        private TextBox categoryName;
+        private TextBox categoryNameField;
         private Button deleteButton;
         private Button newButton;
         private Button saveButton;
@@ -23,9 +25,11 @@ namespace MultiDesktop
         private TabPage tabPage2;
         private GroupBox groupBox1;
         private TabPage tabPage3;
-        private Button button1;
         private GroupBox groupBox2;
-        private Button button2;
+        private DataGridView calendarGridView;
+        private DataGridViewTextBoxColumn NameColumn1;
+        private DataGridViewTextBoxColumn Column1;
+        private DataGridViewCheckBoxColumn Column2;
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -54,7 +58,7 @@ namespace MultiDesktop
         {
             this.treeView = new System.Windows.Forms.TreeView();
             this.nameLabel = new System.Windows.Forms.Label();
-            this.categoryName = new System.Windows.Forms.TextBox();
+            this.categoryNameField = new System.Windows.Forms.TextBox();
             this.deleteButton = new System.Windows.Forms.Button();
             this.newButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
@@ -64,12 +68,16 @@ namespace MultiDesktop
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.calendarGridView = new System.Windows.Forms.DataGridView();
+            this.NameColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.tabControl.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.calendarGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // treeView
@@ -90,12 +98,12 @@ namespace MultiDesktop
             this.nameLabel.TabIndex = 1;
             this.nameLabel.Text = "Name";
             // 
-            // categoryName
+            // categoryNameField
             // 
-            this.categoryName.Location = new System.Drawing.Point(47, 263);
-            this.categoryName.Name = "categoryName";
-            this.categoryName.Size = new System.Drawing.Size(176, 20);
-            this.categoryName.TabIndex = 2;
+            this.categoryNameField.Location = new System.Drawing.Point(47, 263);
+            this.categoryNameField.Name = "categoryNameField";
+            this.categoryNameField.Size = new System.Drawing.Size(176, 20);
+            this.categoryNameField.TabIndex = 2;
             // 
             // deleteButton
             // 
@@ -164,7 +172,7 @@ namespace MultiDesktop
             this.groupBox1.Controls.Add(this.treeView);
             this.groupBox1.Controls.Add(this.deleteButton);
             this.groupBox1.Controls.Add(this.saveButton);
-            this.groupBox1.Controls.Add(this.categoryName);
+            this.groupBox1.Controls.Add(this.categoryNameField);
             this.groupBox1.Controls.Add(this.newButton);
             this.groupBox1.Controls.Add(this.nameLabel);
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
@@ -176,8 +184,6 @@ namespace MultiDesktop
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.button2);
-            this.tabPage3.Controls.Add(this.button1);
             this.tabPage3.Controls.Add(this.groupBox2);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
@@ -189,30 +195,59 @@ namespace MultiDesktop
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.calendarGridView);
             this.groupBox2.Location = new System.Drawing.Point(6, 6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(234, 125);
+            this.groupBox2.Size = new System.Drawing.Size(234, 318);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "iCal Files";
             // 
-            // button1
+            // calendarGridView
             // 
-            this.button1.Location = new System.Drawing.Point(87, 301);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(85, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Save Changes";
-            this.button1.UseVisualStyleBackColor = true;
+            this.calendarGridView.AllowUserToAddRows = false;
+            this.calendarGridView.AllowUserToDeleteRows = false;
+            this.calendarGridView.AllowUserToResizeColumns = false;
+            this.calendarGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.calendarGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.calendarGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.calendarGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.NameColumn1,
+            this.Column1,
+            this.Column2});
+            this.calendarGridView.Location = new System.Drawing.Point(6, 19);
+            this.calendarGridView.MultiSelect = false;
+            this.calendarGridView.Name = "calendarGridView";
+            this.calendarGridView.RowHeadersVisible = false;
+            this.calendarGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.calendarGridView.Size = new System.Drawing.Size(222, 293);
+            this.calendarGridView.TabIndex = 0;
+            this.calendarGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.calendarGridView_CellContentClick);
             // 
-            // button2
+            // NameColumn1
             // 
-            this.button2.Location = new System.Drawing.Point(6, 301);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Import";
-            this.button2.UseVisualStyleBackColor = true;
+            this.NameColumn1.DataPropertyName = "Name";
+            this.NameColumn1.HeaderText = "Name";
+            this.NameColumn1.Name = "NameColumn1";
+            this.NameColumn1.ReadOnly = true;
+            // 
+            // Column1
+            // 
+            this.Column1.DataPropertyName = "Filename";
+            this.Column1.HeaderText = "Filename";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Width = 70;
+            // 
+            // Column2
+            // 
+            this.Column2.DataPropertyName = "Included";
+            this.Column2.FalseValue = "false";
+            this.Column2.HeaderText = "Included";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            this.Column2.TrueValue = "true";
+            this.Column2.Width = 50;
             // 
             // SettingDialog
             // 
@@ -233,29 +268,26 @@ namespace MultiDesktop
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.calendarGridView)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        public SettingDialog()
+        public SettingDialog(SettingManager settingManager)
         {
             InitializeComponent();
+
+            controller = settingManager;
             
-            foreach (Category category in Setting.CategoryList)
+            foreach (TreeNode newNode in settingManager.CategoryManager.CategoryNodeList)
             {
-                TreeNode newNode = new TreeNode(category.Name);
-                if (category.Subcategories.Count != 0)
-                {
-                    foreach (Subcategory subcategory in category.Subcategories)
-                    {
-                        TreeNode newSubNode = new TreeNode(subcategory.Name);
-                        newNode.Nodes.Add(newSubNode);
-                    }
-                }
                 treeView.Nodes.Add(newNode);
             }
+
+            calendarGridView.DataSource = controller.CalendarManager.CalendarTable;
         }
 
         private XmlNodeList getXmlNodeList(string filename, string expression)
@@ -266,9 +298,9 @@ namespace MultiDesktop
             return nodes;
         }
 
-        void treeView_AfterSelect(object sender, TreeViewEventArgs e)
+        private void treeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            categoryName.Text = treeView.SelectedNode.Text;
+            categoryNameField.Text = treeView.SelectedNode.Text;
             if (treeView.SelectedNode.Level == 0)
             {
                 newButton.Enabled = true;
@@ -284,33 +316,57 @@ namespace MultiDesktop
         }
 
         private void newButton_Click(object sender, EventArgs e)
-        {
-            int index = 0;
-            while (Setting.CategoryList[index].Name != treeView.SelectedNode.Text && ++index <= Setting.CategoryList.Count) ;
-            Subcategory newSubcategory = new Subcategory(Setting.CategoryList.Count + 1, Setting.CategoryList[index]);
-            newSubcategory.Name = categoryName.Text;
-            Setting.CategoryList[index].Subcategories.Add(newSubcategory);
+        {   
+            List<string> categoryList = controller.CategoryManager.getCategoryList();
             
-            TreeNode newNode = new TreeNode(categoryName.Text);
-            treeView.SelectedNode.Nodes.Add(newNode);
+            if (categoryNameField.Text.Length == 0)
+            {
+                MessageBox.Show("Please input a name for the new category.");
+            }
+            else if(!categoryList.Contains(categoryNameField.Text))
+            {
+                Category category = controller.CategoryManager.getCategory(treeView.SelectedNode.Text);
+                controller.CategoryManager.addSubcategory(new Subcategory(categoryNameField.Text, category));
+                
+                TreeNode newNode = new TreeNode(categoryNameField.Text);
+                treeView.SelectedNode.Nodes.Add(newNode);
+            }
+            else
+            {
+                MessageBox.Show("The new category cannot have the same name as any of the existing ones.");
+            }
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            int i = 0, j = 0;
-            while (Setting.CategoryList[i].Name != treeView.SelectedNode.Parent.Text && ++i <= Setting.CategoryList.Count) ;
-            while (Setting.CategoryList[i].Subcategories[j].Name != treeView.SelectedNode.Text && ++i <= Setting.CategoryList[i].Subcategories.Count) ;
-            Setting.CategoryList[i].Subcategories[j].Name = categoryName.Text;
-            treeView.SelectedNode.Text = categoryName.Text;
+            if (categoryNameField.Text.Length == 0)
+            {
+                MessageBox.Show("Please input a new name for the selected category.");
+            }
+            else if (controller.CategoryManager.renameSubcategory(categoryNameField.Text, treeView.SelectedNode.Text))
+            {
+                int nodeIndex = treeView.Nodes.IndexOf(treeView.SelectedNode);
+                treeView.Nodes.RemoveAt(nodeIndex);
+                TreeNode newNode = new TreeNode(categoryNameField.Text);
+                treeView.Nodes.Insert(nodeIndex, newNode);
+            }
+            else
+            {
+                MessageBox.Show("The new name cannot be the same as any of the existing ones.");
+            }
         }
 
         private void deleteButton_Click(object sender, EventArgs e)
         {
-            int i = 0, j = 0;
-            while (Setting.CategoryList[i].Name != treeView.SelectedNode.Parent.Text && ++i <= Setting.CategoryList.Count) ;
-            while (Setting.CategoryList[i].Subcategories[j].Name != treeView.SelectedNode.Text && ++i <= Setting.CategoryList[i].Subcategories.Count) ;
-            Setting.CategoryList[i].Subcategories.RemoveAt(j);
+            controller.CategoryManager.deleteSubcategory(treeView.SelectedNode.Text);
             treeView.SelectedNode.Remove();
+        }
+
+        private void calendarGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            string name = calendarGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+            CalendarForm newForm = new CalendarForm(controller.CalendarManager.CalendarList[name]);
+            newForm.Show();
         }
     }
 }

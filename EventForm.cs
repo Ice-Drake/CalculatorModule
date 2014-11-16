@@ -12,6 +12,8 @@ namespace MultiDesktop
 {
     public class EventForm : Form
     {
+        public static SettingManager SettingController { private get; set; }
+
         private Label calendarLabel;
         private ComboBox calendarComboBox;
         private Label summaryLabel;
@@ -433,13 +435,16 @@ namespace MultiDesktop
             tableLayoutPanel.RowStyles[0].Height = 0F;
             tableLayoutPanel.RowStyles[2].Height = 142F;
 
-            foreach(string calendarName in Setting.CalendarList.Keys)
+            foreach(string calendarName in SettingController.CalendarManager.CalendarList.Keys)
             {
                 calendarComboBox.Items.Add(calendarName);
             }
             calendarComboBox.SelectedItem = "Personal";
 
-            Setting.fillCategory(categoryComboBox);
+            foreach(string categoryName in SettingController.CategoryManager.getCategoryList())
+            {
+                categoryComboBox.Items.Add(categoryName);
+            }
             categoryComboBox.Items.Add("Anniversary");
             categoryComboBox.Items.Add("Birthday");
             categoryComboBox.Items.Add("Holiday");
@@ -465,11 +470,11 @@ namespace MultiDesktop
                 tableLayoutPanel.RowStyles[2].Height = 142F;
             }
 
-            foreach (string calendarName in Setting.CalendarList.Keys)
+            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
             {
                 calendarComboBox.Items.Add(calendarName);
             }
-            calendarComboBox.SelectedItem = Setting.findCalendarName(CalendarManager.findCalendarFileName(m_dateItem.Event.Calendar));
+            calendarComboBox.SelectedItem = SettingController.CalendarManager.findCalendarName(m_dateItem.Event.Calendar);
 
             calendarComboBox.Enabled = false;
             summaryField.Text = m_dateItem.Event.Summary;
@@ -501,7 +506,10 @@ namespace MultiDesktop
 
             descriptionTextBox.Text = m_dateItem.Event.Description;
 
-            Setting.fillCategory(categoryComboBox);
+            foreach (string categoryName in SettingController.CategoryManager.getCategoryList())
+            {
+                categoryComboBox.Items.Add(categoryName);
+            }
             categoryComboBox.Items.Add("Anniversary");
             categoryComboBox.Items.Add("Birthday");
             categoryComboBox.Items.Add("Holiday");
@@ -514,11 +522,11 @@ namespace MultiDesktop
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            string calendarName = Setting.CalendarList.Keys[calendarComboBox.SelectedIndex];
+            string calendarName = calendarComboBox.SelectedItem.ToString();
 
             if (m_dateItem == null)
             {
-                Event newEvent = CalendarManager.createEvent(Setting.CalendarList[calendarName]);
+                IEvent newEvent = SettingController.CalendarManager.EventManager.createEvent(calendarName);
                 
                 newEvent.Summary = summaryField.Text;
                 newEvent.Location = locationField.Text;
@@ -541,8 +549,7 @@ namespace MultiDesktop
                     newEvent.Class = "PUBLIC";
                 if (m_recurrence != null)
                     newEvent.RecurrenceRules.Add(m_recurrence);
-                m_dateItem = new Library.DateItem(newEvent);
-                CalendarManager.Calendar.AddDateInfo(m_dateItem);
+                SettingController.CalendarManager.EventManager.addEvent(newEvent);
             }
             else
             {
@@ -572,21 +579,15 @@ namespace MultiDesktop
                     m_dateItem.Event.RecurrenceRules.Add(m_recurrence);
                 }
 
-                m_dateItem.Update();
+                SettingController.CalendarManager.EventManager.updateEvent(m_dateItem);
             }
-            CalendarManager.saveCalendar(Setting.CalendarList[calendarName]);
 
             Close();
         }
 
         private void deleteButton_Click(object sender, EventArgs e)
         {
-            string filename = CalendarManager.findCalendarFileName(m_dateItem.Event.Calendar);
-            CalendarManager.Calendar.RemoveDateInfo(m_dateItem);
-            m_dateItem.Event.Calendar.RemoveChild(m_dateItem.Event);
-
-            CalendarManager.saveCalendar(filename);
-
+            SettingController.CalendarManager.EventManager.removeEvent(m_dateItem);
             Close();
         }
 

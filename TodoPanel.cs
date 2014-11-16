@@ -9,8 +9,12 @@ using DDay.iCal;
 
 namespace MultiDesktop
 {
-    public class TodoPanel : Form
+    public class TodoPanel : MainPanel
     {
+        private TodoManager controller;
+
+        #region Component Designer variables
+
         private TabControl tabControl1;
         private TabPage tabPage1;
         private DataGridView assignedTodoGridView;
@@ -18,24 +22,26 @@ namespace MultiDesktop
         private TabPage tabPage3;
         private Button clearButton;
         private DataGridView completedTodoGridView;
-        private DataGridViewTextBoxColumn Column1;
+        private DataGridView unassignedTodoGridView;
+
+        #endregion
         private DataGridViewImageColumn recurrenceColumn;
         private DataGridViewTextBoxColumn nameColumn;
         private DataGridViewTextBoxColumn categoryColumn;
         private DataGridViewTextBoxColumn priorityColumn;
         private DataGridViewTextBoxColumn dueDateColumn;
-        private DataGridView unassignedTodoGridView;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
+        private DataGridViewTextBoxColumn Column1;
         private DataGridViewImageColumn dataGridViewImageColumn1;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private DataGridViewTextBoxColumn Column3;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
         private DataGridViewImageColumn dataGridViewImageColumn2;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
+        private DataGridViewTextBoxColumn Column3;
 
         /// <summary> 
         /// Required designer variable.
@@ -67,34 +73,34 @@ namespace MultiDesktop
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.assignedTodoGridView = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.unassignedTodoGridView = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.completedTodoGridView = new System.Windows.Forms.DataGridView();
             this.clearButton = new System.Windows.Forms.Button();
-            this.unassignedTodoGridView = new System.Windows.Forms.DataGridView();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.recurrenceColumn = new System.Windows.Forms.DataGridViewImageColumn();
             this.nameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.categoryColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.priorityColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dueDateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewImageColumn2 = new System.Windows.Forms.DataGridViewImageColumn();
             this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.assignedTodoGridView)).BeginInit();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.unassignedTodoGridView)).BeginInit();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.completedTodoGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.unassignedTodoGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -126,16 +132,17 @@ namespace MultiDesktop
             this.assignedTodoGridView.AllowUserToOrderColumns = true;
             this.assignedTodoGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.assignedTodoGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
             this.recurrenceColumn,
             this.nameColumn,
             this.categoryColumn,
             this.priorityColumn,
-            this.dueDateColumn});
+            this.dueDateColumn,
+            this.Column1});
             this.assignedTodoGridView.Location = new System.Drawing.Point(6, 6);
             this.assignedTodoGridView.Name = "assignedTodoGridView";
             this.assignedTodoGridView.ReadOnly = true;
             this.assignedTodoGridView.RowHeadersVisible = false;
+            this.assignedTodoGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.assignedTodoGridView.Size = new System.Drawing.Size(358, 199);
             this.assignedTodoGridView.TabIndex = 1;
             // 
@@ -149,6 +156,26 @@ namespace MultiDesktop
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Unassigned";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // unassignedTodoGridView
+            // 
+            this.unassignedTodoGridView.AllowUserToAddRows = false;
+            this.unassignedTodoGridView.AllowUserToDeleteRows = false;
+            this.unassignedTodoGridView.AllowUserToOrderColumns = true;
+            this.unassignedTodoGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.unassignedTodoGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewImageColumn1,
+            this.dataGridViewTextBoxColumn1,
+            this.dataGridViewTextBoxColumn2,
+            this.dataGridViewTextBoxColumn3,
+            this.dataGridViewTextBoxColumn9});
+            this.unassignedTodoGridView.Location = new System.Drawing.Point(45, 6);
+            this.unassignedTodoGridView.Name = "unassignedTodoGridView";
+            this.unassignedTodoGridView.ReadOnly = true;
+            this.unassignedTodoGridView.RowHeadersVisible = false;
+            this.unassignedTodoGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.unassignedTodoGridView.Size = new System.Drawing.Size(279, 199);
+            this.unassignedTodoGridView.TabIndex = 2;
             // 
             // tabPage3
             // 
@@ -169,16 +196,17 @@ namespace MultiDesktop
             this.completedTodoGridView.AllowUserToOrderColumns = true;
             this.completedTodoGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.completedTodoGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column3,
             this.dataGridViewImageColumn2,
             this.dataGridViewTextBoxColumn5,
             this.dataGridViewTextBoxColumn6,
             this.dataGridViewTextBoxColumn7,
-            this.dataGridViewTextBoxColumn8});
+            this.dataGridViewTextBoxColumn8,
+            this.Column3});
             this.completedTodoGridView.Location = new System.Drawing.Point(6, 6);
             this.completedTodoGridView.Name = "completedTodoGridView";
             this.completedTodoGridView.ReadOnly = true;
             this.completedTodoGridView.RowHeadersVisible = false;
+            this.completedTodoGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.completedTodoGridView.Size = new System.Drawing.Size(358, 170);
             this.completedTodoGridView.TabIndex = 4;
             // 
@@ -190,33 +218,7 @@ namespace MultiDesktop
             this.clearButton.TabIndex = 3;
             this.clearButton.Text = "Clear";
             this.clearButton.UseVisualStyleBackColor = true;
-            // 
-            // unassignedTodoGridView
-            // 
-            this.unassignedTodoGridView.AllowUserToAddRows = false;
-            this.unassignedTodoGridView.AllowUserToDeleteRows = false;
-            this.unassignedTodoGridView.AllowUserToOrderColumns = true;
-            this.unassignedTodoGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.unassignedTodoGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn9,
-            this.dataGridViewImageColumn1,
-            this.dataGridViewTextBoxColumn1,
-            this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn3});
-            this.unassignedTodoGridView.Location = new System.Drawing.Point(45, 6);
-            this.unassignedTodoGridView.Name = "unassignedTodoGridView";
-            this.unassignedTodoGridView.ReadOnly = true;
-            this.unassignedTodoGridView.RowHeadersVisible = false;
-            this.unassignedTodoGridView.Size = new System.Drawing.Size(279, 199);
-            this.unassignedTodoGridView.TabIndex = 2;
-            // 
-            // Column1
-            // 
-            this.Column1.DataPropertyName = "UID";
-            this.Column1.HeaderText = "UID";
-            this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
-            this.Column1.Visible = false;
+            this.clearButton.Click += new System.EventHandler(this.clearButton_Click);
             // 
             // recurrenceColumn
             // 
@@ -258,13 +260,53 @@ namespace MultiDesktop
             this.dueDateColumn.ReadOnly = true;
             this.dueDateColumn.Width = 80;
             // 
-            // Column3
+            // Column1
             // 
-            this.Column3.DataPropertyName = "UID";
-            this.Column3.HeaderText = "UID";
-            this.Column3.Name = "Column3";
-            this.Column3.ReadOnly = true;
-            this.Column3.Visible = false;
+            this.Column1.DataPropertyName = "UID";
+            this.Column1.HeaderText = "UID";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Visible = false;
+            // 
+            // dataGridViewImageColumn1
+            // 
+            this.dataGridViewImageColumn1.DataPropertyName = "Recurrence";
+            this.dataGridViewImageColumn1.HeaderText = "";
+            this.dataGridViewImageColumn1.Name = "dataGridViewImageColumn1";
+            this.dataGridViewImageColumn1.ReadOnly = true;
+            this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.dataGridViewImageColumn1.Width = 25;
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn1.HeaderText = "Name";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.DataPropertyName = "Category";
+            this.dataGridViewTextBoxColumn2.HeaderText = "Category";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            this.dataGridViewTextBoxColumn2.Width = 75;
+            // 
+            // dataGridViewTextBoxColumn3
+            // 
+            this.dataGridViewTextBoxColumn3.DataPropertyName = "Priority";
+            this.dataGridViewTextBoxColumn3.HeaderText = "Priority";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            this.dataGridViewTextBoxColumn3.ReadOnly = true;
+            this.dataGridViewTextBoxColumn3.Width = 75;
+            // 
+            // dataGridViewTextBoxColumn9
+            // 
+            this.dataGridViewTextBoxColumn9.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn9.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
+            this.dataGridViewTextBoxColumn9.ReadOnly = true;
+            this.dataGridViewTextBoxColumn9.Visible = false;
             // 
             // dataGridViewImageColumn2
             // 
@@ -306,45 +348,13 @@ namespace MultiDesktop
             this.dataGridViewTextBoxColumn8.ReadOnly = true;
             this.dataGridViewTextBoxColumn8.Width = 80;
             // 
-            // dataGridViewTextBoxColumn9
+            // Column3
             // 
-            this.dataGridViewTextBoxColumn9.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn9.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
-            this.dataGridViewTextBoxColumn9.ReadOnly = true;
-            this.dataGridViewTextBoxColumn9.Visible = false;
-            // 
-            // dataGridViewImageColumn1
-            // 
-            this.dataGridViewImageColumn1.DataPropertyName = "Recurrence";
-            this.dataGridViewImageColumn1.HeaderText = "";
-            this.dataGridViewImageColumn1.Name = "dataGridViewImageColumn1";
-            this.dataGridViewImageColumn1.ReadOnly = true;
-            this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.dataGridViewImageColumn1.Width = 25;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn1.HeaderText = "Name";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.DataPropertyName = "Category";
-            this.dataGridViewTextBoxColumn2.HeaderText = "Category";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            this.dataGridViewTextBoxColumn2.Width = 75;
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.DataPropertyName = "Priority";
-            this.dataGridViewTextBoxColumn3.HeaderText = "Priority";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            this.dataGridViewTextBoxColumn3.Width = 75;
+            this.Column3.DataPropertyName = "UID";
+            this.Column3.HeaderText = "UID";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            this.Column3.Visible = false;
             // 
             // TodoPanel
             // 
@@ -361,29 +371,30 @@ namespace MultiDesktop
             this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.assignedTodoGridView)).EndInit();
             this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.unassignedTodoGridView)).EndInit();
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.completedTodoGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.unassignedTodoGridView)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        public TodoPanel()
+        public TodoPanel(TodoManager todoManager) : base("Todo Manager")
         {
             InitializeComponent();
+            controller = todoManager;
 
             DataView assignedTodoView = new DataView();
-            assignedTodoView.Table = CalendarManager.TodoTable;
+            assignedTodoView.Table = controller.TodoTable;
             assignedTodoView.RowFilter = "Status = false AND IIF(StartDate = 'None' AND DueDate = 'None', false, true)";
 
             DataView unassignedTodoView = new DataView();
-            unassignedTodoView.Table = CalendarManager.TodoTable;
+            unassignedTodoView.Table = controller.TodoTable;
             unassignedTodoView.RowFilter = "Status = false AND IIF(StartDate = 'None' AND DueDate = 'None', true, false)";
 
             DataView completedTodoView = new DataView();
-            completedTodoView.Table = CalendarManager.TodoTable;
+            completedTodoView.Table = controller.TodoTable;
             completedTodoView.RowFilter = "Status = true";
             
             assignedTodoGridView.AutoGenerateColumns = false;
@@ -404,51 +415,77 @@ namespace MultiDesktop
 
         private void dataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            DataGridView dataGridView = (DataGridView)sender;
+            /*DataGridView dataGridView = (DataGridView)sender;
 
             foreach (DataGridViewRow row in dataGridView.Rows)
+            {*/
+            if (e.ColumnIndex == 3)
             {
-                int priority = Int32.Parse(row.Cells[4].Value.ToString());
+                int priority = Int32.Parse(/*row.Cells[3].Value.ToString()*/e.Value.ToString());
 
                 if (priority == 1)
                 {
-                    row.Cells[4].Style.ForeColor = Color.Red;
+                    /*row.Cells[3].Style*/
+                    e.CellStyle.ForeColor = Color.Red;
+                    e.Value = "Critical";
+                    e.FormattingApplied = true;
                 }
                 else if (priority == 2)
                 {
-                    row.Cells[4].Style.ForeColor = Color.OrangeRed;
+                    e.CellStyle.ForeColor = Color.OrangeRed;
+                    e.Value = "Very High";
+                    e.FormattingApplied = true;
                 }
                 else if (priority == 3)
                 {
-                    row.Cells[4].Style.ForeColor = Color.Orange;
+                    e.CellStyle.ForeColor = Color.Orange;
+                    e.Value = "High";
+                    e.FormattingApplied = true;
                 }
                 else if (priority == 4)
                 {
-                    row.Cells[4].Style.ForeColor = Color.Yellow;
+                    e.CellStyle.ForeColor = Color.Yellow;
+                    e.Value = "Above Normal";
+                    e.FormattingApplied = true;
                 }
                 else if (priority == 5)
                 {
-                    row.Cells[4].Style.ForeColor = Color.Green;
+                    e.CellStyle.ForeColor = Color.Green;
+                    e.Value = "Normal";
+                    e.FormattingApplied = true;
                 }
                 else if (priority == 4 || priority == 3)
                 {
-                    row.Cells[4].Style.ForeColor = Color.Teal;
+                    e.CellStyle.ForeColor = Color.Teal;
+                    e.Value = "Low";
+                    e.FormattingApplied = true;
                 }
                 else
                 {
-                    row.Cells[4].Style.ForeColor = Color.Blue;
+                    e.CellStyle.ForeColor = Color.Blue;
+                    e.Value = "Very Low";
+                    e.FormattingApplied = true;
                 }
             }
 
-            dataGridView.Update();
+            //dataGridView.Update();
         }
 
         private void dataGridView_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             DataGridView dataGridView = (DataGridView)sender;
-            string UID = dataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
-            TodoForm newForm = new TodoForm(CalendarManager.TodoList[UID]);
+            int index = dataGridView != unassignedTodoGridView ? 5 : 4;
+            string UID = dataGridView.Rows[e.RowIndex].Cells[index].Value.ToString();
+            TodoForm newForm = new TodoForm(controller.TodoList[UID]);
             newForm.Show();
+        }
+
+        private void clearButton_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in completedTodoGridView.Rows)
+            {
+                controller.removeTodo(row.Cells[5].Value.ToString());
+            }
         }
     }
 }

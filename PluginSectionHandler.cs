@@ -47,7 +47,7 @@ namespace MultiDesktop
                     object plugObject = Activator.CreateInstance(Type.GetType(node.Attributes["name"].Value));
 
                     //IProjectPanel Plugin
-                    if (node.Attributes["type"].Value.Equals("IProjectPlugin"))
+                    if (node.Attributes["type"].Value.Equals("IProjDBManager"))
                     {
                         //Add this to the project plugin list
                         projectPlugins.Add(plugObject);
@@ -66,7 +66,7 @@ namespace MultiDesktop
 				}
 			}
 
-            collection.Add("IProjectPlugin", projectPlugins);
+            collection.Add("IProjDBManager", projectPlugins);
             collection.Add("IPanelPlugin", panelPlugins);
 
 			return collection;

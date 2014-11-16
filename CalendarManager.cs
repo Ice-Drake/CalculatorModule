@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using DDay.iCal;
@@ -10,346 +11,333 @@ namespace MultiDesktop
 {
     public class CalendarManager
     {
-        private static CalendarManager calendarManager;
-
         private string calendarAbsPath;
-        private SortedList<string, IICalendar> icalendarList;
-        private Library.MonthCalendar monthCalendar;
-        private SortedList<string, ITodo> todoList;
-        private DataTable todoTable;
-        private BindingSource todoTableBS;
-
-        private CalendarManager()
+        private SortedList<string, IICalendar> loadCalendarList;
+        private SqlConnection connection;
+        private BindingSource calendarTableBS;
+        
+        public CalendarManager(string calendarPath)
         {
-            calendarAbsPath = System.IO.Path.GetFullPath("Calendars");
-            icalendarList = new SortedList<string, IICalendar>();
-            monthCalendar = new Library.MonthCalendar();
+            calendarAbsPath = calendarPath;
+            loadCalendarList = new SortedList<string, IICalendar>();
+            TodoManager = new TodoManager(this);
+            EventManager = new EventManager(this);
+            JournalManager = new JournalManager(this);
+            CalendarList = new SortedList<string, Calendar>();
+            
+            CalendarTable = new DataTable();
+            CalendarTable.TableName = "Calendar Table";
+            CalendarTable.Columns.Add("Name", typeof(string));
+            CalendarTable.Columns.Add("Filename", typeof(string));
+            CalendarTable.Columns.Add("Included", typeof(bool));
 
-            todoList = new SortedList<string,ITodo>();
-            todoTable = new DataTable();
-            todoTable.TableName = "Todo Table";
-            todoTable.Columns.Add("Recurrence", typeof(Bitmap));
-            todoTable.Columns.Add("Summary", typeof(string));
-            todoTable.Columns.Add("Category", typeof(string));
-            todoTable.Columns.Add("Priority", typeof(string));
-            todoTable.Columns.Add("Status", typeof(bool));
-            todoTable.Columns.Add("StartDate", typeof(string));
-            todoTable.Columns.Add("DueDate", typeof(string));
-            todoTable.Columns.Add("UID", typeof(string));
+            connection = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\Setting.mdf;Integrated Security=True");
 
-            todoTableBS = new BindingSource();
-            todoTableBS.DataSource = todoTable;
+            calendarTableBS = new BindingSource();
+            calendarTableBS.DataSource = CalendarTable;
         }
 
-        public static void initialize()
+        public void loadDatabase()
         {
-            if (calendarManager == null)
-                calendarManager = new CalendarManager();
-        }
+            SqlCommand command = new SqlCommand("SELECT * FROM Calendar", connection);
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
 
-        public static bool loadCalendar(string filename)
-        {
-            if (calendarManager != null)
+            try
             {
-                string file = calendarManager.calendarAbsPath + "\\" + filename;
-
-                try
+                while (reader.Read())
                 {
-                    IICalendarCollection calendars = iCalendar.LoadFromFile(file);
-
-                    // Get the enumerator for all calendars
-                    IEnumerator<IICalendar> ical = calendars.GetEnumerator();
-
-                    // Assume that there is only one calendar per file
-                    if (ical.MoveNext())
+                    try
                     {
-                        // Add the current calendar to the list
-                        calendarManager.icalendarList.Add(filename, ical.Current);
+                        string name = reader[0].ToString();
+                        string filename = reader[1].ToString();
 
-                        // Load the current calendar to the MonthCalendar
-                        calendarManager.monthCalendar.Load(ical.Current);
+                        Calendar newCalendar = new Calendar(name, filename);
 
-                        // Load the current calendar to the Todo Collection
-                        // Get the enumerator for all itodos in the current calendar
-                        IEnumerator<ITodo> itodo = ical.Current.Todos.GetEnumerator();
+                        DataRow newRow = CalendarTable.NewRow();
+                        newRow["Name"] = name;
+                        newRow["Filename"] = filename;
 
-                        while (itodo.MoveNext())
+                        if(Boolean.Parse(reader[2].ToString()))
                         {
-                            addTodo(itodo.Current);
+                            newRow["Included"] = true;
+                            loadCalendar(newCalendar, true);
+                        }
+                        else
+                        {
+                            newCalendar.Included = false;
+                            newRow["Included"] = false;
                         }
 
-                        return true;
+                        CalendarTable.Rows.Add(newRow);
+                    }
+                    catch (FormatException)
+                    {
+                        System.Windows.Forms.MessageBox.Show("Corrupted Calendar Setting Database! Click OK to proceed on restoring it.");
+                    }
+                    finally
+                    {
+                        //Remove and reconstruct Calendar Table.
                     }
                 }
-                catch (Exception)
-                {
-                    MessageBox.Show("This iCal file may not comply with RFC 5545: " + System.IO.Path.GetFileName(file));
-                }
+            }
+            finally
+            {
+                reader.Close();
             }
 
-            return false;
+            connection.Close();
+
+            //Setup eventhandlers
+            TodoManager.TodoModify += new EventHandler(saveCalendar);
+            EventManager.EventModify += new EventHandler(saveCalendar);
+            JournalManager.JournalModify += new EventHandler(saveCalendar);
         }
 
-        public static bool unloadCalendar(string filename)
+        public bool loadCalendar(Calendar calendar, bool initialize = false)
         {
-            if (calendarManager != null)
+            try
             {
-                IICalendar calendar = calendarManager.icalendarList[filename];
+                IICalendarCollection calendars = iCalendar.LoadFromFile(calendarAbsPath + "\\" + calendar.Filename);
 
+                // Get the enumerator for all calendars
+                IEnumerator<IICalendar> ical = calendars.GetEnumerator();
+
+                // Assume that there is only one calendar per file
+                if (ical.MoveNext())
+                {
+                    // Load the current calendar to the MonthCalendar
+                    EventManager.Calendar.Load(ical.Current);
+
+                    // Load the current calendar to the Todo Collection
+                    // Get the enumerator for all itodos in the current calendar
+                    IEnumerator<ITodo> iTodo = ical.Current.Todos.GetEnumerator();
+
+                    while (iTodo.MoveNext())
+                    {
+                        TodoManager.addTodo(iTodo.Current);
+                    }
+
+                    // Load the current calendar to the Journal Collection
+                    // Get the enumerator for all ijournals in the current calendar
+                    IEnumerator<IJournal> iJournal = ical.Current.Journals.GetEnumerator();
+
+                    while (iJournal.MoveNext())
+                    {
+                        JournalManager.addJournal(iJournal.Current);
+                    }
+                }
+
+                // Initialize the calendar and add it to the list
+                calendar.IICalendar = ical.Current;
+                loadCalendarList.Add(calendar.Name, calendar.IICalendar);
+                CalendarList.Add(calendar.Name, calendar);
+
+                if (!initialize)
+                {
+                    // Update database
+                    calendar.Included = true;
+                    SqlCommand command = new SqlCommand("UPDATE Calendar SET Included = @NewIncluded WHERE Filename = @Filename", connection);
+                    
+                    command.Parameters.Add("@NewIncluded", SqlDbType.Bit);
+                    command.Parameters["@NewIncluded"].Value = calendar.Included;
+
+                    command.Parameters.Add("@Filename", SqlDbType.VarChar);
+                    command.Parameters["@Filename"].Value = calendar.Filename;
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                
+                    // Update table
+                    DataRow row = CalendarTable.Rows[calendarTableBS.Find("Filename", calendar.Filename)];
+                    row["Included"] = true;
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("This iCal file may not comply with RFC 5545: " + System.IO.Path.GetFileName(calendar.Filename));
+                return false;
+            }
+
+            return true;
+        }
+
+        public void unloadCalendar(Calendar calendar)
+        {
+            if (loadCalendarList.ContainsKey(calendar.Name))
+            {
                 // Load the current calendar to the MonthCalendar
-                calendarManager.monthCalendar.Unload(calendar);
+                EventManager.Calendar.Unload(calendar.IICalendar);
 
                 // Unload the current calendar from the Todo Collection
                 // Get the enumerator for all itodos in the current calendar
-                IEnumerator<ITodo> itodo = calendar.Todos.GetEnumerator();
+                IEnumerator<ITodo> iTodo = calendar.IICalendar.Todos.GetEnumerator();
 
-                while (itodo.MoveNext())
+                while (iTodo.MoveNext())
                 {
-                    removeTodo(itodo.Current.UID);
+                    TodoManager.removeTodo(iTodo.Current.UID);
+                }
+
+                // Unload the current calendar from the Journal Collection
+                // Get the enumerator for all ijournals in the current calendar
+                IEnumerator<IJournal> iJournal = calendar.IICalendar.Journals.GetEnumerator();
+
+                while (iJournal.MoveNext())
+                {
+                    JournalManager.removeJournal(iJournal.Current.UID);
                 }
 
                 // Remove the current calendar from the list
-                calendarManager.icalendarList.Remove(filename);
-            }
-            return false;
-        }
+                loadCalendarList.Remove(calendar.Name);
+                CalendarList.Remove(calendar.Name);
 
-        public static bool saveCalendar(string filename)
-        {
-            if (calendarManager != null)
-            {
-                if (calendarManager.icalendarList.ContainsKey(filename))
-                {
-                    string file = calendarManager.calendarAbsPath + "\\" + filename;
-                    iCalendarSerializer serializer = new iCalendarSerializer();
-                    serializer.Serialize(calendarManager.icalendarList[filename], file);
-                    return true;
-                }
-            }
-            return false;
-        }
+                calendar.Included = false;
 
-        public static bool createCalendar(string filename)
-        {
-            if (calendarManager != null)
-            {
-                string file = calendarManager.calendarAbsPath + "\\" + filename;
-                iCalendar iCal = new iCalendar();
-                iCalendarSerializer serializer = new iCalendarSerializer();
-                serializer.Serialize(iCal, file);
-                calendarManager.icalendarList.Add(filename, iCal);
-                return true;
-            }
-            return false;
-        }
+                // Update table
+                DataRow row = CalendarTable.Rows[calendarTableBS.Find("Filename", calendar.Filename)];
+                row["Included"] = false;
 
-        public static string findCalendarFileName(IICalendar calendar)
-        {
-            if (calendarManager != null)
-            {
-                int icalIndex = calendarManager.icalendarList.IndexOfValue(calendar);
-                return calendarManager.icalendarList.Keys[icalIndex];
-            }
-            return null;
-        }
+                // Update database
+                SqlCommand command = new SqlCommand("UPDATE Calendar SET Included = @NewIncluded WHERE Filename = @Filename", connection);
 
-        public static Event createEvent(string filename)
-        {
-            if (calendarManager != null && calendarManager.icalendarList.ContainsKey(filename))
-            {
-                return calendarManager.icalendarList[filename].Create<Event>();
-            }
-            return null;
-        }
+                command.Parameters.Add("@NewIncluded", SqlDbType.Bit);
+                command.Parameters["@NewIncluded"].Value = calendar.Included;
 
-        public static DataTable getEventTable(DateTime date)
-        {
-            DataTable eventTable = new DataTable();
-            eventTable.TableName = "Event Table";
-            eventTable.Columns.Add("Summary", typeof(string));
-            eventTable.Columns.Add("Location", typeof(string));
-            eventTable.Columns.Add("Time", typeof(string));
-            eventTable.Columns.Add("UID", typeof(string));
+                command.Parameters.Add("@Filename", SqlDbType.VarChar);
+                command.Parameters["@Filename"].Value = calendar.Filename;
 
-            if (calendarManager != null)
-            {
-                foreach(Library.DateItem dateItem in calendarManager.monthCalendar.GetDateInfo(date))
-                {
-                    DataRow row = eventTable.NewRow();
-                    row["Summary"] = dateItem.Event.Summary;
-                    if (dateItem.Event.Location != String.Empty)
-                        row["Location"] = dateItem.Event.Location;
-                    if (!dateItem.Event.IsAllDay)
-                        row["Time"] = "(" + dateItem.Event.Start.ToString("t");
-                    row["UID"] = dateItem.Event.UID;
-
-                    eventTable.Rows.Add(row);
-                }
-            }
-            return eventTable;
-        }
-
-        public static ITodo createTodo(string filename)
-        {
-            if (calendarManager != null && calendarManager.icalendarList.ContainsKey(filename))
-            {
-                return calendarManager.icalendarList[filename].Create<Todo>();
-            }
-            return null;
-        }
-
-        public static ITodo duplicateTodo(ITodo todo)
-        {
-            if (calendarManager != null)
-            {
-                ITodo newTodo = todo.Calendar.Create<Todo>();
-                newTodo.Summary = todo.Summary;
-                if (todo.Start != null)
-                    newTodo.Start = new iCalDateTime(todo.Start);
-                if (todo.Due != null)
-                    newTodo.Due = new iCalDateTime(todo.Due);
-                newTodo.Priority = todo.Priority;
-                newTodo.Description = todo.Description;
-                newTodo.Categories.Add(todo.Categories[0]);
-                newTodo.Class = todo.Class;
-                return newTodo;
-            }
-            return null;
-        }
-
-        public static void addTodo(ITodo todo)
-        {
-            if (calendarManager != null)
-            {
-                // Add ITodo to the list
-                calendarManager.todoList.Add(todo.UID, todo);
-
-                // Add ITodo to the table
-                DataRow row = calendarManager.todoTable.NewRow();
-                if (todo.RecurrenceRules.Count > 0)
-                    row["Recurrence"] = global::MultiDesktop.Properties.Resources.Recurrence;
-                else
-                    row["Recurrence"] = global::MultiDesktop.Properties.Resources.OneTime;
-
-                row["Summary"] = todo.Summary;
-
-                row["Category"] = todo.Categories[0];
-
-                row["Priority"] = todo.Priority;
-
-                if (todo.Status == TodoStatus.Completed)
-                    row["Status"] = true;
-                else
-                    row["Status"] = false;
-
-                if (todo.Start != null)
-                    row["StartDate"] = todo.Start.Date.ToShortDateString();
-                else
-                    row["StartDate"] = "None";
-
-                if (todo.Due != null)
-                    row["DueDate"] = todo.Due.Date.ToShortDateString();
-                else
-                    row["DueDate"] = "None";
-
-                row["UID"] = todo.UID;
-
-                calendarManager.todoTable.Rows.Add(row);
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
             }
         }
 
-        public static bool updateTodo(string UID)
+        public string findCalendarName(IICalendar calendar)
         {
-            if (calendarManager != null)
-            {
-                ITodo todo = calendarManager.todoList[UID];
-
-                if (todo != null)
-                {
-                    // Find the corresponding ITodo row in the table
-                    DataRow row = calendarManager.todoTable.Rows[calendarManager.todoTableBS.Find("UID", todo.UID)];
-
-                    // Update the row
-                    if (todo.RecurrenceRules.Count > 0)
-                        row["Recurrence"] = global::MultiDesktop.Properties.Resources.Recurrence;
-                    else
-                        row["Recurrence"] = global::MultiDesktop.Properties.Resources.OneTime;
-
-                    row["Summary"] = todo.Summary;
-
-                    row["Category"] = todo.Categories[0];
-
-                    row["Priority"] = todo.Priority;
-
-                    if (todo.Status == TodoStatus.Completed)
-                        row["Status"] = true;
-                    else
-                        row["Status"] = false;
-
-                    if (todo.Start != null)
-                        row["StartDate"] = todo.Start.Date.ToShortDateString();
-                    else
-                        row["StartDate"] = "None";
-
-                    if (todo.Due != null)
-                        row["DueDate"] = todo.Due.Date.ToShortDateString();
-                    else
-                        row["DueDate"] = "None";
-                    return true;
-                }
-            }
-            return false;
+            return loadCalendarList.Keys[loadCalendarList.IndexOfValue(calendar)];
         }
 
-        public static bool removeTodo(string UID)
+        public bool createCalendar(string name, string filename)
         {
-            if (calendarManager != null)
+            if(CalendarList.ContainsKey(name) || calendarTableBS.Find("Filename", filename) >= 0)
+                return false;
+            else
             {
-                // Remove ITodo from the list
-                calendarManager.todoList.Remove(UID);
+                Calendar newCalendar = new Calendar(name, filename);
+                iCalendar newIICalendar = new iCalendar();
+                newCalendar.IICalendar = newIICalendar;
 
-                // Remove ITodo from the table
-                calendarManager.todoTable.Rows.RemoveAt(calendarManager.todoTableBS.Find("UID", UID));
+                // Insert to table
+                DataRow newRow = CalendarTable.NewRow();
+                newRow["Name"] = name;
+                newRow["Filename"] = filename;
+                newRow["Included"] = true;
+                CalendarTable.Rows.Add(newRow);
+
+                // Insert to database
+                SqlCommand command = new SqlCommand("INSERT INTO Calendar VALUES (@Name, @Filename, @Included)", connection);
+
+                command.Parameters.Add("@Name", SqlDbType.VarChar);
+                command.Parameters["@Name"].Value = name;
+
+                command.Parameters.Add("@Filename", SqlDbType.VarChar);
+                command.Parameters["@Filename"].Value = filename;
+
+                command.Parameters.Add("@Included", SqlDbType.Bit);
+                command.Parameters["@Included"].Value = true;
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
 
                 return true;
             }
-            return false;
         }
 
-        public static Library.MonthCalendar Calendar
+        public bool renameCalendar(string newName, string oldName)
         {
-            get
+            int oldRowID = calendarTableBS.Find("Name", oldName);
+            int newRowID = calendarTableBS.Find("Name", newName);
+
+            if (oldRowID < 0)
+                return false;
+
+            if (newRowID > 0)
+                return false;
+
+            if (CalendarList.ContainsKey(oldName))
             {
-                if (calendarManager != null)
-                {
-                    return calendarManager.monthCalendar;
-                }
-                return null;
+                Calendar calendar = CalendarList[oldName];
+                calendar.Name = newName;
+                CalendarList.Remove(oldName);
+                CalendarList.Add(newName, calendar);
+
+                IICalendar iCalendar = loadCalendarList[oldName];
+                loadCalendarList.Remove(oldName);
+                loadCalendarList.Add(newName, iCalendar);
             }
+            
+            string filename = CalendarTable.Rows[oldRowID]["Filename"].ToString();
+
+            // Update database
+            SqlCommand command = new SqlCommand("UPDATE Calendar SET Name = @NewName WHERE Filename = @Filename", connection);
+
+            command.Parameters.Add("@NewName", SqlDbType.VarChar);
+            command.Parameters["@NewName"].Value = newName;
+
+            command.Parameters.Add("@Filename", SqlDbType.VarChar);
+            command.Parameters["@Filename"].Value = filename;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+
+            DataRow row = CalendarTable.Rows[calendarTableBS.Find("Name", oldName)];
+            row["Name"] = newName;
+            
+            return true;
         }
 
-        public static DataTable TodoTable
+        public bool deleteCalendar(Calendar calendar)
         {
-            get
-            {
-                if (calendarManager != null)
-                {
-                    return calendarManager.todoTable;
-                }
-                return null;
-            }
+            if (!CalendarList.ContainsValue(calendar))
+                return false;
+
+            unloadCalendar(calendar);
+
+            // Remove from table
+            CalendarTable.Rows.RemoveAt(calendarTableBS.Find("Filename", calendar.Filename));
+
+            // Remove from database
+            SqlCommand command = new SqlCommand("DELETE FROM Calendar WHERE Filename = @Filename", connection);
+
+            command.Parameters.Add("@Filename", SqlDbType.VarChar);
+            command.Parameters["@Filename"].Value = calendar.Filename;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+
+            return true;
         }
 
-        public static SortedList<string, ITodo> TodoList
+        private void saveCalendar(object sender, EventArgs e)
         {
-            get
-            {
-                if (calendarManager != null)
-                {
-                    return calendarManager.todoList;
-                }
-                return null;
-            }
+            IICalendar calendar = (IICalendar)sender;
+            string filename = CalendarList[findCalendarName(calendar)].Filename;
+            iCalendarSerializer serializer = new iCalendarSerializer();
+            serializer.Serialize(calendar, calendarAbsPath + "\\" + filename);
         }
+
+        public TodoManager TodoManager { get; private set; }
+
+        public EventManager EventManager { get; private set; }
+
+        public JournalManager JournalManager { get; private set; }
+
+        public SortedList<string, Calendar> CalendarList { get; private set; }
+
+        public DataTable CalendarTable { get; private set; }
     }
 }

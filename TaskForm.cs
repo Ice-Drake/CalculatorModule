@@ -11,6 +11,10 @@ namespace MultiDesktop
 {
     public class TaskForm : Form
     {
+        public static TaskManager TaskController { private get; set; }
+        public static SettingManager SettingController { private get; set; }
+
+        private GTask m_gtask;
         private ITodo m_todo;
         private TimeSpan m_duration;
 
@@ -22,8 +26,8 @@ namespace MultiDesktop
         private Label summaryLabel;
         private TextBox summaryField;
         private Label startDateLabel;
-        private Library.NullableDateTimePicker startDateBox;
-        private Library.NullableDateTimePicker dueDateBox;
+        private DateTimePicker startDateBox;
+        private DateTimePicker dueDateBox;
         private Label dueDateLabel;
         private ComboBox importanceComboBox;
         private Label importanceLabel;
@@ -86,23 +90,23 @@ namespace MultiDesktop
             this.reminderCheckBox = new System.Windows.Forms.CheckBox();
             this.reminderDate = new System.Windows.Forms.DateTimePicker();
             this.reminderTime = new System.Windows.Forms.DateTimePicker();
-            this.alarmButton = new System.Windows.Forms.Button();
             this.eventToolStrip = new System.Windows.Forms.ToolStrip();
             this.saveButton = new System.Windows.Forms.ToolStripButton();
             this.deleteButton = new System.Windows.Forms.ToolStripButton();
             this.privateCheckBox = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.topPanel = new System.Windows.Forms.Panel();
-            this.completedCheckBox = new System.Windows.Forms.CheckBox();
-            this.startDateBox = new Library.NullableDateTimePicker();
-            this.dueDateBox = new Library.NullableDateTimePicker();
             this.bottomPanel = new System.Windows.Forms.Panel();
+            this.alarmButton = new System.Windows.Forms.Button();
+            this.topPanel = new System.Windows.Forms.Panel();
             this.goalLabel = new System.Windows.Forms.Label();
             this.goalComboBox = new System.Windows.Forms.ComboBox();
+            this.completedCheckBox = new System.Windows.Forms.CheckBox();
+            this.startDateBox = new System.Windows.Forms.DateTimePicker();
+            this.dueDateBox = new System.Windows.Forms.DateTimePicker();
             this.eventToolStrip.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
-            this.topPanel.SuspendLayout();
             this.bottomPanel.SuspendLayout();
+            this.topPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // calendarLabel
@@ -254,16 +258,6 @@ namespace MultiDesktop
             this.reminderTime.Size = new System.Drawing.Size(92, 20);
             this.reminderTime.TabIndex = 18;
             // 
-            // alarmButton
-            // 
-            this.alarmButton.Enabled = false;
-            this.alarmButton.Image = global::MultiDesktop.Properties.Resources.Alarm;
-            this.alarmButton.Location = new System.Drawing.Point(296, 26);
-            this.alarmButton.Name = "alarmButton";
-            this.alarmButton.Size = new System.Drawing.Size(23, 23);
-            this.alarmButton.TabIndex = 19;
-            this.alarmButton.UseVisualStyleBackColor = true;
-            // 
             // eventToolStrip
             // 
             this.eventToolStrip.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
@@ -323,6 +317,31 @@ namespace MultiDesktop
             this.tableLayoutPanel.Size = new System.Drawing.Size(331, 318);
             this.tableLayoutPanel.TabIndex = 22;
             // 
+            // bottomPanel
+            // 
+            this.bottomPanel.Controls.Add(this.reminderCheckBox);
+            this.bottomPanel.Controls.Add(this.alarmButton);
+            this.bottomPanel.Controls.Add(this.reminderDate);
+            this.bottomPanel.Controls.Add(this.reminderTime);
+            this.bottomPanel.Controls.Add(this.importanceComboBox);
+            this.bottomPanel.Controls.Add(this.priorityLabel);
+            this.bottomPanel.Controls.Add(this.urgencyComboBox);
+            this.bottomPanel.Controls.Add(this.importanceLabel);
+            this.bottomPanel.Location = new System.Drawing.Point(3, 259);
+            this.bottomPanel.Name = "bottomPanel";
+            this.bottomPanel.Size = new System.Drawing.Size(325, 55);
+            this.bottomPanel.TabIndex = 14;
+            // 
+            // alarmButton
+            // 
+            this.alarmButton.Enabled = false;
+            this.alarmButton.Image = global::MultiDesktop.Properties.Resources.Alarm;
+            this.alarmButton.Location = new System.Drawing.Point(296, 26);
+            this.alarmButton.Name = "alarmButton";
+            this.alarmButton.Size = new System.Drawing.Size(23, 23);
+            this.alarmButton.TabIndex = 19;
+            this.alarmButton.UseVisualStyleBackColor = true;
+            // 
             // topPanel
             // 
             this.topPanel.Controls.Add(this.goalLabel);
@@ -344,54 +363,6 @@ namespace MultiDesktop
             this.topPanel.Size = new System.Drawing.Size(325, 128);
             this.topPanel.TabIndex = 0;
             // 
-            // completedCheckBox
-            // 
-            this.completedCheckBox.AutoSize = true;
-            this.completedCheckBox.Location = new System.Drawing.Point(180, 109);
-            this.completedCheckBox.Name = "completedCheckBox";
-            this.completedCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.completedCheckBox.Size = new System.Drawing.Size(76, 17);
-            this.completedCheckBox.TabIndex = 22;
-            this.completedCheckBox.Text = "Completed";
-            this.completedCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // startDateBox
-            // 
-            this.startDateBox.CustomFormat = "None";
-            this.startDateBox.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.startDateBox.Location = new System.Drawing.Point(70, 81);
-            this.startDateBox.Name = "startDateBox";
-            this.startDateBox.Size = new System.Drawing.Size(92, 20);
-            this.startDateBox.TabIndex = 5;
-            this.startDateBox.Value = new System.DateTime(((long)(0)));
-            this.startDateBox.ValueChanged += new System.EventHandler(this.startDateBox_ValueChanged);
-            // 
-            // dueDateBox
-            // 
-            this.dueDateBox.CustomFormat = "None";
-            this.dueDateBox.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dueDateBox.Location = new System.Drawing.Point(229, 81);
-            this.dueDateBox.Name = "dueDateBox";
-            this.dueDateBox.Size = new System.Drawing.Size(92, 20);
-            this.dueDateBox.TabIndex = 6;
-            this.dueDateBox.Value = new System.DateTime(((long)(0)));
-            this.dueDateBox.ValueChanged += new System.EventHandler(this.dueDateBox_ValueChanged);
-            // 
-            // bottomPanel
-            // 
-            this.bottomPanel.Controls.Add(this.reminderCheckBox);
-            this.bottomPanel.Controls.Add(this.alarmButton);
-            this.bottomPanel.Controls.Add(this.reminderDate);
-            this.bottomPanel.Controls.Add(this.reminderTime);
-            this.bottomPanel.Controls.Add(this.importanceComboBox);
-            this.bottomPanel.Controls.Add(this.priorityLabel);
-            this.bottomPanel.Controls.Add(this.urgencyComboBox);
-            this.bottomPanel.Controls.Add(this.importanceLabel);
-            this.bottomPanel.Location = new System.Drawing.Point(3, 259);
-            this.bottomPanel.Name = "bottomPanel";
-            this.bottomPanel.Size = new System.Drawing.Size(325, 55);
-            this.bottomPanel.TabIndex = 14;
-            // 
             // goalLabel
             // 
             this.goalLabel.Location = new System.Drawing.Point(7, 6);
@@ -408,6 +379,33 @@ namespace MultiDesktop
             this.goalComboBox.Size = new System.Drawing.Size(251, 21);
             this.goalComboBox.TabIndex = 24;
             // 
+            // completedCheckBox
+            // 
+            this.completedCheckBox.AutoSize = true;
+            this.completedCheckBox.Location = new System.Drawing.Point(180, 109);
+            this.completedCheckBox.Name = "completedCheckBox";
+            this.completedCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.completedCheckBox.Size = new System.Drawing.Size(76, 17);
+            this.completedCheckBox.TabIndex = 22;
+            this.completedCheckBox.Text = "Completed";
+            this.completedCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // startDateBox
+            // 
+            this.startDateBox.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.startDateBox.Location = new System.Drawing.Point(70, 81);
+            this.startDateBox.Name = "startDateBox";
+            this.startDateBox.Size = new System.Drawing.Size(92, 20);
+            this.startDateBox.TabIndex = 5;
+            // 
+            // dueDateBox
+            // 
+            this.dueDateBox.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dueDateBox.Location = new System.Drawing.Point(229, 81);
+            this.dueDateBox.Name = "dueDateBox";
+            this.dueDateBox.Size = new System.Drawing.Size(92, 20);
+            this.dueDateBox.TabIndex = 6;
+            // 
             // TaskForm
             // 
             this.BackColor = System.Drawing.SystemColors.Control;
@@ -420,10 +418,10 @@ namespace MultiDesktop
             this.eventToolStrip.ResumeLayout(false);
             this.eventToolStrip.PerformLayout();
             this.tableLayoutPanel.ResumeLayout(false);
-            this.topPanel.ResumeLayout(false);
-            this.topPanel.PerformLayout();
             this.bottomPanel.ResumeLayout(false);
             this.bottomPanel.PerformLayout();
+            this.topPanel.ResumeLayout(false);
+            this.topPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -431,148 +429,234 @@ namespace MultiDesktop
 
         #endregion
 
-        public TaskForm(ITodo todo)
+        public TaskForm()
         {
             InitializeComponent();
 
-            foreach (string calendarName in Setting.CalendarList.Keys)
+            goalComboBox.DataSource = SettingController.GoalManager.SGoalTable;
+            goalComboBox.DisplayMember = "Summary";
+            goalComboBox.ValueMember = "ID";
+
+            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
             {
                 calendarComboBox.Items.Add(calendarName);
             }
             calendarComboBox.SelectedItem = "Personal";
+            
             importanceComboBox.SelectedIndex = 1;
             urgencyComboBox.SelectedIndex = 1;
-            foreach(Category category in Setting.CategoryList)
+            
+            foreach (string categoryName in SettingController.CategoryManager.getCategoryList())
             {
-                categoryComboBox.Items.Add(category.Name);
+                categoryComboBox.Items.Add(categoryName);
             }
             categoryComboBox.SelectedIndex = 0;
+            
             deleteButton.Enabled = false;
+
+            startDateBox.ValueChanged += new EventHandler(startDateBox_ValueChanged);
+            dueDateBox.ValueChanged += new EventHandler(dueDateBox_ValueChanged);
         }
 
-        public TaskForm(string name, DateTime start, DateTime due, bool complete, int sGoalID, ITodo todo = null)
+        public TaskForm(ITodo todo)
         {
             InitializeComponent();
             m_todo = todo;
-            
-            foreach (string calendarName in Setting.CalendarList.Keys)
+
+            goalComboBox.DataSource = SettingController.GoalManager.SGoalTable;
+            goalComboBox.DisplayMember = "Summary";
+            goalComboBox.ValueMember = "ID";
+
+            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
             {
                 calendarComboBox.Items.Add(calendarName);
             }
-            calendarComboBox.SelectedItem = Setting.findCalendarName(CalendarManager.findCalendarFileName(m_todo.Calendar));
+            calendarComboBox.SelectedItem = SettingController.CalendarManager.findCalendarName(todo.Calendar);
 
-            calendarComboBox.Enabled = false;
             summaryField.Text = m_todo.Summary;
-            if(m_todo.Start != null)
+            if (m_todo.Start != null && m_todo.Start.Date != DateTime.MinValue)
                 startDateBox.Value = m_todo.Start.Date;
-            else
-                startDateBox.Value = DateTime.MinValue;
-            if (m_todo.Due != null)
+            if (m_todo.Due != null && m_todo.Due.Date != DateTime.MinValue)
                 dueDateBox.Value = m_todo.Due.Date;
-            else
-                dueDateBox.Value = DateTime.MinValue;
-            if (startDateBox.Value != DateTime.MinValue && dueDateBox.Value != DateTime.MinValue)
-                m_duration = dueDateBox.Value - startDateBox.Value;
-            
-            if (m_todo.Status == TodoStatus.Completed)
-                completedCheckBox.Checked = true;
+            if (startDateBox.Value <= dueDateBox.Value)
+                m_duration = m_todo.Due.Date - m_todo.Start.Date;
+            completedCheckBox.Checked = m_todo.Status == TodoStatus.Completed;
 
-            importanceComboBox.SelectedIndex = (m_todo.Priority - 1) / 3;
-            
-            urgencyComboBox.SelectedIndex = (m_todo.Priority - 1) % 3;
+            if (m_todo.Priority != 0)
+            {
+                importanceComboBox.SelectedIndex = (m_todo.Priority - 1) / 3;
+                urgencyComboBox.SelectedIndex = (m_todo.Priority - 1) % 3;
+            }
+            else
+            {
+                importanceComboBox.SelectedIndex = 1;
+                urgencyComboBox.SelectedIndex = 1;
+            }
 
             descriptionTextBox.Text = m_todo.Description;
-            foreach (Category category in Setting.CategoryList)
+            
+            foreach (string categoryName in SettingController.CategoryManager.getCategoryList())
             {
-                categoryComboBox.Items.Add(category.Name);
+                categoryComboBox.Items.Add(categoryName);
             }
             if (m_todo.Categories.Count != 0)
                 categoryComboBox.SelectedItem = m_todo.Categories[0];
             else
                 categoryComboBox.SelectedItem = "Personal";
+            
             privateCheckBox.Checked = (m_todo.Class != null && m_todo.Class.ToUpper() == "PRIVATE");
+            deleteButton.Enabled = false;
+
+            startDateBox.ValueChanged += new EventHandler(startDateBox_ValueChanged);
+            dueDateBox.ValueChanged += new EventHandler(dueDateBox_ValueChanged);
+        }
+
+        public TaskForm(GTask task)
+        {
+            m_gtask = task;
+            
+            goalComboBox.DataSource = SettingController.GoalManager.SGoalTable;
+            goalComboBox.DisplayMember = "Summary";
+            goalComboBox.ValueMember = "ID";
+            goalComboBox.SelectedValue = m_gtask.RelatedGoalID;
+
+            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
+            {
+                calendarComboBox.Items.Add(calendarName);
+            }
+            calendarComboBox.SelectedItem = SettingController.CalendarManager.findCalendarName(m_gtask.Todo.Calendar);
+
+            summaryField.Text = m_gtask.Todo.Summary;
+            if (m_gtask.Todo.Start != null && m_gtask.Todo.Start.Date != DateTime.MinValue)
+                startDateBox.Value = m_gtask.Todo.Start.Date;
+            if (m_gtask.Todo.Due != null && m_gtask.Todo.Due.Date != DateTime.MinValue)
+                dueDateBox.Value = m_gtask.Todo.Due.Date;
+            if (startDateBox.Value <= dueDateBox.Value)
+                m_duration = m_gtask.Todo.Due.Date - m_gtask.Todo.Start.Date;
+            completedCheckBox.Checked = m_gtask.Todo.Status == TodoStatus.Completed;
+
+            if (m_todo.Priority != 0)
+            {
+                importanceComboBox.SelectedIndex = (m_gtask.Todo.Priority - 1) / 3;
+                urgencyComboBox.SelectedIndex = (m_gtask.Todo.Priority - 1) % 3;
+            }
+            else
+            {
+                importanceComboBox.SelectedIndex = 1;
+                urgencyComboBox.SelectedIndex = 1;
+            }
+
+            descriptionTextBox.Text = m_gtask.Todo.Description;
+
+            foreach (string categoryName in SettingController.CategoryManager.getCategoryList())
+            {
+                categoryComboBox.Items.Add(categoryName);
+            }
+            if (m_gtask.Todo.Categories.Count != 0)
+                categoryComboBox.SelectedItem = m_gtask.Todo.Categories[0];
+            else
+                categoryComboBox.SelectedItem = "Personal";
+
+            privateCheckBox.Checked = (m_gtask.Todo.Class != null && m_gtask.Todo.Class.ToUpper() == "PRIVATE");
+
+            startDateBox.ValueChanged += new EventHandler(startDateBox_ValueChanged);
+            dueDateBox.ValueChanged += new EventHandler(dueDateBox_ValueChanged);
+        }
+
+        public TaskForm(string summary, DateTime start, DateTime due, bool complete, int sGoalID)
+        {
+            InitializeComponent();
+
+            goalComboBox.DataSource = SettingController.GoalManager.SGoalTable;
+            goalComboBox.DisplayMember = "Summary";
+            goalComboBox.ValueMember = "ID";
+            
+            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
+            {
+                calendarComboBox.Items.Add(calendarName);
+            }
+            calendarComboBox.SelectedItem = "Personal";
+
+            summaryField.Text = summary;
+            startDateBox.Value = start;
+            dueDateBox.Value = due;
+            m_duration = due - start;
+            completedCheckBox.Checked = complete;
+
+            importanceComboBox.SelectedIndex = 1;
+            urgencyComboBox.SelectedIndex = 1;
+
+            foreach (string categoryName in SettingController.CategoryManager.getCategoryList())
+            {
+                categoryComboBox.Items.Add(categoryName);
+            }
+            deleteButton.Enabled = false;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            string calendarName = Setting.CalendarList.Keys[calendarComboBox.SelectedIndex];
-            if (m_todo == null)
+            if (m_gtask == null)
             {
-                ITodo newTodo = CalendarManager.createTodo(Setting.CalendarList[calendarName]);
-                newTodo.Summary = summaryField.Text;
-                if (startDateBox.Value != DateTime.MinValue)
-                    newTodo.Start = new iCalDateTime(startDateBox.Value);
-                if (dueDateBox.Value != DateTime.MinValue)
-                {
-                    if(startDateBox.Value == dueDateBox.Value)
-                        newTodo.Due = new iCalDateTime(dueDateBox.Value.Add(new TimeSpan(1, 0, 0)));
-                    else
-                        newTodo.Due = new iCalDateTime(dueDateBox.Value);
-                }
+                GTask newTask;
+                int goalID = Int32.Parse(goalComboBox.SelectedValue.ToString());
+                
+                if (m_todo != null)
+                    newTask = new GTask(m_todo, goalID);
+                else
+                    newTask = TaskController.createGTask(goalID);
+
+                newTask.Todo.Summary = summaryField.Text;
+                newTask.Todo.Start = new iCalDateTime(startDateBox.Value);
+                if (startDateBox.Value == dueDateBox.Value)
+                    newTask.Todo.Due = new iCalDateTime(dueDateBox.Value.Add(new TimeSpan(1, 0, 0)));
+                else
+                    newTask.Todo.Due = new iCalDateTime(dueDateBox.Value);
 
                 if (completedCheckBox.Checked)
-                    newTodo.Status = TodoStatus.Completed;
+                    newTask.Todo.Status = TodoStatus.Completed;
                 else
-                    newTodo.Status = TodoStatus.NeedsAction;
+                    newTask.Todo.Status = TodoStatus.NeedsAction;
 
-                newTodo.Priority = importanceComboBox.SelectedIndex * 3 + urgencyComboBox.SelectedIndex + 1;
+                newTask.Todo.Priority = importanceComboBox.SelectedIndex * 3 + urgencyComboBox.SelectedIndex + 1;
 
-                newTodo.Description = descriptionTextBox.Text;
-                newTodo.Categories.Add(categoryComboBox.SelectedItem.ToString());
+                newTask.Todo.Description = descriptionTextBox.Text;
+                newTask.Todo.Categories.Add(categoryComboBox.SelectedItem.ToString());
                 if (privateCheckBox.Checked)
-                    newTodo.Class = "PRIVATE";
+                    newTask.Todo.Class = "PRIVATE";
                 else
-                    newTodo.Class = "PUBLIC";
+                    newTask.Todo.Class = "PUBLIC";
 
-                CalendarManager.addTodo(newTodo);
+                TaskController.addGTask(newTask);
             }
             else
             {
-                m_todo.Summary = summaryField.Text;
-                if (startDateBox.Value != DateTime.MinValue)
-                    m_todo.Start = new iCalDateTime(startDateBox.Value);
-                else
-                    m_todo.Start = null;
-                if (dueDateBox.Value != DateTime.MinValue)
-                {
-                    if (startDateBox.Value == dueDateBox.Value)
-                        m_todo.Due = new iCalDateTime(dueDateBox.Value.Add(new TimeSpan(1, 0, 0)));
-                    else
-                        m_todo.Due = new iCalDateTime(dueDateBox.Value);
-                }
-                else
-                    m_todo.Due = null;
+                m_gtask.Todo.Summary = summaryField.Text;
+                m_gtask.Todo.Start = new iCalDateTime(startDateBox.Value);
+                m_gtask.Todo.Due = new iCalDateTime(dueDateBox.Value);
                 
                 if (completedCheckBox.Checked)
-                    m_todo.Status = TodoStatus.Completed;
+                    m_gtask.Todo.Status = TodoStatus.Completed;
                 else
-                    m_todo.Status = TodoStatus.NeedsAction;
+                    m_gtask.Todo.Status = TodoStatus.NeedsAction;
 
-                m_todo.Priority = importanceComboBox.SelectedIndex * 3 + urgencyComboBox.SelectedIndex + 1;
-                m_todo.Description = descriptionTextBox.Text;
-                m_todo.Categories.Clear();
-                m_todo.Categories.Add(categoryComboBox.SelectedItem.ToString());
+                m_gtask.Todo.Priority = importanceComboBox.SelectedIndex * 3 + urgencyComboBox.SelectedIndex + 1;
+                m_gtask.Todo.Description = descriptionTextBox.Text;
+                m_gtask.Todo.Categories.Clear();
+                m_gtask.Todo.Categories.Add(categoryComboBox.SelectedItem.ToString());
                 if(privateCheckBox.Checked)
-                    m_todo.Class = "PRIVATE";
+                    m_gtask.Todo.Class = "PRIVATE";
                 else
-                    m_todo.Class = "PUBLIC";
+                    m_gtask.Todo.Class = "PUBLIC";
 
-                CalendarManager.updateTodo(m_todo.UID);
+                TaskController.updateGTask(m_gtask);
             }
-
-            CalendarManager.saveCalendar(Setting.CalendarList[calendarName]);
 
             Close();
         }
 
         private void deleteButton_Click(object sender, EventArgs e)
         {
-            string filename = CalendarManager.findCalendarFileName(m_todo.Calendar);
-            CalendarManager.removeTodo(m_todo.UID);
-            m_todo.Calendar.RemoveChild(m_todo);
-
-            CalendarManager.saveCalendar(filename);
-
+            TaskController.removeGTask(m_gtask.Todo.UID);
             Close();
         }
 
@@ -594,10 +678,7 @@ namespace MultiDesktop
 
         private void startDateBox_ValueChanged(object sender, EventArgs e)
         {
-            if (startDateBox.Value != DateTime.MinValue && dueDateBox.Value != DateTime.MinValue)
-            {
-                dueDateBox.Value = startDateBox.Value.Add(m_duration);
-            }
+            dueDateBox.Value = startDateBox.Value.Add(m_duration);
         }
 
         private void dueDateBox_ValueChanged(object sender, EventArgs e)

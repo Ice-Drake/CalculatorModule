@@ -9,8 +9,9 @@ using Library;
 
 namespace MultiDesktop
 {
-    public class CalendarPanel : Form
+    public class CalendarPanel : MainPanel
     {
+        private EventManager controller;
         private Library.MonthCalendar monthCalendar;
         private List<DateItem> eventList;
 
@@ -194,9 +195,10 @@ namespace MultiDesktop
 
         #endregion
 
-        public CalendarPanel(Library.MonthCalendar monthCalendar)
+        public CalendarPanel(EventManager eventManager) : base("Calendar")
         {
-            this.monthCalendar = monthCalendar;
+            controller = eventManager;
+            monthCalendar = controller.Calendar;
             InitializeComponent();
             eventList = new List<DateItem>();
         }
