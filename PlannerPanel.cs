@@ -202,7 +202,7 @@ namespace MultiDesktop
             this.timeColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.planningPanel = new System.Windows.Forms.Panel();
-            this.monthCalendar = new Library.MonthCalendar();
+            //this.monthCalendar = new Library.MonthCalendar();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.lateTodoDataGridView = new System.Windows.Forms.DataGridView();
@@ -1105,16 +1105,12 @@ namespace MultiDesktop
             // 
             // monthCalendar
             // 
-            this.monthCalendar.ActiveMonth.Month = 12;
-            this.monthCalendar.ActiveMonth.Year = 2014;
             this.monthCalendar.Culture = new System.Globalization.CultureInfo("en-US");
             this.monthCalendar.Footer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             this.monthCalendar.Header.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             this.monthCalendar.Header.TextColor = System.Drawing.Color.White;
             this.monthCalendar.ImageList = null;
             this.monthCalendar.Location = new System.Drawing.Point(177, 402);
-            this.monthCalendar.MaxDate = new System.DateTime(2024, 12, 2, 16, 19, 43, 299);
-            this.monthCalendar.MinDate = new System.DateTime(2004, 12, 2, 16, 19, 43, 299);
             this.monthCalendar.Month.BackgroundImage = null;
             this.monthCalendar.Month.DateFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.monthCalendar.Month.TextFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
@@ -1267,8 +1263,8 @@ namespace MultiDesktop
             // 
             // Column2
             // 
-            this.Column2.DataPropertyName = "Due";
-            this.Column2.HeaderText = "Due";
+            this.Column2.DataPropertyName = "Days Remaining";
+            this.Column2.HeaderText = "Days Left";
             this.Column2.Name = "Column2";
             this.Column2.Width = 80;
             // 
@@ -1321,11 +1317,13 @@ namespace MultiDesktop
 
         public PlannerPanel(EventManager eventManager, TodoManager todoManager, GoalPlanner goalManager) : base("Planner")
         {
-            InitializeComponent();
-
             eventController = eventManager;
             todoController = todoManager;
             goalController = goalManager;
+
+            monthCalendar = eventController.Calendar;
+
+            InitializeComponent();
 
             dateLabel1.BackColor = weeklyColor(DateTime.Today.DayOfWeek);
             eventDataGridView1.BackgroundColor = weeklyColor(DateTime.Today.DayOfWeek);

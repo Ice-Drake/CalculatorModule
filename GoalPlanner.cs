@@ -48,6 +48,7 @@ namespace MultiDesktop
             SGoalTable.Columns.Add("Predecessor", typeof(string));
             SGoalTable.Columns.Add("Start", typeof(DateTime));
             SGoalTable.Columns.Add("Due", typeof(DateTime));
+            SGoalTable.Columns.Add("Days Remaining", typeof(int));
             SGoalTable.Columns.Add("Priority", typeof(int));
             SGoalTable.Columns.Add("LGoalID", typeof(int));
 
@@ -100,6 +101,20 @@ namespace MultiDesktop
                 if (row["Start"] != DBNull.Value)
                     newGoal.StartDate = DateTime.Parse(row["Start"].ToString());
                 newGoal.Priority = Int32.Parse(row["Priority"].ToString());
+
+                if (newGoal.StartDate != DateTime.MinValue && newGoal.StartDate >= DateTime.Today)
+                {
+                    TimeSpan diff = newGoal.DueDate - newGoal.StartDate;
+                    row["Days Remaining"] = diff.Days;
+                }
+                else
+                {
+                    TimeSpan diff = newGoal.DueDate - DateTime.Today;
+                    if (diff.Days > 0)
+                        row["Days Remaining"] = diff.Days;
+                    else
+                        row["Days Remaining"] = 0;
+                }
 
                 GoalList.Add(newGoal.ID, newGoal);
                 ProjectManager.Add(newGoal);
@@ -362,6 +377,21 @@ namespace MultiDesktop
             if (newGoal.StartDate != DateTime.MinValue)
                 newRow["Start"] = newGoal.StartDate.ToShortDateString();
             newRow["Due"] = newGoal.DueDate.ToShortDateString();
+
+            if (newGoal.StartDate != DateTime.MinValue && newGoal.StartDate >= DateTime.Today)
+            {
+                TimeSpan diff = newGoal.DueDate - newGoal.StartDate;
+                newRow["Days Remaining"] = diff.Days;
+            }
+            else
+            {
+                TimeSpan diff = newGoal.DueDate - DateTime.Today;
+                if (diff.Days > 0)
+                    newRow["Days Remaining"] = diff.Days;
+                else
+                    newRow["Days Remaining"] = 0;
+            }
+            
             newRow["Priority"] = newGoal.Priority;
             newRow["LGoalID"] = lGoalID;
             SGoalTable.Rows.Add(newRow);
@@ -415,6 +445,21 @@ namespace MultiDesktop
             if (existingGoal.StartDate != DateTime.MinValue)
                 existingRow["Start"] = existingGoal.StartDate.ToShortDateString();
             existingRow["Due"] = existingGoal.DueDate.ToShortDateString();
+
+            if (existingGoal.StartDate != DateTime.MinValue && existingGoal.StartDate >= DateTime.Today)
+            {
+                TimeSpan diff = existingGoal.DueDate - existingGoal.StartDate;
+                existingRow["Days Remaining"] = diff.Days;
+            }
+            else
+            {
+                TimeSpan diff = existingGoal.DueDate - DateTime.Today;
+                if (diff.Days > 0)
+                    existingRow["Days Remaining"] = diff.Days;
+                else
+                    existingRow["Days Remaining"] = 0;
+            }
+            
             existingRow["Priority"] = existingGoal.Priority;
             existingRow["LGoalID"] = existingGoal.LGoal != null ? existingGoal.LGoal.ID : 0;
 

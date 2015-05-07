@@ -78,8 +78,6 @@ namespace MultiDesktop
             this.monthCalendar.Header.TextColor = System.Drawing.Color.White;
             this.monthCalendar.ImageList = null;
             this.monthCalendar.Location = new System.Drawing.Point(0, 0);
-            this.monthCalendar.MaxDate = new System.DateTime(2020, 1, 1, 0, 0, 0, 0);
-            this.monthCalendar.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
             this.monthCalendar.Month.BackgroundImage = null;
             this.monthCalendar.Month.DateAlign = Library.mcItemAlign.TopRight;
             this.monthCalendar.Month.DateFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
