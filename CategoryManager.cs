@@ -54,13 +54,8 @@ namespace MultiDesktop
                     string name = subcategoryReader[0].ToString();
                     string categoryName = subcategoryReader[1].ToString();
 
-                    if (!addSubcategory(new Subcategory(name, categoryList[categoryName])))
-                    {
-                        System.Windows.Forms.MessageBox.Show("Corrupted Subcategory Database! Click OK to proceed on restoring it.");
-
-                        subcategoryList.Clear();
-                        //Remove and reconstruct Calendar Table.
-                    }
+                    Subcategory newSubcategory = new Subcategory(name, categoryList[categoryName]);
+                    subcategoryList.Add(name, newSubcategory);
                 }
             }
             finally
@@ -87,6 +82,18 @@ namespace MultiDesktop
         {
             if (categoryList.ContainsKey(subcategory.Name) || subcategoryList.ContainsKey(subcategory.Name))
                 return false;
+
+            SqlCommand command = new SqlCommand("INSERT INTO Subcategory (Name, Category) VALUES (@Name, @Category)", dbConnection);
+
+            command.Parameters.Add("@Name", SqlDbType.VarChar);
+            command.Parameters["@Name"].Value = subcategory.Name;
+
+            command.Parameters.Add("@Category", SqlDbType.VarChar);
+            command.Parameters["@Category"].Value = subcategory.Category.Name;
+
+            dbConnection.Open();
+            command.ExecuteNonQuery();
+            dbConnection.Close();
             
             subcategoryList.Add(subcategory.Name, subcategory);
 
@@ -105,6 +112,18 @@ namespace MultiDesktop
                 Subcategory subcategory = subcategoryList[oldName];
                 subcategoryList.Remove(oldName);
 
+                SqlCommand command = new SqlCommand("UPDATE Subcategory SET Name = @NewName WHERE Name = @OldName", dbConnection);
+
+                command.Parameters.Add("@OldName", SqlDbType.VarChar);
+                command.Parameters["@OldName"].Value = oldName;
+
+                command.Parameters.Add("@NewName", SqlDbType.VarChar);
+                command.Parameters["@NewName"].Value = newName;
+
+                dbConnection.Open();
+                command.ExecuteNonQuery();
+                dbConnection.Close();
+
                 subcategory.Name = newName;
                 subcategoryList.Add(newName, subcategory);
                 return true;
@@ -118,6 +137,15 @@ namespace MultiDesktop
             if (subcategoryList.ContainsKey(name))
             {
                 subcategoryList.Remove(name);
+
+                SqlCommand command = new SqlCommand("DELETE FROM Subcategory WHERE Name = @Name", dbConnection);
+
+                command.Parameters.Add("@Name", SqlDbType.VarChar);
+                command.Parameters["@Name"].Value = name;
+
+                dbConnection.Open();
+                command.ExecuteNonQuery();
+                dbConnection.Close();
 
                 if (CategoryModified != null)
                     CategoryModified(this, new EventArgs());

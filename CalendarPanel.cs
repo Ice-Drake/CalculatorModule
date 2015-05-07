@@ -92,6 +92,7 @@ namespace MultiDesktop
             this.monthCalendar.Weekdays.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.monthCalendar.Weeknumbers.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.monthCalendar.DaySelected += new Library.DaySelectedEventHandler(this.monthCalendar_DaySelected);
+            this.monthCalendar.DayQueryInfo += new Library.DayQueryInfoEventHandler(this.monthCalendar_DayQueryInfo);
             // 
             // calendarContextMenu
             // 
@@ -213,6 +214,26 @@ namespace MultiDesktop
             foreach(DateItem dateItem in eventList)
             {
                 eventListBox.Items.Add(dateItem.Event.Summary);
+            }
+        }
+
+        private void monthCalendar_DayQueryInfo(object sender, DayQueryInfoEventArgs e)
+        {
+            DateItem[] dates = monthCalendar.GetDateInfo(e.Date);
+            if (dates.Length > 0)
+            {
+                e.OwnerDraw = true;
+                string text = dates[0].Text.Length > 5 ? dates[0].Text.Substring(0, 5) + ".." : dates[0].Text;
+
+                if (dates.Length == 2)
+                {
+                    text += "\n" + (dates[1].Text.Length > 5 ? dates[1].Text.Substring(0, 5) + ".." : dates[1].Text);
+                }
+                else if (dates.Length > 2)
+                {
+                    text += "\n...";
+                }
+                e.Info.Text = text;
             }
         }
 

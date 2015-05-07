@@ -90,8 +90,8 @@ namespace MultiDesktop
             this.dataGridView.ColumnHeadersVisible = false;
             this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
-            this.Column2,
-            this.Column3});
+            this.Column3,
+            this.Column2});
             this.dataGridView.Location = new System.Drawing.Point(12, 12);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.RowHeadersVisible = false;
@@ -159,9 +159,9 @@ namespace MultiDesktop
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-                if (Boolean.Parse(row.Cells[0].Value.ToString()))
+                if ((bool)row.Cells[0].Value)
                 {
-                    Predecessors += row.Cells[1].Value.ToString() + ",";
+                    Predecessors += row.Cells[2].Value.ToString() + ",";
                 }
             }
 

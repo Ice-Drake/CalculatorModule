@@ -26,9 +26,9 @@ namespace MultiDesktop
             eventTableBS.DataSource = EventTable;
         }
 
-        public IEvent createEvent(string calendarName)
+        public IEvent createEvent(int calendarID)
         {
-            return calendarManager.CalendarList[calendarName].IICalendar.Create<Event>();
+            return calendarManager.CalendarList[calendarID].IICalendar.Create<Event>();
         }
 
         public void addEvent(IEvent newEvent)
@@ -82,16 +82,16 @@ namespace MultiDesktop
             return true;
         }
 
-        private void updateEventTable()
+        public void updateEventTable()
         {
             EventTable.Clear();
-            for (DateTime currentDate = DateTime.Today; currentDate != DateTime.Today.AddDays(6); currentDate.AddDays(1))
+            for (DateTime currentDate = DateTime.Today; currentDate != DateTime.Today.AddDays(6); currentDate = currentDate.AddDays(1))
             {
                 foreach (Library.DateItem dateItem in Calendar.GetDateInfo(currentDate))
                 {
                     DataRow row = EventTable.NewRow();
                     row["Summary"] = dateItem.Event.Summary;
-                    if (dateItem.Event.Location != String.Empty)
+                    if (dateItem.Event.Location != null)
                         row["Summary"] += "@" + dateItem.Event.Location;
                     row["Date"] = currentDate.ToShortDateString();
                     if (!dateItem.Event.IsAllDay)

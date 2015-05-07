@@ -11,8 +11,6 @@ namespace MultiDesktop
 {
     public class GanttChartPanel : Form
     {
-        private EventManager controller;
-
         #region Component Designer variables
 
         private IContainer components = null;

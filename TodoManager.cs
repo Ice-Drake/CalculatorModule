@@ -38,9 +38,9 @@ namespace MultiDesktop
             todoTableBS.DataSource = TodoTable;
         }
 
-        public ITodo createTodo(string calendarName)
+        public ITodo createTodo(int calendarID)
         {
-            return calendarManager.CalendarList[calendarName].IICalendar.Create<Todo>();
+            return calendarManager.CalendarList[calendarID].IICalendar.Create<Todo>();
         }
 
         public void addTodo(ITodo newTodo)
@@ -68,12 +68,12 @@ namespace MultiDesktop
             else
                 row["Status"] = false;
 
-            if (newTodo.Start != null)
+            if (newTodo.Start != null && newTodo.Start.Date != DateTime.MinValue)
                 row["StartDate"] = newTodo.Start.Date.ToShortDateString();
             else
                 row["StartDate"] = "None";
 
-            if (newTodo.Due != null)
+            if (newTodo.Due != null && newTodo.Due.Date != DateTime.MinValue)
                 row["DueDate"] = newTodo.Due.Date.ToShortDateString();
             else
                 row["DueDate"] = "None";
@@ -194,12 +194,12 @@ namespace MultiDesktop
             else
                 row["Status"] = false;
 
-            if (existingTodo.Start != null)
+            if (existingTodo.Start != null && existingTodo.Start.Date != DateTime.MinValue)
                 row["StartDate"] = existingTodo.Start.Date.ToShortDateString();
             else
                 row["StartDate"] = "None";
 
-            if (existingTodo.Due != null)
+            if (existingTodo.Due != null && existingTodo.Due.Date != DateTime.MinValue)
                 row["DueDate"] = existingTodo.Due.Date.ToShortDateString();
             else
                 row["DueDate"] = "None";

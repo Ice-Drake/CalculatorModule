@@ -11,7 +11,8 @@ namespace MultiDesktop
 {
     public class TodoPanel : MainPanel
     {
-        private TodoManager controller;
+        private TodoManager todoController;
+        private TaskManager taskController;
 
         #region Component Designer variables
 
@@ -23,8 +24,6 @@ namespace MultiDesktop
         private Button clearButton;
         private DataGridView completedTodoGridView;
         private DataGridView unassignedTodoGridView;
-
-        #endregion
         private DataGridViewImageColumn recurrenceColumn;
         private DataGridViewTextBoxColumn nameColumn;
         private DataGridViewTextBoxColumn categoryColumn;
@@ -42,6 +41,8 @@ namespace MultiDesktop
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
         private DataGridViewTextBoxColumn Column3;
+
+        #endregion
 
         /// <summary> 
         /// Required designer variable.
@@ -380,21 +381,22 @@ namespace MultiDesktop
 
         #endregion
 
-        public TodoPanel(TodoManager todoManager) : base("Todo Manager")
+        public TodoPanel(TodoManager todoManager, TaskManager taskManager) : base("Todo Manager")
         {
             InitializeComponent();
-            controller = todoManager;
+            todoController = todoManager;
+            taskController = taskManager;
 
             DataView assignedTodoView = new DataView();
-            assignedTodoView.Table = controller.TodoTable;
+            assignedTodoView.Table = todoController.TodoTable;
             assignedTodoView.RowFilter = "Status = false AND IIF(StartDate = 'None' AND DueDate = 'None', false, true)";
 
             DataView unassignedTodoView = new DataView();
-            unassignedTodoView.Table = controller.TodoTable;
+            unassignedTodoView.Table = todoController.TodoTable;
             unassignedTodoView.RowFilter = "Status = false AND IIF(StartDate = 'None' AND DueDate = 'None', true, false)";
 
             DataView completedTodoView = new DataView();
-            completedTodoView.Table = controller.TodoTable;
+            completedTodoView.Table = todoController.TodoTable;
             completedTodoView.RowFilter = "Status = true";
             
             assignedTodoGridView.AutoGenerateColumns = false;
@@ -415,17 +417,12 @@ namespace MultiDesktop
 
         private void dataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            /*DataGridView dataGridView = (DataGridView)sender;
-
-            foreach (DataGridViewRow row in dataGridView.Rows)
-            {*/
             if (e.ColumnIndex == 3)
             {
-                int priority = Int32.Parse(/*row.Cells[3].Value.ToString()*/e.Value.ToString());
+                int priority = Int32.Parse(e.Value.ToString());
 
                 if (priority == 1)
                 {
-                    /*row.Cells[3].Style*/
                     e.CellStyle.ForeColor = Color.Red;
                     e.Value = "Critical";
                     e.FormattingApplied = true;
@@ -467,8 +464,6 @@ namespace MultiDesktop
                     e.FormattingApplied = true;
                 }
             }
-
-            //dataGridView.Update();
         }
 
         private void dataGridView_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -476,15 +471,27 @@ namespace MultiDesktop
             DataGridView dataGridView = (DataGridView)sender;
             int index = dataGridView != unassignedTodoGridView ? 5 : 4;
             string UID = dataGridView.Rows[e.RowIndex].Cells[index].Value.ToString();
-            TodoForm newForm = new TodoForm(controller.TodoList[UID]);
-            newForm.Show();
+            
+            if (taskController.GTaskList.ContainsKey(UID))
+            {
+                TaskForm newForm = new TaskForm(taskController.GTaskList[UID]);
+                newForm.Show();
+            }
+            else
+            {
+                TodoForm newForm = new TodoForm(todoController.TodoList[UID]);
+                newForm.Show();
+            }
         }
 
         private void clearButton_Click(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in completedTodoGridView.Rows)
             {
-                controller.removeTodo(row.Cells[5].Value.ToString());
+                string uid = row.Cells[5].Value.ToString();
+                if (taskController.GTaskList.ContainsKey(uid))
+                    taskController.GTaskList.Remove(uid);
+                todoController.removeTodo(uid);
             }
         }
     }

@@ -11,27 +11,34 @@ namespace MultiDesktop
 {
     public class CalendarManager
     {
+        public TodoManager TodoManager { get; private set; }
+        public EventManager EventManager { get; private set; }
+        public JournalManager JournalManager { get; private set; }
+        public SortedList<int, Calendar> CalendarList { get; private set; }
+        public DataTable CalendarTable { get; private set; }
+
         private string calendarAbsPath;
-        private SortedList<string, IICalendar> loadCalendarList;
+        private SortedList<int, IICalendar> loadCalendarList;
         private SqlConnection connection;
         private BindingSource calendarTableBS;
         
         public CalendarManager(string calendarPath)
         {
             calendarAbsPath = calendarPath;
-            loadCalendarList = new SortedList<string, IICalendar>();
+            loadCalendarList = new SortedList<int, IICalendar>();
+            connection = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\Setting.mdf;Integrated Security=True");
+
             TodoManager = new TodoManager(this);
             EventManager = new EventManager(this);
-            JournalManager = new JournalManager(this);
-            CalendarList = new SortedList<string, Calendar>();
+            JournalManager = new JournalManager(this, connection);
+            CalendarList = new SortedList<int, Calendar>();
             
             CalendarTable = new DataTable();
             CalendarTable.TableName = "Calendar Table";
+            CalendarTable.Columns.Add("ID", typeof(int));
             CalendarTable.Columns.Add("Name", typeof(string));
             CalendarTable.Columns.Add("Filename", typeof(string));
             CalendarTable.Columns.Add("Included", typeof(bool));
-
-            connection = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\Setting.mdf;Integrated Security=True");
 
             calendarTableBS = new BindingSource();
             calendarTableBS.DataSource = CalendarTable;
@@ -49,16 +56,19 @@ namespace MultiDesktop
                 {
                     try
                     {
-                        string name = reader[0].ToString();
-                        string filename = reader[1].ToString();
+                        int id = Int32.Parse(reader[0].ToString());
+                        string name = reader[1].ToString();
+                        string filename = reader[2].ToString();
 
-                        Calendar newCalendar = new Calendar(name, filename);
+                        Calendar newCalendar = new Calendar(id, filename);
+                        newCalendar.Name = name;
 
                         DataRow newRow = CalendarTable.NewRow();
+                        newRow["ID"] = id;
                         newRow["Name"] = name;
                         newRow["Filename"] = filename;
 
-                        if(Boolean.Parse(reader[2].ToString()))
+                        if(Boolean.Parse(reader[3].ToString()))
                         {
                             newRow["Included"] = true;
                             loadCalendar(newCalendar, true);
@@ -69,6 +79,7 @@ namespace MultiDesktop
                             newRow["Included"] = false;
                         }
 
+                        CalendarList.Add(newCalendar.ID, newCalendar);
                         CalendarTable.Rows.Add(newRow);
                     }
                     catch (FormatException)
@@ -88,6 +99,8 @@ namespace MultiDesktop
 
             connection.Close();
 
+            EventManager.updateEventTable();
+
             //Setup eventhandlers
             TodoManager.TodoModify += new EventHandler(saveCalendar);
             EventManager.EventModify += new EventHandler(saveCalendar);
@@ -106,6 +119,9 @@ namespace MultiDesktop
                 // Assume that there is only one calendar per file
                 if (ical.MoveNext())
                 {
+                    // Initialize the calendar
+                    calendar.IICalendar = ical.Current;
+
                     // Load the current calendar to the MonthCalendar
                     EventManager.Calendar.Load(ical.Current);
 
@@ -119,31 +135,23 @@ namespace MultiDesktop
                     }
 
                     // Load the current calendar to the Journal Collection
-                    // Get the enumerator for all ijournals in the current calendar
-                    IEnumerator<IJournal> iJournal = ical.Current.Journals.GetEnumerator();
+                    JournalManager.load(calendar);
 
-                    while (iJournal.MoveNext())
-                    {
-                        JournalManager.addJournal(iJournal.Current);
-                    }
+                    // Add it to the list
+                    loadCalendarList.Add(calendar.ID, calendar.IICalendar);
                 }
-
-                // Initialize the calendar and add it to the list
-                calendar.IICalendar = ical.Current;
-                loadCalendarList.Add(calendar.Name, calendar.IICalendar);
-                CalendarList.Add(calendar.Name, calendar);
 
                 if (!initialize)
                 {
                     // Update database
                     calendar.Included = true;
-                    SqlCommand command = new SqlCommand("UPDATE Calendar SET Included = @NewIncluded WHERE Filename = @Filename", connection);
+                    SqlCommand command = new SqlCommand("UPDATE Calendar SET Included = @NewIncluded WHERE ID = @ID", connection);
                     
                     command.Parameters.Add("@NewIncluded", SqlDbType.Bit);
                     command.Parameters["@NewIncluded"].Value = calendar.Included;
 
-                    command.Parameters.Add("@Filename", SqlDbType.VarChar);
-                    command.Parameters["@Filename"].Value = calendar.Filename;
+                    command.Parameters.Add("@ID", SqlDbType.Int);
+                    command.Parameters["@ID"].Value = calendar.ID;
 
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -165,7 +173,7 @@ namespace MultiDesktop
 
         public void unloadCalendar(Calendar calendar)
         {
-            if (loadCalendarList.ContainsKey(calendar.Name))
+            if (loadCalendarList.ContainsKey(calendar.ID))
             {
                 // Load the current calendar to the MonthCalendar
                 EventManager.Calendar.Unload(calendar.IICalendar);
@@ -180,18 +188,11 @@ namespace MultiDesktop
                 }
 
                 // Unload the current calendar from the Journal Collection
-                // Get the enumerator for all ijournals in the current calendar
-                IEnumerator<IJournal> iJournal = calendar.IICalendar.Journals.GetEnumerator();
-
-                while (iJournal.MoveNext())
-                {
-                    JournalManager.removeJournal(iJournal.Current.UID);
-                }
+                JournalManager.unload(calendar);
 
                 // Remove the current calendar from the list
-                loadCalendarList.Remove(calendar.Name);
-                CalendarList.Remove(calendar.Name);
-
+                loadCalendarList.Remove(calendar.ID);
+                
                 calendar.Included = false;
 
                 // Update table
@@ -199,13 +200,13 @@ namespace MultiDesktop
                 row["Included"] = false;
 
                 // Update database
-                SqlCommand command = new SqlCommand("UPDATE Calendar SET Included = @NewIncluded WHERE Filename = @Filename", connection);
+                SqlCommand command = new SqlCommand("UPDATE Calendar SET Included = @NewIncluded WHERE ID = @ID", connection);
 
                 command.Parameters.Add("@NewIncluded", SqlDbType.Bit);
                 command.Parameters["@NewIncluded"].Value = calendar.Included;
 
-                command.Parameters.Add("@Filename", SqlDbType.VarChar);
-                command.Parameters["@Filename"].Value = calendar.Filename;
+                command.Parameters.Add("@ID", SqlDbType.Int);
+                command.Parameters["@ID"].Value = calendar.ID;
 
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -213,30 +214,19 @@ namespace MultiDesktop
             }
         }
 
-        public string findCalendarName(IICalendar calendar)
+        public int findCalendarID(IICalendar calendar)
         {
             return loadCalendarList.Keys[loadCalendarList.IndexOfValue(calendar)];
         }
 
-        public bool createCalendar(string name, string filename)
+        public bool createCalendar(string name, string filename, bool included = true)
         {
-            if(CalendarList.ContainsKey(name) || calendarTableBS.Find("Filename", filename) >= 0)
+            if (calendarTableBS.Find("Name", name) >= 0 || calendarTableBS.Find("Filename", filename) >= 0)
                 return false;
             else
             {
-                Calendar newCalendar = new Calendar(name, filename);
-                iCalendar newIICalendar = new iCalendar();
-                newCalendar.IICalendar = newIICalendar;
-
-                // Insert to table
-                DataRow newRow = CalendarTable.NewRow();
-                newRow["Name"] = name;
-                newRow["Filename"] = filename;
-                newRow["Included"] = true;
-                CalendarTable.Rows.Add(newRow);
-
                 // Insert to database
-                SqlCommand command = new SqlCommand("INSERT INTO Calendar VALUES (@Name, @Filename, @Included)", connection);
+                SqlCommand command = new SqlCommand("INSERT INTO Calendar VALUES (@Name, @Filename, @Included); SELECT SCOPE_IDENTITY();", connection);
 
                 command.Parameters.Add("@Name", SqlDbType.VarChar);
                 command.Parameters["@Name"].Value = name;
@@ -245,58 +235,67 @@ namespace MultiDesktop
                 command.Parameters["@Filename"].Value = filename;
 
                 command.Parameters.Add("@Included", SqlDbType.Bit);
-                command.Parameters["@Included"].Value = true;
+                command.Parameters["@Included"].Value = included;
 
                 connection.Open();
-                command.ExecuteNonQuery();
+                int id = Int32.Parse(command.ExecuteScalar().ToString());
                 connection.Close();
+
+                Calendar newCalendar = new Calendar(id, filename);
+                iCalendar newIICalendar = new iCalendar();
+                newCalendar.IICalendar = newIICalendar;
+                newCalendar.Included = included;
+
+                // Add it to the list
+                if (included)
+                    loadCalendarList.Add(id, newIICalendar);
+                CalendarList.Add(id, newCalendar);
+
+                // Insert to table
+                DataRow newRow = CalendarTable.NewRow();
+                newRow["ID"] = id;
+                newRow["Name"] = name;
+                newRow["Filename"] = filename;
+                newRow["Included"] = included;
+                CalendarTable.Rows.Add(newRow);
 
                 return true;
             }
         }
 
-        public bool renameCalendar(string newName, string oldName)
+        public bool renameCalendar(int calendarID, string newName)
         {
-            int oldRowID = calendarTableBS.Find("Name", oldName);
             int newRowID = calendarTableBS.Find("Name", newName);
-
-            if (oldRowID < 0)
-                return false;
 
             if (newRowID > 0)
                 return false;
 
-            if (CalendarList.ContainsKey(oldName))
+            if (CalendarList.ContainsKey(calendarID))
             {
-                Calendar calendar = CalendarList[oldName];
+                Calendar calendar = CalendarList[calendarID];
                 calendar.Name = newName;
-                CalendarList.Remove(oldName);
-                CalendarList.Add(newName, calendar);
+                
+                // Update database
+                SqlCommand command = new SqlCommand("UPDATE Calendar SET Name = @NewName WHERE ID = @ID", connection);
 
-                IICalendar iCalendar = loadCalendarList[oldName];
-                loadCalendarList.Remove(oldName);
-                loadCalendarList.Add(newName, iCalendar);
+                command.Parameters.Add("@NewName", SqlDbType.VarChar);
+                command.Parameters["@NewName"].Value = newName;
+
+                command.Parameters.Add("@ID", SqlDbType.Int);
+                command.Parameters["@ID"].Value = calendarID;
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+
+                // Update table
+                DataRow row = CalendarTable.Rows[calendarTableBS.Find("ID", calendarID)];
+                row["Name"] = newName;
+
+                return true;
             }
-            
-            string filename = CalendarTable.Rows[oldRowID]["Filename"].ToString();
-
-            // Update database
-            SqlCommand command = new SqlCommand("UPDATE Calendar SET Name = @NewName WHERE Filename = @Filename", connection);
-
-            command.Parameters.Add("@NewName", SqlDbType.VarChar);
-            command.Parameters["@NewName"].Value = newName;
-
-            command.Parameters.Add("@Filename", SqlDbType.VarChar);
-            command.Parameters["@Filename"].Value = filename;
-
-            connection.Open();
-            command.ExecuteNonQuery();
-            connection.Close();
-
-            DataRow row = CalendarTable.Rows[calendarTableBS.Find("Name", oldName)];
-            row["Name"] = newName;
-            
-            return true;
+            else
+                return false;
         }
 
         public bool deleteCalendar(Calendar calendar)
@@ -307,13 +306,13 @@ namespace MultiDesktop
             unloadCalendar(calendar);
 
             // Remove from table
-            CalendarTable.Rows.RemoveAt(calendarTableBS.Find("Filename", calendar.Filename));
+            CalendarTable.Rows.RemoveAt(calendarTableBS.Find("ID", calendar.ID));
 
             // Remove from database
-            SqlCommand command = new SqlCommand("DELETE FROM Calendar WHERE Filename = @Filename", connection);
+            SqlCommand command = new SqlCommand("DELETE FROM Calendar WHERE ID = @ID", connection);
 
-            command.Parameters.Add("@Filename", SqlDbType.VarChar);
-            command.Parameters["@Filename"].Value = calendar.Filename;
+            command.Parameters.Add("@ID", SqlDbType.Int);
+            command.Parameters["@ID"].Value = calendar.ID;
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -325,19 +324,9 @@ namespace MultiDesktop
         private void saveCalendar(object sender, EventArgs e)
         {
             IICalendar calendar = (IICalendar)sender;
-            string filename = CalendarList[findCalendarName(calendar)].Filename;
+            string filename = CalendarList[findCalendarID(calendar)].Filename;
             iCalendarSerializer serializer = new iCalendarSerializer();
             serializer.Serialize(calendar, calendarAbsPath + "\\" + filename);
         }
-
-        public TodoManager TodoManager { get; private set; }
-
-        public EventManager EventManager { get; private set; }
-
-        public JournalManager JournalManager { get; private set; }
-
-        public SortedList<string, Calendar> CalendarList { get; private set; }
-
-        public DataTable CalendarTable { get; private set; }
     }
 }

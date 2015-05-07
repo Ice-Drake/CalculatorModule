@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MultiDesktop</RootNamespace>
     <AssemblyName>MultiDesktop</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -59,13 +59,20 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DDay.iCal.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutBox.cs">
@@ -78,7 +85,20 @@
       <DependentUpon>Calculator.cs</DependentUpon>
     </Compile>
     <Compile Include="Calendar.cs" />
+    <Compile Include="JournalBookForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GanttChartPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JournalBook.cs" />
+    <Compile Include="JournalPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JournalUserControl.xaml.cs">
+      <DependentUpon>JournalUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PasswordDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PredecessorDialog.cs">
@@ -94,6 +114,10 @@
     <Compile Include="GoalPanel.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="JournalManagerPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IProjectManager.cs" />
     <Compile Include="Vision.cs" />
     <Compile Include="VisionForm.cs">
       <SubType>Form</SubType>
@@ -117,7 +141,6 @@
     </Compile>
     <Compile Include="Category.cs" />
     <Compile Include="CategoryManager.cs" />
-    <Compile Include="DateItemArgs.cs" />
     <Compile Include="EventForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,8 +169,6 @@
     <Compile Include="TaskForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TodoCheckArgs.cs" />
-    <Compile Include="TodoArgs.cs" />
     <Compile Include="TodoForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -170,6 +191,7 @@
     <None Include="Calendars\US Holidays.ics">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
     <None Include="User.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -179,8 +201,20 @@
       <SubType>Designer</SubType>
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="JournalBookForm.resx">
+      <DependentUpon>JournalBookForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="GanttChartPanel.resx">
       <DependentUpon>GanttChartPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JournalPanel.resx">
+      <DependentUpon>JournalPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PasswordDialog.resx">
+      <DependentUpon>PasswordDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="PredecessorDialog.resx">
@@ -197,6 +231,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GoalPanel.resx">
       <DependentUpon>GoalPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JournalManagerPanel.resx">
+      <DependentUpon>JournalManagerPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="VisionForm.resx">
@@ -330,6 +368,9 @@
     <None Include="Resources\NewCalendar.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Convert.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Goal.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -337,7 +378,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>Goal.mdf</DependentUpon>
     </Content>
-    <None Include="Resources\Convert.png" />
     <Content Include="Setting.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -345,6 +385,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>Setting.mdf</DependentUpon>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="JournalUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

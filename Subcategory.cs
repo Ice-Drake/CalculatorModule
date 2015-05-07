@@ -11,6 +11,7 @@ namespace MultiDesktop
         {
             Name = name;
             Category = category;
+            category.Subcategories.Add(this);
         }
 
         public string Name
@@ -22,7 +23,7 @@ namespace MultiDesktop
         public Category Category
         {
             get;
-            internal set;
+            private set;
         }
     }
 }

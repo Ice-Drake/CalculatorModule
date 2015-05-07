@@ -45,8 +45,6 @@ namespace MultiDesktop
         private RadioButton noneLGoalRadioButton;
         private Label label3;
         private ComboBox sGoalComboBox;
-        private RadioButton selectSGoalRadioButton;
-        private RadioButton noneSGoalRadioButton;
         private DataGridViewTextBoxColumn summaryColumn;
         private DataGridViewTextBoxColumn descColumn;
         private DataGridViewTextBoxColumn Column1;
@@ -97,6 +95,9 @@ namespace MultiDesktop
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.visionGridView = new System.Windows.Forms.DataGridView();
+            this.summaryColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.descColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
             this.visionComboBox = new System.Windows.Forms.ComboBox();
@@ -112,8 +113,6 @@ namespace MultiDesktop
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.label3 = new System.Windows.Forms.Label();
             this.sGoalComboBox = new System.Windows.Forms.ComboBox();
-            this.selectSGoalRadioButton = new System.Windows.Forms.RadioButton();
-            this.noneSGoalRadioButton = new System.Windows.Forms.RadioButton();
             this.taskGridView = new System.Windows.Forms.DataGridView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
@@ -122,9 +121,6 @@ namespace MultiDesktop
             this.sMARTERGoalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.taskToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ganttChartButton = new System.Windows.Forms.ToolStripButton();
-            this.summaryColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.descColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -193,6 +189,29 @@ namespace MultiDesktop
             this.visionGridView.Size = new System.Drawing.Size(358, 183);
             this.visionGridView.TabIndex = 1;
             this.visionGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.visionGridView_CellContentClick);
+            // 
+            // summaryColumn
+            // 
+            this.summaryColumn.DataPropertyName = "Summary";
+            this.summaryColumn.HeaderText = "Summary";
+            this.summaryColumn.Name = "summaryColumn";
+            this.summaryColumn.ReadOnly = true;
+            // 
+            // descColumn
+            // 
+            this.descColumn.DataPropertyName = "Description";
+            this.descColumn.HeaderText = "Description";
+            this.descColumn.Name = "descColumn";
+            this.descColumn.ReadOnly = true;
+            this.descColumn.Width = 255;
+            // 
+            // Column1
+            // 
+            this.Column1.DataPropertyName = "ID";
+            this.Column1.HeaderText = "ID";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Visible = false;
             // 
             // tabPage2
             // 
@@ -358,8 +377,6 @@ namespace MultiDesktop
             // 
             this.tabPage4.Controls.Add(this.label3);
             this.tabPage4.Controls.Add(this.sGoalComboBox);
-            this.tabPage4.Controls.Add(this.selectSGoalRadioButton);
-            this.tabPage4.Controls.Add(this.noneSGoalRadioButton);
             this.tabPage4.Controls.Add(this.taskGridView);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
@@ -381,37 +398,12 @@ namespace MultiDesktop
             // sGoalComboBox
             // 
             this.sGoalComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.sGoalComboBox.Enabled = false;
             this.sGoalComboBox.FormattingEnabled = true;
-            this.sGoalComboBox.Location = new System.Drawing.Point(218, 6);
+            this.sGoalComboBox.Location = new System.Drawing.Point(141, 6);
             this.sGoalComboBox.Name = "sGoalComboBox";
             this.sGoalComboBox.Size = new System.Drawing.Size(121, 21);
             this.sGoalComboBox.TabIndex = 13;
             this.sGoalComboBox.SelectedIndexChanged += new System.EventHandler(this.sGoalComboBox_SelectedIndexChanged);
-            // 
-            // selectSGoalRadioButton
-            // 
-            this.selectSGoalRadioButton.AutoSize = true;
-            this.selectSGoalRadioButton.Location = new System.Drawing.Point(198, 9);
-            this.selectSGoalRadioButton.Name = "selectSGoalRadioButton";
-            this.selectSGoalRadioButton.Size = new System.Drawing.Size(14, 13);
-            this.selectSGoalRadioButton.TabIndex = 12;
-            this.selectSGoalRadioButton.TabStop = true;
-            this.selectSGoalRadioButton.UseVisualStyleBackColor = true;
-            this.selectSGoalRadioButton.CheckedChanged += new System.EventHandler(this.sGoalRadioButton_CheckedChanged);
-            // 
-            // noneSGoalRadioButton
-            // 
-            this.noneSGoalRadioButton.AutoSize = true;
-            this.noneSGoalRadioButton.Checked = true;
-            this.noneSGoalRadioButton.Location = new System.Drawing.Point(141, 7);
-            this.noneSGoalRadioButton.Name = "noneSGoalRadioButton";
-            this.noneSGoalRadioButton.Size = new System.Drawing.Size(51, 17);
-            this.noneSGoalRadioButton.TabIndex = 11;
-            this.noneSGoalRadioButton.TabStop = true;
-            this.noneSGoalRadioButton.Text = "None";
-            this.noneSGoalRadioButton.UseVisualStyleBackColor = true;
-            this.noneSGoalRadioButton.CheckedChanged += new System.EventHandler(this.sGoalRadioButton_CheckedChanged);
             // 
             // taskGridView
             // 
@@ -495,29 +487,6 @@ namespace MultiDesktop
             this.ganttChartButton.Text = "Gantt Chart";
             this.ganttChartButton.Click += new System.EventHandler(this.ganttChartButton_Click);
             // 
-            // summaryColumn
-            // 
-            this.summaryColumn.DataPropertyName = "Summary";
-            this.summaryColumn.HeaderText = "Summary";
-            this.summaryColumn.Name = "summaryColumn";
-            this.summaryColumn.ReadOnly = true;
-            // 
-            // descColumn
-            // 
-            this.descColumn.DataPropertyName = "Description";
-            this.descColumn.HeaderText = "Description";
-            this.descColumn.Name = "descColumn";
-            this.descColumn.ReadOnly = true;
-            this.descColumn.Width = 255;
-            // 
-            // Column1
-            // 
-            this.Column1.DataPropertyName = "ID";
-            this.Column1.HeaderText = "ID";
-            this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
-            this.Column1.Visible = false;
-            // 
             // dataGridViewImageColumn1
             // 
             this.dataGridViewImageColumn1.DataPropertyName = "Complete";
@@ -532,6 +501,7 @@ namespace MultiDesktop
             this.dataGridViewTextBoxColumn1.HeaderText = "Summary";
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            this.dataGridViewTextBoxColumn1.Width = 120;
             // 
             // dataGridViewTextBoxColumn2
             // 
@@ -547,6 +517,7 @@ namespace MultiDesktop
             this.dataGridViewTextBoxColumn3.HeaderText = "Start";
             this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
             this.dataGridViewTextBoxColumn3.ReadOnly = true;
+            this.dataGridViewTextBoxColumn3.Width = 80;
             // 
             // dataGridViewTextBoxColumn9
             // 
@@ -574,6 +545,7 @@ namespace MultiDesktop
             this.dataGridViewTextBoxColumn5.HeaderText = "Summary";
             this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
             this.dataGridViewTextBoxColumn5.ReadOnly = true;
+            this.dataGridViewTextBoxColumn5.Width = 120;
             // 
             // dataGridViewTextBoxColumn6
             // 
@@ -589,6 +561,7 @@ namespace MultiDesktop
             this.dataGridViewTextBoxColumn8.HeaderText = "Due";
             this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
             this.dataGridViewTextBoxColumn8.ReadOnly = true;
+            this.dataGridViewTextBoxColumn8.Width = 80;
             // 
             // Column3
             // 
@@ -614,7 +587,7 @@ namespace MultiDesktop
             this.dataGridViewTextBoxColumn10.HeaderText = "Summary";
             this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
             this.dataGridViewTextBoxColumn10.ReadOnly = true;
-            this.dataGridViewTextBoxColumn10.Width = 95;
+            this.dataGridViewTextBoxColumn10.Width = 135;
             // 
             // dataGridViewTextBoxColumn12
             // 
@@ -622,6 +595,7 @@ namespace MultiDesktop
             this.dataGridViewTextBoxColumn12.HeaderText = "Start";
             this.dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
             this.dataGridViewTextBoxColumn12.ReadOnly = true;
+            this.dataGridViewTextBoxColumn12.Width = 80;
             // 
             // dataGridViewTextBoxColumn13
             // 
@@ -629,6 +603,7 @@ namespace MultiDesktop
             this.dataGridViewTextBoxColumn13.HeaderText = "Due";
             this.dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
             this.dataGridViewTextBoxColumn13.ReadOnly = true;
+            this.dataGridViewTextBoxColumn13.Width = 80;
             // 
             // dataGridViewTextBoxColumn4
             // 
@@ -671,7 +646,7 @@ namespace MultiDesktop
 
         #endregion
 
-        public GoalPanel(GoalPlanner goalPlanner) : base("Goal Planner")
+        public GoalPanel(GoalPlanner goalPlanner) : base("Goal")
         {
             InitializeComponent();
             controller = goalPlanner;
@@ -699,17 +674,17 @@ namespace MultiDesktop
             taskGridView.AutoGenerateColumns = false;
             taskGridView.DataSource = taskView;
 
-            visionComboBox.DataSource = controller.VisionManager.VisionTable;
             visionComboBox.DisplayMember = "Summary";
             visionComboBox.ValueMember = "ID";
+            visionComboBox.DataSource = controller.VisionManager.VisionTable;
 
-            lGoalComboBox.DataSource = controller.LGoalTable;
             lGoalComboBox.DisplayMember = "Summary";
             lGoalComboBox.ValueMember = "ID";
+            lGoalComboBox.DataSource = controller.LGoalTable;
 
-            sGoalComboBox.DataSource = controller.SGoalTable;
             sGoalComboBox.DisplayMember = "Summary";
             sGoalComboBox.ValueMember = "ID";
+            sGoalComboBox.DataSource = controller.SGoalTable;
         }
 
         private void visionGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -749,7 +724,7 @@ namespace MultiDesktop
                 DateTime due = DateTime.Parse(taskGridView.Rows[e.RowIndex].Cells[3].Value.ToString());
                 bool complete = (bool)taskGridView.Rows[e.RowIndex].Cells[0].Value;
                 int goalID = Int32.Parse(sGoalComboBox.SelectedValue.ToString());
-                newForm = new TaskForm(summary, start, due, complete, goalID);
+                newForm = new TaskForm(uid, summary, start, due, complete, goalID);
             }
             newForm.Show();
         }
@@ -800,7 +775,10 @@ namespace MultiDesktop
 
         private void visionComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            lGoalView.RowFilter = String.Format(System.Globalization.DateTimeFormatInfo.InvariantInfo, "VisionID = {0}", visionComboBox.SelectedValue);
+            if (selectVisionRadioButton.Checked && visionComboBox.SelectedValue != null)
+                lGoalView.RowFilter = String.Format(System.Globalization.DateTimeFormatInfo.InvariantInfo, "VisionID = {0}", visionComboBox.SelectedValue);
+            else
+                lGoalView.RowFilter = "VisionID = 0";
         }
 
         private void lGoalRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -820,22 +798,10 @@ namespace MultiDesktop
 
         private void lGoalComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            sGoalView.RowFilter = String.Format(System.Globalization.DateTimeFormatInfo.InvariantInfo, "LGoalID = {0}", lGoalComboBox.SelectedValue);
-        }
-
-        private void sGoalRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            if (selectSGoalRadioButton.Checked && sGoalComboBox.SelectedValue != null)
-            {
-                taskView.RowFilter = String.Format(System.Globalization.DateTimeFormatInfo.InvariantInfo, "GoalID = {0}", sGoalComboBox.SelectedValue);
-                sGoalComboBox.Enabled = true;
-            }
+            if (selectLGoalRadioButton.Checked && lGoalComboBox.SelectedValue != null)
+                sGoalView.RowFilter = String.Format(System.Globalization.DateTimeFormatInfo.InvariantInfo, "LGoalID = {0}", lGoalComboBox.SelectedValue);
             else
-            {
-                taskView.RowFilter = "GoalID = 0";
-                if (noneSGoalRadioButton.Checked)
-                    sGoalComboBox.Enabled = false;
-            }
+                sGoalView.RowFilter = "LGoalID = 0";
         }
 
         private void sGoalComboBox_SelectedIndexChanged(object sender, EventArgs e)

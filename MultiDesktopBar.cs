@@ -29,7 +29,7 @@ namespace MultiDesktop
         private ToolStripButton settingButton;
         private ToolStripButton aboutButton;
         private ToolStripButton exitButton;
-        private ToolStripDropDownButton configDropDownButton;
+        private ToolStripDropDownButton journalDropDownButton;
         private ToolStrip sideToolbar;
         private ToolStripDropDownButton panelDropDownButton;
         private ToolStripButton desktopButton;
@@ -47,6 +47,7 @@ namespace MultiDesktop
 
         private SettingManager settingManager;
         private SettingDialog settingDialog;
+        private SortedList<JournalBook, JournalPanel> journalPanels;
         private List<IProjDBManager> projectPlugins;
         private List<IPanelPlugin> panelPlugins;
 
@@ -80,7 +81,7 @@ namespace MultiDesktop
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MultiDesktopBar));
             this.computerToolSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.userToolSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.configDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.journalDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.sideToolbar = new System.Windows.Forms.ToolStrip();
             this.desktopButton = new System.Windows.Forms.ToolStripButton();
             this.computerButton = new System.Windows.Forms.ToolStripButton();
@@ -117,13 +118,13 @@ namespace MultiDesktop
             this.userToolSeparator.Size = new System.Drawing.Size(24, 6);
             this.userToolSeparator.TextDirection = System.Windows.Forms.ToolStripTextDirection.Vertical90;
             // 
-            // configDropDownButton
+            // journalDropDownButton
             // 
-            this.configDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.configDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.configDropDownButton.Name = "configDropDownButton";
-            this.configDropDownButton.Size = new System.Drawing.Size(24, 60);
-            this.configDropDownButton.Text = "Settings";
+            this.journalDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.journalDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.journalDropDownButton.Name = "journalDropDownButton";
+            this.journalDropDownButton.Size = new System.Drawing.Size(24, 61);
+            this.journalDropDownButton.Text = "Journals";
             // 
             // sideToolbar
             // 
@@ -145,8 +146,8 @@ namespace MultiDesktop
             this.newCalendarButton,
             this.userToolSeparator,
             this.panelDropDownButton,
+            this.journalDropDownButton,
             this.pluginDropDownButton,
-            this.configDropDownButton,
             this.menuToolSeparator,
             this.settingButton,
             this.aboutButton,
@@ -231,6 +232,7 @@ namespace MultiDesktop
             this.newJournalButton.Name = "newJournalButton";
             this.newJournalButton.Size = new System.Drawing.Size(24, 20);
             this.newJournalButton.Text = "New Journal";
+            this.newJournalButton.Click += new System.EventHandler(this.newJournalButton_Click);
             // 
             // newCalendarButton
             // 
@@ -253,8 +255,8 @@ namespace MultiDesktop
             this.weatherMenu});
             this.panelDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.panelDropDownButton.Name = "panelDropDownButton";
-            this.panelDropDownButton.Size = new System.Drawing.Size(24, 47);
-            this.panelDropDownButton.Text = "Panel";
+            this.panelDropDownButton.Size = new System.Drawing.Size(24, 52);
+            this.panelDropDownButton.Text = "Panels";
             // 
             // calculatorMenu
             // 
@@ -396,6 +398,7 @@ namespace MultiDesktop
             settingManager = new SettingManager();
             settingManager.loadDatabase();
             settingManager.CategoryManager.loadDatabase();
+            settingManager.CalendarManager.JournalManager.loadDatabase();
         }
 
         public void loadCalendars()
@@ -418,10 +421,13 @@ namespace MultiDesktop
             CalendarPanel calendarPanel = new CalendarPanel(calendarManager.EventManager);
             panelDropDownButton.DropDownItems.Add(calendarPanel.MenuItem);
 
-            TodoPanel todoPanel = new TodoPanel(calendarManager.TodoManager);
+            TodoPanel todoPanel = new TodoPanel(calendarManager.TodoManager, goalPlanner.TaskManager);
             panelDropDownButton.DropDownItems.Add(todoPanel.MenuItem);
+
+            JournalManagerPanel journalManagerPanel = new JournalManagerPanel(calendarManager);
+            panelDropDownButton.DropDownItems.Add(journalManagerPanel.MenuItem);
             
-            PlannerPanel plannerPanel = new PlannerPanel(calendarManager.EventManager, calendarManager.TodoManager, settingManager.GoalManager.TaskManager);
+            PlannerPanel plannerPanel = new PlannerPanel(calendarManager.EventManager, calendarManager.TodoManager, settingManager.GoalManager);
             panelDropDownButton.DropDownItems.Add(plannerPanel.MenuItem);
 
             GoalPanel goalPanel = new GoalPanel(goalPlanner);
@@ -430,6 +436,8 @@ namespace MultiDesktop
             CalendarForm.SettingController = settingManager;
             TodoForm.SettingController = settingManager;
             EventForm.SettingController = settingManager;
+            JournalBookForm.CalendarController = calendarManager;
+            JournalUserControl.CalendarController = calendarManager;
             VisionForm.Controller = goalPlanner.VisionManager;
             LGoalForm.GoalController = goalPlanner;
             LGoalForm.CategoryController = settingManager.CategoryManager;
@@ -437,8 +445,32 @@ namespace MultiDesktop
             SGoalForm.CategoryController = settingManager.CategoryManager;
             TaskForm.TaskController = goalPlanner.TaskManager;
             TaskForm.SettingController = settingManager;
+
+            journalPanels = new SortedList<JournalBook, JournalPanel>();
+
+            foreach (JournalBook journal in calendarManager.JournalManager.JournalList.Values)
+            {
+                JournalPanel panel = new JournalPanel(journal);
+                journalDropDownButton.DropDownItems.Add(panel.MenuItem);
+                journalPanels.Add(journal, panel);
+            }
+
+            calendarManager.JournalManager.JournalBookCreate += JournalManager_JournalBookCreate;
+            calendarManager.JournalManager.JournalBookRemove += JournalManager_JournalBookRemove;
         }
 
+        private void JournalManager_JournalBookCreate(JournalBook sender)
+        {
+            JournalPanel panel = new JournalPanel(sender);
+            journalDropDownButton.DropDownItems.Add(panel.MenuItem);
+            journalPanels.Add(sender, panel);
+        }
+
+        private void JournalManager_JournalBookRemove(JournalBook sender)
+        {
+            journalDropDownButton.DropDownItems.Remove(journalPanels[sender].MenuItem);
+            journalPanels.Remove(sender);
+        }
 
         #region LoadPlugins
 
@@ -489,7 +521,7 @@ namespace MultiDesktop
         {
             foreach (IProjDBManager plugin in projectPlugins)
             {
-                plugin.LoadDatabase();
+                plugin.loadDatabase();
             }
         }
 
@@ -589,9 +621,15 @@ namespace MultiDesktop
             newForm.Show();
         }
 
+        private void newJournalButton_Click(object sender, EventArgs e)
+        {
+            JournalBookForm newForm = new JournalBookForm();
+            newForm.Show();
+        }
+
         private void calculatorMenu_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Not implemented till Beta Version");
+            MessageBox.Show("Not implemented till Gamma Version");
             calculatorMenu.Checked = false;
         }
 
@@ -603,7 +641,7 @@ namespace MultiDesktop
 
         private void pictureGalleryMenu_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Not implemented till Gamma Version");
+            MessageBox.Show("Not implemented till Delta Version");
             pictureGalleryMenu.Checked = false;
         }
 
@@ -615,7 +653,7 @@ namespace MultiDesktop
 
         private void weatherMenu_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Not implemented till Beta Version");
+            MessageBox.Show("Not implemented till Delta Version");
             weatherMenu.Checked = false;
         }
 

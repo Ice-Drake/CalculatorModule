@@ -10,39 +10,29 @@ namespace MultiDesktop
 {
     public class TaskManager
     {
+        public SortedList<string, GTask> GTaskList { get; private set; }
+        public DataTable TaskTable { get; private set; }
+
         private TodoManager todoManager;
-        private SortedList<long, ITask> iTaskList;
-        private List<IProjDBManager> projDBList;
         private SqlConnection connection;
-        private DataTable iTaskTable;
 
         public TaskManager(TodoManager todoManager, SqlConnection connection)
         {
             this.todoManager = todoManager;
             this.connection = connection;
-            iTaskList = new SortedList<long, ITask>();
-            projDBList = new List<IProjDBManager>();
             GTaskList = new SortedList<string, GTask>();
 
             TaskTable = new DataTable();
-            TaskTable.TableName = "Task Table";
+            TaskTable.TableName = "GTask Table";
             TaskTable.Columns.Add("UID", typeof(string));
             TaskTable.Columns.Add("Summary", typeof(string));
-            TaskTable.Columns.Add("Start", typeof(string));
-            TaskTable.Columns.Add("Due", typeof(string));
+            TaskTable.Columns.Add("Start", typeof(DateTime));
+            TaskTable.Columns.Add("Due", typeof(DateTime));
             TaskTable.Columns.Add("Complete", typeof(bool));
             TaskTable.Columns.Add("GoalID", typeof(int));
-
-            iTaskTable = new DataTable();
-            iTaskTable.TableName = "ITask Table";
-            iTaskTable.Columns.Add("UID", typeof(string));
-            iTaskTable.Columns.Add("Summary", typeof(string));
-            iTaskTable.Columns.Add("Start", typeof(string));
-            iTaskTable.Columns.Add("Due", typeof(string));
-            iTaskTable.Columns.Add("Complete", typeof(bool));
         }
 
-        public void loadDatabase(bool create = false)
+        public void loadDatabase()
         {
             connection.Open();
             using (SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Task", connection))
@@ -67,13 +57,13 @@ namespace MultiDesktop
 
                     if (!existingTodo.Start.Date.Equals(row["Start"]))
                     {
-                        existingTodo.Start = new iCalDateTime((DateTime)row["Start"]);
+                        existingTodo.Start = new iCalDateTime(DateTime.Parse(row["Start"].ToString()));
                         difference = true;
                     }
                     
                     if (!existingTodo.Due.Date.Equals(row["Due"]))
                     {
-                        existingTodo.Due = new iCalDateTime((DateTime)row["Due"]);
+                        existingTodo.Due = new iCalDateTime(DateTime.Parse(row["Due"].ToString()));
                         difference = true;
                     }
                     
@@ -88,49 +78,12 @@ namespace MultiDesktop
                     
                     GTaskList.Add(newTask.Todo.UID, newTask);
                 }
-                else if (create)
-                {
-                    ITodo newTodo = todoManager.createTodo("Personal");
-                    int goalID = Int32.Parse(row["GoalID"].ToString());
-                    GTask newTask = new GTask(newTodo, goalID);
-                    newTodo.Summary = (string)row["Summary"];
-                    newTodo.Start = new iCalDateTime((DateTime)row["Start"]);
-                    newTodo.Due = new iCalDateTime((DateTime)row["Due"]);
-                    newTodo.Status = (bool)row["Complete"] ? TodoStatus.Completed : TodoStatus.NeedsAction;
-                    
-                    todoManager.addTodo(newTodo);
-
-                    GTaskList.Add(newTask.Todo.UID, newTask);
-                }
             }
         }
 
-        public bool addDatabase(IProjDBManager projDBManager)
+        public GTask createGTask(int relatedGoalID, int calendarID = 1)
         {
-            if (projDBList.Contains(projDBManager))
-                return false;
-
-            projDBManager.LoadDatabase();
-            projDBList.Add(projDBManager);
-
-            ushort projDBID = (ushort)projDBList.IndexOf(projDBManager);
-
-            foreach (uint taskID in projDBManager.ITaskList.Keys)
-            {
-                ITask task = projDBManager.ITaskList[taskID];
-                long newTaskID = taskID + projDBID * ((long)uint.MaxValue + 1);
-                iTaskList.Add(newTaskID, task);
-                addITask(task, newTaskID);
-            }
-
-            projDBManager.DatabaseChanged += new ITaskHandler(projDBManager_DatabaseChanged);
-
-            return true;
-        }
-
-        public GTask createGTask(int relatedGoalID, string calendarName = "Personal")
-        {
-            return new GTask(todoManager.createTodo(calendarName), relatedGoalID);
+            return new GTask(todoManager.createTodo(calendarID), relatedGoalID);
         }
 
         public bool addGTask(GTask newTask)
@@ -171,19 +124,21 @@ namespace MultiDesktop
             command.ExecuteNonQuery();
             connection.Close();
 
-            todoManager.addTodo(newTask.Todo);
+            if (!todoManager.TodoList.ContainsKey(newTask.Todo.UID))
+                todoManager.addTodo(newTask.Todo);
             GTaskList.Add(newTask.Todo.UID, newTask);            
 
             return true;
         }
 
-        public bool updateGTask(GTask existingTask)
+        public void updateGTask(GTask existingTask)
         {
+            // Initially missing todo, thus yield no existing task
             if (!GTaskList.ContainsValue(existingTask))
-                return false;
+                GTaskList.Add(existingTask.Todo.UID, existingTask);
 
             // Find the corresponding Task row in the table
-            DataRow existingRow = TaskTable.Select(String.Format("UID = {0}", existingTask.Todo.UID))[0];
+            DataRow existingRow = TaskTable.Select(String.Format("UID = '{0}'", existingTask.Todo.UID))[0];
             existingRow["Summary"] = existingTask.Todo.Summary;
             existingRow["Start"] = existingTask.Todo.Start.Date.ToShortDateString();
             existingRow["Due"] = existingTask.Todo.Due.Date.ToShortDateString();
@@ -215,8 +170,25 @@ namespace MultiDesktop
             connection.Close();
 
             todoManager.updateTodo(existingTask.Todo);
+        }
 
-            return true;
+        public void replaceGTaskID(string oldUID, string newUID)
+        {
+            // Find the corresponding Task row in the table
+            DataRow existingRow = TaskTable.Select(String.Format("UID = '{0}'", oldUID))[0];
+            existingRow["UID"] = newUID;
+
+            SqlCommand command = new SqlCommand("UPDATE Task SET UID = @NewUID WHERE UID = @OldUID", connection);
+
+            command.Parameters.Add("@OldUID", SqlDbType.VarChar);
+            command.Parameters["@OldUID"].Value = oldUID;
+            
+            command.Parameters.Add("@NewUID", SqlDbType.VarChar);
+            command.Parameters["@NewUID"].Value = newUID;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
         }
 
         public bool removeGTask(string uid)
@@ -225,7 +197,7 @@ namespace MultiDesktop
                 return false;
 
             // Find the corresponding Task row in the table
-            int rowID = TaskTable.Rows.IndexOf(TaskTable.Select(String.Format("UID = {0}", uid))[0]);
+            int rowID = TaskTable.Rows.IndexOf(TaskTable.Select(String.Format("UID = '{0}'", uid))[0]);
 
             ITodo existingTodo = GTaskList[uid].Todo;
 
@@ -244,67 +216,6 @@ namespace MultiDesktop
             connection.Close();
 
             return true;
-        }
-
-        public bool completeITask(long id)
-        {
-            if (!iTaskList.ContainsKey(id))
-                return false;
-
-            iTaskList[id].Complete = true;
-
-            // Find the corresponding Task row in the table
-            DataRow existingRow = iTaskTable.Select(String.Format("UID = {0}", id))[0];
-            existingRow["Complete"] = true;
-
-            return true;
-        }
-
-        public SortedList<string, GTask> GTaskList { get; private set; }
-        public DataTable TaskTable { get; private set; }
-
-        // Add ITask to the TaskTable
-        private void addITask(ITask newTask, long id)
-        {
-            DataRow newRow = iTaskTable.NewRow();
-            newRow["UID"] = id.ToString();
-            newRow["Summary"] = newTask.Summary;
-            newRow["Start"] = newTask.StartDate.ToShortDateString();
-            newRow["Due"] = newTask.DueDate.ToShortDateString();
-            newRow["Complete"] = newTask.Complete;
-            iTaskTable.Rows.Add(newRow);
-        }
-
-        private void projDBManager_DatabaseChanged(IProjDBManager sender, ITask task, StatusArgs e)
-        {
-            if (e.Status == ITaskStatus.Added)
-            {
-                uint taskID = sender.ITaskList.Keys[sender.ITaskList.IndexOfValue(task)];
-                long id = taskID + projDBList.IndexOf(sender) * ((long)uint.MaxValue + 1);
-                iTaskList.Add(id, task);
-                addITask(task, id);
-            }
-            else
-            {
-                long id = iTaskList.Keys[iTaskList.IndexOfValue(task)];
-
-                // Find the corresponding Task row in the table
-                int rowID = iTaskTable.Rows.IndexOf(iTaskTable.Select(String.Format("UID = {0}", id))[0]);
-
-                if (e.Status == ITaskStatus.Removed)
-                {
-                    iTaskList.Remove(id);
-                    iTaskTable.Rows.RemoveAt(rowID);
-                }
-                else //if (e.Status == ITaskStatus.Modified)
-                {
-                    DataRow existingRow = iTaskTable.Rows[rowID];
-                    existingRow["Summary"] = task.Summary;
-                    existingRow["Start"] = task.StartDate.ToShortDateString();
-                    existingRow["Due"] = task.DueDate.ToShortDateString();
-                    existingRow["Complete"] = task.Complete;
-                }
-            }
         }
     }
 }

@@ -435,11 +435,10 @@ namespace MultiDesktop
             tableLayoutPanel.RowStyles[0].Height = 0F;
             tableLayoutPanel.RowStyles[2].Height = 142F;
 
-            foreach(string calendarName in SettingController.CalendarManager.CalendarList.Keys)
-            {
-                calendarComboBox.Items.Add(calendarName);
-            }
-            calendarComboBox.SelectedItem = "Personal";
+            calendarComboBox.DisplayMember = "Name";
+            calendarComboBox.ValueMember = "ID";
+            calendarComboBox.DataSource = SettingController.CalendarManager.CalendarTable;
+            //calendarComboBox.SelectedItem = "Personal";
 
             foreach(string categoryName in SettingController.CategoryManager.getCategoryList())
             {
@@ -470,11 +469,10 @@ namespace MultiDesktop
                 tableLayoutPanel.RowStyles[2].Height = 142F;
             }
 
-            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
-            {
-                calendarComboBox.Items.Add(calendarName);
-            }
-            calendarComboBox.SelectedItem = SettingController.CalendarManager.findCalendarName(m_dateItem.Event.Calendar);
+            calendarComboBox.DisplayMember = "Name";
+            calendarComboBox.ValueMember = "ID";
+            calendarComboBox.DataSource = SettingController.CalendarManager.CalendarTable;
+            calendarComboBox.SelectedValue = SettingController.CalendarManager.findCalendarID(m_dateItem.Event.Calendar);
 
             calendarComboBox.Enabled = false;
             summaryField.Text = m_dateItem.Event.Summary;
@@ -522,11 +520,11 @@ namespace MultiDesktop
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            string calendarName = calendarComboBox.SelectedItem.ToString();
+            int calendarID = Int32.Parse(calendarComboBox.SelectedValue.ToString());
 
             if (m_dateItem == null)
             {
-                IEvent newEvent = SettingController.CalendarManager.EventManager.createEvent(calendarName);
+                IEvent newEvent = SettingController.CalendarManager.EventManager.createEvent(calendarID);
                 
                 newEvent.Summary = summaryField.Text;
                 newEvent.Location = locationField.Text;

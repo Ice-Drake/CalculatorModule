@@ -11,6 +11,8 @@ namespace MultiDesktop
 {
     public class MainPanel : Form
     {
+        public ToolStripMenuItem MenuItem { get; private set; }
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -37,9 +39,13 @@ namespace MultiDesktop
         /// </summary>
         private void InitializeComponent()
         {
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "MainPanel";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "MainPanel";
+            this.ShowInTaskbar = false;
         }
 
         #endregion
@@ -51,12 +57,6 @@ namespace MultiDesktop
             MenuItem.Click += new EventHandler(MenuItem_Click);
             this.FormClosing += new FormClosingEventHandler(MainPanel_FormClosing);
             InitializeComponent();
-        }
-
-        public ToolStripMenuItem MenuItem
-        {
-            get;
-            private set;
         }
 
         private void MenuItem_Click(object sender, EventArgs e)

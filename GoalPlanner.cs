@@ -27,7 +27,7 @@ namespace MultiDesktop
 
             LGoalTable = new DataTable();
             LGoalTable.TableName = "LGoal Table";
-            LGoalTable.Columns.Add("ID", typeof(string));
+            LGoalTable.Columns.Add("ID", typeof(int));
             LGoalTable.Columns.Add("Summary", typeof(string));
             LGoalTable.Columns.Add("Complete", typeof(bool));
             LGoalTable.Columns.Add("Category", typeof(string));
@@ -40,7 +40,7 @@ namespace MultiDesktop
 
             SGoalTable = new DataTable();
             SGoalTable.TableName = "SGoal Table";
-            SGoalTable.Columns.Add("ID", typeof(string));
+            SGoalTable.Columns.Add("ID", typeof(int));
             SGoalTable.Columns.Add("Summary", typeof(string));
             SGoalTable.Columns.Add("Complete", typeof(bool));
             SGoalTable.Columns.Add("Category", typeof(string));
@@ -59,12 +59,12 @@ namespace MultiDesktop
             VisionManager.loadDatabase();
 
             connection.Open();
-            using (SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT A.*, B.* FROM Goal A LEFT JOIN LGoal B ON A.ID = B.ID", connection))
+            using (SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT A.*, B.* FROM LGoal A LEFT JOIN Goal B ON A.ID = B.ID", connection))
             {
                 dataAdapter.Fill(LGoalTable);
             }
 
-            using (SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT A.*, B.* FROM Goal A LEFT JOIN SGoal B ON A.ID = B.ID", connection))
+            using (SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT A.*, B.* FROM SGoal A LEFT JOIN Goal B ON A.ID = B.ID", connection))
             {
                 dataAdapter.Fill(SGoalTable);
             }
@@ -73,16 +73,14 @@ namespace MultiDesktop
             foreach (DataRow row in LGoalTable.Rows)
             {
                 int rowID = Int32.Parse(row["ID"].ToString());
-                LGoal newGoal = new LGoal(rowID, (DateTime)row["Start"]);
+                LGoal newGoal = new LGoal(rowID, DateTime.Parse(row["Start"].ToString()));
                 newGoal.Name = (string)row["Summary"];
                 newGoal.Complete = (bool)row["Complete"] ? 1.0f : 0.0f;
                 newGoal.Category = (string)row["Category"];
                 newGoal.Desc = (string)row["Description"];
                 newGoal.Predecessors = (string)row["Predecessor"];
-
-                if ((DateTime)row["Due"] != DateTime.MinValue)
-                    newGoal.DueDate = (DateTime)row["Due"];
-
+                if (row["Due"] != DBNull.Value)
+                    newGoal.DueDate = DateTime.Parse(row["Due"].ToString());
                 newGoal.Scheme = Int32.Parse(row["Scheme"].ToString());
                 newGoal.VisionID = Int32.Parse(row["VisionID"].ToString());
 
@@ -93,16 +91,14 @@ namespace MultiDesktop
             foreach (DataRow row in SGoalTable.Rows)
             {
                 int rowID = Int32.Parse(row["ID"].ToString());
-                SGoal newGoal = new SGoal(rowID, (DateTime)row["Due"]);
+                SGoal newGoal = new SGoal(rowID, DateTime.Parse(row["Due"].ToString()));
                 newGoal.Name = (string)row["Summary"];
                 newGoal.Complete = (bool)row["Complete"] ? 1.0f : 0.0f;
                 newGoal.Category = (string)row["Category"];
                 newGoal.Desc = (string)row["Description"];
                 newGoal.Predecessors = (string)row["Predecessor"];
-
-                if ((DateTime)row["Start"] != DateTime.MinValue)
-                    newGoal.StartDate = (DateTime)row["Start"];
-
+                if (row["Start"] != DBNull.Value)
+                    newGoal.StartDate = DateTime.Parse(row["Start"].ToString());
                 newGoal.Priority = Int32.Parse(row["Priority"].ToString());
 
                 GoalList.Add(newGoal.ID, newGoal);
@@ -128,9 +124,9 @@ namespace MultiDesktop
         {
             DataTable predecessorTable = new DataTable();
             predecessorTable.TableName = "Predecessor Table";
-            predecessorTable.Columns.Add("ID", typeof(string));
+            predecessorTable.Columns.Add("Checked", typeof(bool));            
             predecessorTable.Columns.Add("Summary", typeof(string));
-            predecessorTable.Columns.Add("Checked", typeof(bool));
+            predecessorTable.Columns.Add("ID", typeof(string));
 
             if (goal != null)
             {
@@ -173,6 +169,9 @@ namespace MultiDesktop
                 foreach (Goal currentGoal in GoalList.Values)
                 {
                     DataRow newRow = predecessorTable.NewRow();
+                    newRow["ID"] = currentGoal.ID;
+                    newRow["Summary"] = currentGoal.Name;
+                    newRow["Checked"] = false;
                     predecessorTable.Rows.Add(newRow);
                 }
             }

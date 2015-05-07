@@ -17,6 +17,7 @@ namespace MultiDesktop
         private GTask m_gtask;
         private ITodo m_todo;
         private TimeSpan m_duration;
+        private string oldUID;
 
         #region Component Designer variables
 
@@ -433,15 +434,14 @@ namespace MultiDesktop
         {
             InitializeComponent();
 
-            goalComboBox.DataSource = SettingController.GoalManager.SGoalTable;
             goalComboBox.DisplayMember = "Summary";
             goalComboBox.ValueMember = "ID";
+            goalComboBox.DataSource = SettingController.GoalManager.SGoalTable;
 
-            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
-            {
-                calendarComboBox.Items.Add(calendarName);
-            }
-            calendarComboBox.SelectedItem = "Personal";
+            calendarComboBox.DisplayMember = "Name";
+            calendarComboBox.ValueMember = "ID";
+            calendarComboBox.DataSource = SettingController.CalendarManager.CalendarTable;
+            //calendarComboBox.SelectedItem = "Personal";
             
             importanceComboBox.SelectedIndex = 1;
             urgencyComboBox.SelectedIndex = 1;
@@ -463,15 +463,14 @@ namespace MultiDesktop
             InitializeComponent();
             m_todo = todo;
 
-            goalComboBox.DataSource = SettingController.GoalManager.SGoalTable;
             goalComboBox.DisplayMember = "Summary";
             goalComboBox.ValueMember = "ID";
+            goalComboBox.DataSource = SettingController.GoalManager.SGoalTable;
 
-            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
-            {
-                calendarComboBox.Items.Add(calendarName);
-            }
-            calendarComboBox.SelectedItem = SettingController.CalendarManager.findCalendarName(todo.Calendar);
+            calendarComboBox.DisplayMember = "Name";
+            calendarComboBox.ValueMember = "ID";
+            calendarComboBox.DataSource = SettingController.CalendarManager.CalendarTable;
+            calendarComboBox.SelectedValue = SettingController.CalendarManager.findCalendarID(todo.Calendar);
 
             summaryField.Text = m_todo.Summary;
             if (m_todo.Start != null && m_todo.Start.Date != DateTime.MinValue)
@@ -513,6 +512,7 @@ namespace MultiDesktop
 
         public TaskForm(GTask task)
         {
+            InitializeComponent();
             m_gtask = task;
             
             goalComboBox.DataSource = SettingController.GoalManager.SGoalTable;
@@ -520,11 +520,10 @@ namespace MultiDesktop
             goalComboBox.ValueMember = "ID";
             goalComboBox.SelectedValue = m_gtask.RelatedGoalID;
 
-            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
-            {
-                calendarComboBox.Items.Add(calendarName);
-            }
-            calendarComboBox.SelectedItem = SettingController.CalendarManager.findCalendarName(m_gtask.Todo.Calendar);
+            calendarComboBox.DisplayMember = "Name";
+            calendarComboBox.ValueMember = "ID";
+            calendarComboBox.DataSource = SettingController.CalendarManager.CalendarTable;
+            calendarComboBox.SelectedValue = SettingController.CalendarManager.findCalendarID(m_gtask.Todo.Calendar);
 
             summaryField.Text = m_gtask.Todo.Summary;
             if (m_gtask.Todo.Start != null && m_gtask.Todo.Start.Date != DateTime.MinValue)
@@ -535,7 +534,7 @@ namespace MultiDesktop
                 m_duration = m_gtask.Todo.Due.Date - m_gtask.Todo.Start.Date;
             completedCheckBox.Checked = m_gtask.Todo.Status == TodoStatus.Completed;
 
-            if (m_todo.Priority != 0)
+            if (m_gtask.Todo.Priority != 0)
             {
                 importanceComboBox.SelectedIndex = (m_gtask.Todo.Priority - 1) / 3;
                 urgencyComboBox.SelectedIndex = (m_gtask.Todo.Priority - 1) % 3;
@@ -563,20 +562,20 @@ namespace MultiDesktop
             dueDateBox.ValueChanged += new EventHandler(dueDateBox_ValueChanged);
         }
 
-        public TaskForm(string summary, DateTime start, DateTime due, bool complete, int sGoalID)
+        public TaskForm(string uid, string summary, DateTime start, DateTime due, bool complete, int sGoalID)
         {
             InitializeComponent();
 
             goalComboBox.DataSource = SettingController.GoalManager.SGoalTable;
             goalComboBox.DisplayMember = "Summary";
             goalComboBox.ValueMember = "ID";
-            
-            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
-            {
-                calendarComboBox.Items.Add(calendarName);
-            }
-            calendarComboBox.SelectedItem = "Personal";
 
+            calendarComboBox.DisplayMember = "Name";
+            calendarComboBox.ValueMember = "ID";
+            calendarComboBox.DataSource = SettingController.CalendarManager.CalendarTable;
+            //calendarComboBox.SelectedItem = "Personal";
+
+            oldUID = uid;
             summaryField.Text = summary;
             startDateBox.Value = start;
             dueDateBox.Value = due;
@@ -591,6 +590,20 @@ namespace MultiDesktop
                 categoryComboBox.Items.Add(categoryName);
             }
             deleteButton.Enabled = false;
+
+            if (complete)
+            {
+                saveButton.Enabled = false;
+                completedCheckBox.CheckedChanged += new EventHandler(completedCheckBox_CheckedChanged);
+            }
+        }
+
+        private void completedCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (completedCheckBox.Checked)
+                saveButton.Enabled = false;
+            else
+                saveButton.Enabled = true;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -626,10 +639,17 @@ namespace MultiDesktop
                 else
                     newTask.Todo.Class = "PUBLIC";
 
-                TaskController.addGTask(newTask);
+                if (oldUID != null)
+                {
+                    TaskController.replaceGTaskID(oldUID, newTask.Todo.UID);
+                    TaskController.updateGTask(newTask);
+                }
+                else
+                    TaskController.addGTask(newTask);
             }
             else
             {
+                m_gtask.RelatedGoalID = Int32.Parse(goalComboBox.SelectedValue.ToString());
                 m_gtask.Todo.Summary = summaryField.Text;
                 m_gtask.Todo.Start = new iCalDateTime(startDateBox.Value);
                 m_gtask.Todo.Due = new iCalDateTime(dueDateBox.Value);

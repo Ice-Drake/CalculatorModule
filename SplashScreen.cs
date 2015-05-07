@@ -215,15 +215,15 @@ namespace MultiDesktop
             if (ms_frmSplash != null)
             {
                 ms_frmSplash.m_sStatus = newStatus;
-                //ms_frmSplash.statusLabel.Text = ms_frmSplash.m_sStatus;
+                ms_frmSplash.statusLabel.Text = ms_frmSplash.m_sStatus;
             }
         }
 
         // A static method to add additional status details.
         static public void AddStatusDetail(string newDetail)
         {
-            //if (ms_frmSplash != null)
-            //    ms_frmSplash.statusLabel.Text = ms_frmSplash.m_sStatus + ": " + newDetail;
+            if (ms_frmSplash != null)
+                ms_frmSplash.statusLabel.Text = ms_frmSplash.m_sStatus + ": " + newDetail;
         }
     }
 }

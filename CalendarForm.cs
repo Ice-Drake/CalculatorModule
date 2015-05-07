@@ -220,7 +220,7 @@ namespace MultiDesktop
                         SettingController.CalendarManager.unloadCalendar(m_calendar);
                 }
 
-                if (!m_calendar.Name.Equals(nameField.Text) && !SettingController.CalendarManager.renameCalendar(nameField.Text, m_calendar.Name))
+                if (!m_calendar.Name.Equals(nameField.Text) && !SettingController.CalendarManager.renameCalendar(m_calendar.ID, nameField.Text))
                 {
                     MessageBox.Show("The new calendar name already exists. Enter a different one.");
                 }

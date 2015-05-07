@@ -205,13 +205,13 @@ namespace MultiDesktop
             // categoryComboBox
             // 
             this.categoryComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.categoryComboBox.Items.AddRange(new object[] {
+            /*this.categoryComboBox.Items.AddRange(new object[] {
             "Personal",
             "Business",
             "Education",
             "Family/Friends",
             "Contact",
-            "Entertainment"});
+            "Entertainment"});*/
             this.categoryComboBox.Location = new System.Drawing.Point(70, 82);
             this.categoryComboBox.Name = "categoryComboBox";
             this.categoryComboBox.Size = new System.Drawing.Size(106, 21);
@@ -463,11 +463,10 @@ namespace MultiDesktop
             tableLayoutPanel.RowStyles[0].Height = 0F;
             tableLayoutPanel.RowStyles[2].Height = 142F;
 
-            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
-            {
-                calendarComboBox.Items.Add(calendarName);
-            }
-            calendarComboBox.SelectedItem = "Personal";
+            calendarComboBox.DisplayMember = "Name";
+            calendarComboBox.ValueMember = "ID";
+            calendarComboBox.DataSource = SettingController.CalendarManager.CalendarTable;
+            //calendarComboBox.SelectedItem = "Personal";
             importanceComboBox.SelectedIndex = 1;
             urgencyComboBox.SelectedIndex = 1;
             foreach (string categoryName in SettingController.CategoryManager.getCategoryList())
@@ -499,11 +498,10 @@ namespace MultiDesktop
                 tableLayoutPanel.RowStyles[2].Height = 142F;
             }
 
-            foreach (string calendarName in SettingController.CalendarManager.CalendarList.Keys)
-            {
-                calendarComboBox.Items.Add(calendarName);
-            }
-            calendarComboBox.SelectedItem = SettingController.CalendarManager.findCalendarName(m_todo.Calendar);
+            calendarComboBox.DisplayMember = "Name";
+            calendarComboBox.ValueMember = "ID";
+            calendarComboBox.DataSource = SettingController.CalendarManager.CalendarTable;
+            calendarComboBox.SelectedValue = SettingController.CalendarManager.findCalendarID(m_todo.Calendar);
 
             calendarComboBox.Enabled = false;
             summaryField.Text = m_todo.Summary;
@@ -547,10 +545,10 @@ namespace MultiDesktop
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            string calendarName = calendarComboBox.SelectedItem.ToString();
+            int calendarID = Int32.Parse(calendarComboBox.SelectedValue.ToString());
             if (m_todo == null)
             {
-                ITodo newTodo = SettingController.CalendarManager.TodoManager.createTodo(calendarName);
+                ITodo newTodo = SettingController.CalendarManager.TodoManager.createTodo(calendarID);
                 newTodo.Summary = summaryField.Text;
                 if (startDateBox.Value != DateTime.MinValue)
                 {

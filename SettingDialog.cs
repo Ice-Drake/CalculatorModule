@@ -30,6 +30,7 @@ namespace MultiDesktop
         private DataGridViewTextBoxColumn NameColumn1;
         private DataGridViewTextBoxColumn Column1;
         private DataGridViewCheckBoxColumn Column2;
+        private DataGridViewTextBoxColumn ID;
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -72,6 +73,7 @@ namespace MultiDesktop
             this.NameColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControl.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -214,7 +216,8 @@ namespace MultiDesktop
             this.calendarGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.NameColumn1,
             this.Column1,
-            this.Column2});
+            this.Column2,
+            this.ID});
             this.calendarGridView.Location = new System.Drawing.Point(6, 19);
             this.calendarGridView.MultiSelect = false;
             this.calendarGridView.Name = "calendarGridView";
@@ -248,6 +251,12 @@ namespace MultiDesktop
             this.Column2.ReadOnly = true;
             this.Column2.TrueValue = "true";
             this.Column2.Width = 50;
+            // 
+            // ID
+            // 
+            this.ID.HeaderText = "ID";
+            this.ID.Name = "ID";
+            this.ID.Visible = false;
             // 
             // SettingDialog
             // 
@@ -364,8 +373,8 @@ namespace MultiDesktop
 
         private void calendarGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            string name = calendarGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
-            CalendarForm newForm = new CalendarForm(controller.CalendarManager.CalendarList[name]);
+            int id = Int32.Parse(calendarGridView.Rows[e.RowIndex].Cells[3].Value.ToString());
+            CalendarForm newForm = new CalendarForm(controller.CalendarManager.CalendarList[id]);
             newForm.Show();
         }
     }

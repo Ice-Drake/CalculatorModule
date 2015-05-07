@@ -6,13 +6,14 @@ namespace MultiDesktop
 {
     public class Calendar
     {
-        public Calendar(string name, string filename)
+        public Calendar(int id, string filename)
         {
-            Name = name;
+            ID = id;
             Filename = filename;
             Included = true;
         }
 
+        public int ID { get; private set; }
         public string Name { get; set; }
         public string Filename { get; private set; }
         public bool Included { get; set; }

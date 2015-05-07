@@ -14,16 +14,19 @@ namespace MultiDesktop
     {
         private EventManager eventController;
         private TodoManager todoController;
-        private TaskManager taskController;
+        private GoalPlanner goalController;
+        private IProjectManager projectController;
+
+        #region Component Designer variables
 
         private Point mouseDownPos;
-        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tableLayoutPanel;
         private Label dateLabel1;
         private DataGridView eventDataGridView1;
         private Label dateLabel2;
         private Label dateLabel3;
         private Label dateLabel4;
-        private Library.MonthCalendar monthCalendar2;
+        private Library.MonthCalendar monthCalendar;
         private Panel planningPanel;
         private DataGridView todoDataGridView3;
         private DataGridView todoDataGridView2;
@@ -102,6 +105,8 @@ namespace MultiDesktop
         private DataGridViewTextBoxColumn Column2;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn51;
 
+        #endregion
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -128,16 +133,46 @@ namespace MultiDesktop
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.todoDataGridView3 = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn45 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dataGridViewTextBoxColumn39 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn38 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn37 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.todoDataGridView2 = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn44 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dataGridViewTextBoxColumn36 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn35 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn34 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.todoDataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn43 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dataGridViewTextBoxColumn33 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn32 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn31 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.todoDataGridView4 = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn46 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dataGridViewTextBoxColumn30 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn29 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn28 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.todoDataGridView7 = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn49 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dataGridViewTextBoxColumn27 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn26 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn25 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.todoDataGridView6 = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn48 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dataGridViewTextBoxColumn24 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn23 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn22 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.todoDataGridView5 = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn47 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dataGridViewTextBoxColumn21 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn20 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn19 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dateLabel1 = new System.Windows.Forms.Label();
             this.eventDataGridView1 = new System.Windows.Forms.DataGridView();
+            this.summaryColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.UIDColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dateLabel2 = new System.Windows.Forms.Label();
             this.dateLabel3 = new System.Windows.Forms.Label();
             this.dateLabel4 = new System.Windows.Forms.Label();
@@ -145,74 +180,44 @@ namespace MultiDesktop
             this.dateLabel6 = new System.Windows.Forms.Label();
             this.dateLabel7 = new System.Windows.Forms.Label();
             this.eventDataGridView2 = new System.Windows.Forms.DataGridView();
-            this.eventDataGridView3 = new System.Windows.Forms.DataGridView();
-            this.eventDataGridView4 = new System.Windows.Forms.DataGridView();
-            this.eventDataGridView5 = new System.Windows.Forms.DataGridView();
-            this.eventDataGridView6 = new System.Windows.Forms.DataGridView();
-            this.eventDataGridView7 = new System.Windows.Forms.DataGridView();
-            this.planningPanel = new System.Windows.Forms.Panel();
-            this.monthCalendar2 = new Library.MonthCalendar();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.lateTodoDataGridView = new System.Windows.Forms.DataGridView();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.goalDataGridView = new System.Windows.Forms.DataGridView();
-            this.summaryColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.UIDColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.eventDataGridView3 = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.eventDataGridView4 = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.eventDataGridView5 = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.eventDataGridView6 = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.timeColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.eventDataGridView7 = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn18 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn17 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.timeColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.planningPanel = new System.Windows.Forms.Panel();
+            this.monthCalendar = new Library.MonthCalendar();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lateTodoDataGridView = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn50 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dataGridViewTextBoxColumn42 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn41 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn40 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.goalDataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridViewCheckBoxColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.dataGridViewTextBoxColumn53 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn51 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn43 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dataGridViewTextBoxColumn33 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn32 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn31 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn50 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dataGridViewTextBoxColumn42 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn41 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn40 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn44 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dataGridViewTextBoxColumn36 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn35 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn34 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn45 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dataGridViewTextBoxColumn39 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn38 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn37 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn46 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dataGridViewTextBoxColumn30 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn29 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn28 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn47 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dataGridViewTextBoxColumn21 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn20 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn19 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn48 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dataGridViewTextBoxColumn24 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn23 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn22 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn49 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dataGridViewTextBoxColumn27 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn26 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn25 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.todoDataGridView3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.todoDataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.todoDataGridView1)).BeginInit();
@@ -235,45 +240,45 @@ namespace MultiDesktop
             ((System.ComponentModel.ISupportInitialize)(this.goalDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
-            // tableLayoutPanel1
+            // tableLayoutPanel
             // 
-            this.tableLayoutPanel1.ColumnCount = 7;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tableLayoutPanel1.Controls.Add(this.todoDataGridView3, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.todoDataGridView2, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.todoDataGridView1, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.todoDataGridView4, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.todoDataGridView7, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.todoDataGridView6, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.todoDataGridView5, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.dateLabel1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.eventDataGridView1, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.dateLabel2, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dateLabel3, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dateLabel4, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dateLabel5, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dateLabel6, 5, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dateLabel7, 6, 0);
-            this.tableLayoutPanel1.Controls.Add(this.eventDataGridView2, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.eventDataGridView3, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.eventDataGridView4, 3, 1);
-            this.tableLayoutPanel1.Controls.Add(this.eventDataGridView5, 4, 1);
-            this.tableLayoutPanel1.Controls.Add(this.eventDataGridView6, 5, 1);
-            this.tableLayoutPanel1.Controls.Add(this.eventDataGridView7, 6, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.517394F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 34.48095F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60.00166F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1050, 337);
-            this.tableLayoutPanel1.TabIndex = 1;
+            this.tableLayoutPanel.ColumnCount = 7;
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tableLayoutPanel.Controls.Add(this.todoDataGridView3, 0, 2);
+            this.tableLayoutPanel.Controls.Add(this.todoDataGridView2, 0, 2);
+            this.tableLayoutPanel.Controls.Add(this.todoDataGridView1, 0, 2);
+            this.tableLayoutPanel.Controls.Add(this.todoDataGridView4, 0, 2);
+            this.tableLayoutPanel.Controls.Add(this.todoDataGridView7, 0, 2);
+            this.tableLayoutPanel.Controls.Add(this.todoDataGridView6, 0, 2);
+            this.tableLayoutPanel.Controls.Add(this.todoDataGridView5, 0, 2);
+            this.tableLayoutPanel.Controls.Add(this.dateLabel1, 0, 0);
+            this.tableLayoutPanel.Controls.Add(this.eventDataGridView1, 0, 1);
+            this.tableLayoutPanel.Controls.Add(this.dateLabel2, 1, 0);
+            this.tableLayoutPanel.Controls.Add(this.dateLabel3, 2, 0);
+            this.tableLayoutPanel.Controls.Add(this.dateLabel4, 3, 0);
+            this.tableLayoutPanel.Controls.Add(this.dateLabel5, 4, 0);
+            this.tableLayoutPanel.Controls.Add(this.dateLabel6, 5, 0);
+            this.tableLayoutPanel.Controls.Add(this.dateLabel7, 6, 0);
+            this.tableLayoutPanel.Controls.Add(this.eventDataGridView2, 1, 1);
+            this.tableLayoutPanel.Controls.Add(this.eventDataGridView3, 2, 1);
+            this.tableLayoutPanel.Controls.Add(this.eventDataGridView4, 3, 1);
+            this.tableLayoutPanel.Controls.Add(this.eventDataGridView5, 4, 1);
+            this.tableLayoutPanel.Controls.Add(this.eventDataGridView6, 5, 1);
+            this.tableLayoutPanel.Controls.Add(this.eventDataGridView7, 6, 1);
+            this.tableLayoutPanel.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel.Name = "tableLayoutPanel";
+            this.tableLayoutPanel.RowCount = 3;
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 116F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 203F));
+            this.tableLayoutPanel.Size = new System.Drawing.Size(1050, 337);
+            this.tableLayoutPanel.TabIndex = 1;
             // 
             // todoDataGridView3
             // 
@@ -306,6 +311,37 @@ namespace MultiDesktop
             this.todoDataGridView3.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseDown);
             this.todoDataGridView3.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseMove);
             // 
+            // dataGridViewTextBoxColumn45
+            // 
+            this.dataGridViewTextBoxColumn45.DataPropertyName = "Status";
+            this.dataGridViewTextBoxColumn45.FalseValue = "false";
+            this.dataGridViewTextBoxColumn45.HeaderText = "Status";
+            this.dataGridViewTextBoxColumn45.Name = "dataGridViewTextBoxColumn45";
+            this.dataGridViewTextBoxColumn45.TrueValue = "true";
+            this.dataGridViewTextBoxColumn45.Width = 20;
+            // 
+            // dataGridViewTextBoxColumn39
+            // 
+            this.dataGridViewTextBoxColumn39.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn39.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn39.Name = "dataGridViewTextBoxColumn39";
+            this.dataGridViewTextBoxColumn39.ReadOnly = true;
+            this.dataGridViewTextBoxColumn39.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn38
+            // 
+            this.dataGridViewTextBoxColumn38.DataPropertyName = "Priority";
+            this.dataGridViewTextBoxColumn38.HeaderText = "Priority";
+            this.dataGridViewTextBoxColumn38.Name = "dataGridViewTextBoxColumn38";
+            this.dataGridViewTextBoxColumn38.Visible = false;
+            // 
+            // dataGridViewTextBoxColumn37
+            // 
+            this.dataGridViewTextBoxColumn37.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn37.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn37.Name = "dataGridViewTextBoxColumn37";
+            this.dataGridViewTextBoxColumn37.Visible = false;
+            // 
             // todoDataGridView2
             // 
             this.todoDataGridView2.AllowDrop = true;
@@ -337,6 +373,37 @@ namespace MultiDesktop
             this.todoDataGridView2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseDown);
             this.todoDataGridView2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseMove);
             // 
+            // dataGridViewTextBoxColumn44
+            // 
+            this.dataGridViewTextBoxColumn44.DataPropertyName = "Status";
+            this.dataGridViewTextBoxColumn44.FalseValue = "false";
+            this.dataGridViewTextBoxColumn44.HeaderText = "Status";
+            this.dataGridViewTextBoxColumn44.Name = "dataGridViewTextBoxColumn44";
+            this.dataGridViewTextBoxColumn44.TrueValue = "true";
+            this.dataGridViewTextBoxColumn44.Width = 20;
+            // 
+            // dataGridViewTextBoxColumn36
+            // 
+            this.dataGridViewTextBoxColumn36.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn36.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn36.Name = "dataGridViewTextBoxColumn36";
+            this.dataGridViewTextBoxColumn36.ReadOnly = true;
+            this.dataGridViewTextBoxColumn36.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn35
+            // 
+            this.dataGridViewTextBoxColumn35.DataPropertyName = "Priority";
+            this.dataGridViewTextBoxColumn35.HeaderText = "Priority";
+            this.dataGridViewTextBoxColumn35.Name = "dataGridViewTextBoxColumn35";
+            this.dataGridViewTextBoxColumn35.Visible = false;
+            // 
+            // dataGridViewTextBoxColumn34
+            // 
+            this.dataGridViewTextBoxColumn34.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn34.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn34.Name = "dataGridViewTextBoxColumn34";
+            this.dataGridViewTextBoxColumn34.Visible = false;
+            // 
             // todoDataGridView1
             // 
             this.todoDataGridView1.AllowUserToAddRows = false;
@@ -364,6 +431,39 @@ namespace MultiDesktop
             this.todoDataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
             this.todoDataGridView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView_DragDrop);
             this.todoDataGridView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.dataGridView_DragEnter);
+            this.todoDataGridView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseDown);
+            this.todoDataGridView1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseMove);
+            // 
+            // dataGridViewTextBoxColumn43
+            // 
+            this.dataGridViewTextBoxColumn43.DataPropertyName = "Status";
+            this.dataGridViewTextBoxColumn43.FalseValue = "false";
+            this.dataGridViewTextBoxColumn43.HeaderText = "Status";
+            this.dataGridViewTextBoxColumn43.Name = "dataGridViewTextBoxColumn43";
+            this.dataGridViewTextBoxColumn43.TrueValue = "true";
+            this.dataGridViewTextBoxColumn43.Width = 20;
+            // 
+            // dataGridViewTextBoxColumn33
+            // 
+            this.dataGridViewTextBoxColumn33.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn33.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn33.Name = "dataGridViewTextBoxColumn33";
+            this.dataGridViewTextBoxColumn33.ReadOnly = true;
+            this.dataGridViewTextBoxColumn33.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn32
+            // 
+            this.dataGridViewTextBoxColumn32.DataPropertyName = "Priority";
+            this.dataGridViewTextBoxColumn32.HeaderText = "Priority";
+            this.dataGridViewTextBoxColumn32.Name = "dataGridViewTextBoxColumn32";
+            this.dataGridViewTextBoxColumn32.Visible = false;
+            // 
+            // dataGridViewTextBoxColumn31
+            // 
+            this.dataGridViewTextBoxColumn31.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn31.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn31.Name = "dataGridViewTextBoxColumn31";
+            this.dataGridViewTextBoxColumn31.Visible = false;
             // 
             // todoDataGridView4
             // 
@@ -396,6 +496,37 @@ namespace MultiDesktop
             this.todoDataGridView4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseDown);
             this.todoDataGridView4.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseMove);
             // 
+            // dataGridViewTextBoxColumn46
+            // 
+            this.dataGridViewTextBoxColumn46.DataPropertyName = "Status";
+            this.dataGridViewTextBoxColumn46.FalseValue = "false";
+            this.dataGridViewTextBoxColumn46.HeaderText = "Status";
+            this.dataGridViewTextBoxColumn46.Name = "dataGridViewTextBoxColumn46";
+            this.dataGridViewTextBoxColumn46.TrueValue = "true";
+            this.dataGridViewTextBoxColumn46.Width = 20;
+            // 
+            // dataGridViewTextBoxColumn30
+            // 
+            this.dataGridViewTextBoxColumn30.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn30.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn30.Name = "dataGridViewTextBoxColumn30";
+            this.dataGridViewTextBoxColumn30.ReadOnly = true;
+            this.dataGridViewTextBoxColumn30.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn29
+            // 
+            this.dataGridViewTextBoxColumn29.DataPropertyName = "Priority";
+            this.dataGridViewTextBoxColumn29.HeaderText = "Priority";
+            this.dataGridViewTextBoxColumn29.Name = "dataGridViewTextBoxColumn29";
+            this.dataGridViewTextBoxColumn29.Visible = false;
+            // 
+            // dataGridViewTextBoxColumn28
+            // 
+            this.dataGridViewTextBoxColumn28.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn28.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn28.Name = "dataGridViewTextBoxColumn28";
+            this.dataGridViewTextBoxColumn28.Visible = false;
+            // 
             // todoDataGridView7
             // 
             this.todoDataGridView7.AllowDrop = true;
@@ -426,6 +557,37 @@ namespace MultiDesktop
             this.todoDataGridView7.DragEnter += new System.Windows.Forms.DragEventHandler(this.dataGridView_DragEnter);
             this.todoDataGridView7.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseDown);
             this.todoDataGridView7.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseMove);
+            // 
+            // dataGridViewTextBoxColumn49
+            // 
+            this.dataGridViewTextBoxColumn49.DataPropertyName = "Status";
+            this.dataGridViewTextBoxColumn49.FalseValue = "false";
+            this.dataGridViewTextBoxColumn49.HeaderText = "Status";
+            this.dataGridViewTextBoxColumn49.Name = "dataGridViewTextBoxColumn49";
+            this.dataGridViewTextBoxColumn49.TrueValue = "true";
+            this.dataGridViewTextBoxColumn49.Width = 20;
+            // 
+            // dataGridViewTextBoxColumn27
+            // 
+            this.dataGridViewTextBoxColumn27.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn27.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn27.Name = "dataGridViewTextBoxColumn27";
+            this.dataGridViewTextBoxColumn27.ReadOnly = true;
+            this.dataGridViewTextBoxColumn27.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn26
+            // 
+            this.dataGridViewTextBoxColumn26.DataPropertyName = "Priority";
+            this.dataGridViewTextBoxColumn26.HeaderText = "Priority";
+            this.dataGridViewTextBoxColumn26.Name = "dataGridViewTextBoxColumn26";
+            this.dataGridViewTextBoxColumn26.Visible = false;
+            // 
+            // dataGridViewTextBoxColumn25
+            // 
+            this.dataGridViewTextBoxColumn25.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn25.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn25.Name = "dataGridViewTextBoxColumn25";
+            this.dataGridViewTextBoxColumn25.Visible = false;
             // 
             // todoDataGridView6
             // 
@@ -458,6 +620,39 @@ namespace MultiDesktop
             this.todoDataGridView6.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseDown);
             this.todoDataGridView6.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseMove);
             // 
+            // dataGridViewTextBoxColumn48
+            // 
+            this.dataGridViewTextBoxColumn48.DataPropertyName = "Status";
+            this.dataGridViewTextBoxColumn48.FalseValue = "false";
+            this.dataGridViewTextBoxColumn48.HeaderText = "Status";
+            this.dataGridViewTextBoxColumn48.Name = "dataGridViewTextBoxColumn48";
+            this.dataGridViewTextBoxColumn48.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewTextBoxColumn48.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.dataGridViewTextBoxColumn48.TrueValue = "true";
+            this.dataGridViewTextBoxColumn48.Width = 20;
+            // 
+            // dataGridViewTextBoxColumn24
+            // 
+            this.dataGridViewTextBoxColumn24.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn24.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn24.Name = "dataGridViewTextBoxColumn24";
+            this.dataGridViewTextBoxColumn24.ReadOnly = true;
+            this.dataGridViewTextBoxColumn24.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn23
+            // 
+            this.dataGridViewTextBoxColumn23.DataPropertyName = "Priority";
+            this.dataGridViewTextBoxColumn23.HeaderText = "Priority";
+            this.dataGridViewTextBoxColumn23.Name = "dataGridViewTextBoxColumn23";
+            this.dataGridViewTextBoxColumn23.Visible = false;
+            // 
+            // dataGridViewTextBoxColumn22
+            // 
+            this.dataGridViewTextBoxColumn22.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn22.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn22.Name = "dataGridViewTextBoxColumn22";
+            this.dataGridViewTextBoxColumn22.Visible = false;
+            // 
             // todoDataGridView5
             // 
             this.todoDataGridView5.AllowDrop = true;
@@ -488,6 +683,37 @@ namespace MultiDesktop
             this.todoDataGridView5.DragEnter += new System.Windows.Forms.DragEventHandler(this.dataGridView_DragEnter);
             this.todoDataGridView5.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseDown);
             this.todoDataGridView5.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseMove);
+            // 
+            // dataGridViewTextBoxColumn47
+            // 
+            this.dataGridViewTextBoxColumn47.DataPropertyName = "Status";
+            this.dataGridViewTextBoxColumn47.FalseValue = "false";
+            this.dataGridViewTextBoxColumn47.HeaderText = "Status";
+            this.dataGridViewTextBoxColumn47.Name = "dataGridViewTextBoxColumn47";
+            this.dataGridViewTextBoxColumn47.TrueValue = "true";
+            this.dataGridViewTextBoxColumn47.Width = 20;
+            // 
+            // dataGridViewTextBoxColumn21
+            // 
+            this.dataGridViewTextBoxColumn21.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn21.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn21.Name = "dataGridViewTextBoxColumn21";
+            this.dataGridViewTextBoxColumn21.ReadOnly = true;
+            this.dataGridViewTextBoxColumn21.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn20
+            // 
+            this.dataGridViewTextBoxColumn20.DataPropertyName = "Priority";
+            this.dataGridViewTextBoxColumn20.HeaderText = "Priority";
+            this.dataGridViewTextBoxColumn20.Name = "dataGridViewTextBoxColumn20";
+            this.dataGridViewTextBoxColumn20.Visible = false;
+            // 
+            // dataGridViewTextBoxColumn19
+            // 
+            this.dataGridViewTextBoxColumn19.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn19.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn19.Name = "dataGridViewTextBoxColumn19";
+            this.dataGridViewTextBoxColumn19.Visible = false;
             // 
             // dateLabel1
             // 
@@ -523,6 +749,21 @@ namespace MultiDesktop
             this.eventDataGridView1.Size = new System.Drawing.Size(144, 110);
             this.eventDataGridView1.TabIndex = 2;
             this.eventDataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
+            // 
+            // summaryColumn1
+            // 
+            this.summaryColumn1.DataPropertyName = "Summary";
+            this.summaryColumn1.HeaderText = "Summary";
+            this.summaryColumn1.Name = "summaryColumn1";
+            this.summaryColumn1.ReadOnly = true;
+            this.summaryColumn1.Width = 145;
+            // 
+            // UIDColumn1
+            // 
+            this.UIDColumn1.DataPropertyName = "UID";
+            this.UIDColumn1.HeaderText = "UID";
+            this.UIDColumn1.Name = "UIDColumn1";
+            this.UIDColumn1.Visible = false;
             // 
             // dateLabel2
             // 
@@ -619,6 +860,21 @@ namespace MultiDesktop
             this.eventDataGridView2.TabIndex = 9;
             this.eventDataGridView2.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
             // 
+            // dataGridViewTextBoxColumn3
+            // 
+            this.dataGridViewTextBoxColumn3.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn3.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            this.dataGridViewTextBoxColumn3.ReadOnly = true;
+            this.dataGridViewTextBoxColumn3.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn1.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.Visible = false;
+            // 
             // eventDataGridView3
             // 
             this.eventDataGridView3.AllowUserToAddRows = false;
@@ -641,6 +897,21 @@ namespace MultiDesktop
             this.eventDataGridView3.Size = new System.Drawing.Size(144, 110);
             this.eventDataGridView3.TabIndex = 10;
             this.eventDataGridView3.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
+            // 
+            // dataGridViewTextBoxColumn6
+            // 
+            this.dataGridViewTextBoxColumn6.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn6.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
+            this.dataGridViewTextBoxColumn6.ReadOnly = true;
+            this.dataGridViewTextBoxColumn6.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            this.dataGridViewTextBoxColumn4.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn4.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dataGridViewTextBoxColumn4.Visible = false;
             // 
             // eventDataGridView4
             // 
@@ -665,6 +936,21 @@ namespace MultiDesktop
             this.eventDataGridView4.TabIndex = 11;
             this.eventDataGridView4.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
             // 
+            // dataGridViewTextBoxColumn9
+            // 
+            this.dataGridViewTextBoxColumn9.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn9.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
+            this.dataGridViewTextBoxColumn9.ReadOnly = true;
+            this.dataGridViewTextBoxColumn9.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn7
+            // 
+            this.dataGridViewTextBoxColumn7.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn7.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
+            this.dataGridViewTextBoxColumn7.Visible = false;
+            // 
             // eventDataGridView5
             // 
             this.eventDataGridView5.AllowUserToAddRows = false;
@@ -687,6 +973,21 @@ namespace MultiDesktop
             this.eventDataGridView5.Size = new System.Drawing.Size(144, 110);
             this.eventDataGridView5.TabIndex = 12;
             this.eventDataGridView5.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
+            // 
+            // dataGridViewTextBoxColumn12
+            // 
+            this.dataGridViewTextBoxColumn12.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn12.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
+            this.dataGridViewTextBoxColumn12.ReadOnly = true;
+            this.dataGridViewTextBoxColumn12.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn10
+            // 
+            this.dataGridViewTextBoxColumn10.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn10.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
+            this.dataGridViewTextBoxColumn10.Visible = false;
             // 
             // eventDataGridView6
             // 
@@ -713,6 +1014,33 @@ namespace MultiDesktop
             this.eventDataGridView6.TabIndex = 13;
             this.eventDataGridView6.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
             // 
+            // dataGridViewTextBoxColumn15
+            // 
+            this.dataGridViewTextBoxColumn15.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn15.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn15.Name = "dataGridViewTextBoxColumn15";
+            this.dataGridViewTextBoxColumn15.ReadOnly = true;
+            this.dataGridViewTextBoxColumn15.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn14
+            // 
+            this.dataGridViewTextBoxColumn14.DataPropertyName = "Location";
+            this.dataGridViewTextBoxColumn14.HeaderText = "Location";
+            this.dataGridViewTextBoxColumn14.Name = "dataGridViewTextBoxColumn14";
+            // 
+            // timeColumn6
+            // 
+            this.timeColumn6.DataPropertyName = "Time";
+            this.timeColumn6.HeaderText = "Time";
+            this.timeColumn6.Name = "timeColumn6";
+            // 
+            // dataGridViewTextBoxColumn13
+            // 
+            this.dataGridViewTextBoxColumn13.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn13.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
+            this.dataGridViewTextBoxColumn13.Visible = false;
+            // 
             // eventDataGridView7
             // 
             this.eventDataGridView7.AllowUserToAddRows = false;
@@ -738,36 +1066,63 @@ namespace MultiDesktop
             this.eventDataGridView7.TabIndex = 14;
             this.eventDataGridView7.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
             // 
+            // dataGridViewTextBoxColumn18
+            // 
+            this.dataGridViewTextBoxColumn18.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn18.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn18.Name = "dataGridViewTextBoxColumn18";
+            this.dataGridViewTextBoxColumn18.ReadOnly = true;
+            this.dataGridViewTextBoxColumn18.Width = 145;
+            // 
+            // dataGridViewTextBoxColumn17
+            // 
+            this.dataGridViewTextBoxColumn17.DataPropertyName = "Location";
+            this.dataGridViewTextBoxColumn17.HeaderText = "Location";
+            this.dataGridViewTextBoxColumn17.Name = "dataGridViewTextBoxColumn17";
+            // 
+            // timeColumn7
+            // 
+            this.timeColumn7.DataPropertyName = "Time";
+            this.timeColumn7.HeaderText = "Time";
+            this.timeColumn7.Name = "timeColumn7";
+            // 
+            // dataGridViewTextBoxColumn16
+            // 
+            this.dataGridViewTextBoxColumn16.DataPropertyName = "UID";
+            this.dataGridViewTextBoxColumn16.HeaderText = "UID";
+            this.dataGridViewTextBoxColumn16.Name = "dataGridViewTextBoxColumn16";
+            this.dataGridViewTextBoxColumn16.Visible = false;
+            // 
             // planningPanel
             // 
             this.planningPanel.AutoScroll = true;
             this.planningPanel.BackColor = System.Drawing.SystemColors.Window;
-            this.planningPanel.Controls.Add(this.tableLayoutPanel1);
+            this.planningPanel.Controls.Add(this.tableLayoutPanel);
             this.planningPanel.Location = new System.Drawing.Point(6, 18);
             this.planningPanel.Name = "planningPanel";
             this.planningPanel.Size = new System.Drawing.Size(757, 360);
             this.planningPanel.TabIndex = 0;
             // 
-            // monthCalendar2
+            // monthCalendar
             // 
-            this.monthCalendar2.ActiveMonth.Month = 11;
-            this.monthCalendar2.ActiveMonth.Year = 2011;
-            this.monthCalendar2.Culture = new System.Globalization.CultureInfo("en-US");
-            this.monthCalendar2.Footer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
-            this.monthCalendar2.Header.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
-            this.monthCalendar2.Header.TextColor = System.Drawing.Color.White;
-            this.monthCalendar2.ImageList = null;
-            this.monthCalendar2.Location = new System.Drawing.Point(177, 402);
-            this.monthCalendar2.MaxDate = new System.DateTime(2021, 11, 21, 20, 20, 18, 122);
-            this.monthCalendar2.MinDate = new System.DateTime(2001, 11, 21, 20, 20, 18, 122);
-            this.monthCalendar2.Month.BackgroundImage = null;
-            this.monthCalendar2.Month.DateFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.monthCalendar2.Month.TextFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.monthCalendar2.Name = "monthCalendar2";
-            this.monthCalendar2.Size = new System.Drawing.Size(222, 222);
-            this.monthCalendar2.TabIndex = 8;
-            this.monthCalendar2.Weekdays.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.monthCalendar2.Weeknumbers.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.monthCalendar.ActiveMonth.Month = 12;
+            this.monthCalendar.ActiveMonth.Year = 2014;
+            this.monthCalendar.Culture = new System.Globalization.CultureInfo("en-US");
+            this.monthCalendar.Footer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.monthCalendar.Header.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.monthCalendar.Header.TextColor = System.Drawing.Color.White;
+            this.monthCalendar.ImageList = null;
+            this.monthCalendar.Location = new System.Drawing.Point(177, 402);
+            this.monthCalendar.MaxDate = new System.DateTime(2024, 12, 2, 16, 19, 43, 299);
+            this.monthCalendar.MinDate = new System.DateTime(2004, 12, 2, 16, 19, 43, 299);
+            this.monthCalendar.Month.BackgroundImage = null;
+            this.monthCalendar.Month.DateFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.monthCalendar.Month.TextFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.monthCalendar.Name = "monthCalendar";
+            this.monthCalendar.Size = new System.Drawing.Size(222, 222);
+            this.monthCalendar.TabIndex = 8;
+            this.monthCalendar.Weekdays.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.monthCalendar.Weeknumbers.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             // 
             // groupBox1
             // 
@@ -816,240 +1171,6 @@ namespace MultiDesktop
             this.lateTodoDataGridView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseDown);
             this.lateTodoDataGridView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseMove);
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.goalDataGridView);
-            this.groupBox3.Location = new System.Drawing.Point(405, 402);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(376, 222);
-            this.groupBox3.TabIndex = 12;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Current Goals";
-            // 
-            // goalDataGridView
-            // 
-            this.goalDataGridView.AllowUserToAddRows = false;
-            this.goalDataGridView.AllowUserToDeleteRows = false;
-            this.goalDataGridView.AllowUserToResizeColumns = false;
-            this.goalDataGridView.AllowUserToResizeRows = false;
-            this.goalDataGridView.BackgroundColor = System.Drawing.Color.White;
-            this.goalDataGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this.goalDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.goalDataGridView.ColumnHeadersVisible = false;
-            this.goalDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewCheckBoxColumn1,
-            this.dataGridViewTextBoxColumn53,
-            this.Column1,
-            this.Column2,
-            this.dataGridViewTextBoxColumn51});
-            this.goalDataGridView.Location = new System.Drawing.Point(6, 19);
-            this.goalDataGridView.MultiSelect = false;
-            this.goalDataGridView.Name = "goalDataGridView";
-            this.goalDataGridView.RowHeadersVisible = false;
-            this.goalDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.goalDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.goalDataGridView.Size = new System.Drawing.Size(364, 197);
-            this.goalDataGridView.TabIndex = 20;
-            this.goalDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.goalDataGridView_CellContentClick);
-            // 
-            // summaryColumn1
-            // 
-            this.summaryColumn1.DataPropertyName = "Summary";
-            this.summaryColumn1.HeaderText = "Summary";
-            this.summaryColumn1.Name = "summaryColumn1";
-            this.summaryColumn1.ReadOnly = true;
-            this.summaryColumn1.Width = 145;
-            // 
-            // UIDColumn1
-            // 
-            this.UIDColumn1.DataPropertyName = "UID";
-            this.UIDColumn1.HeaderText = "UID";
-            this.UIDColumn1.Name = "UIDColumn1";
-            this.UIDColumn1.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn3.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            this.dataGridViewTextBoxColumn3.Width = 145;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn1.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn6
-            // 
-            this.dataGridViewTextBoxColumn6.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn6.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            this.dataGridViewTextBoxColumn6.ReadOnly = true;
-            this.dataGridViewTextBoxColumn6.Width = 145;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn4.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn9
-            // 
-            this.dataGridViewTextBoxColumn9.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn9.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
-            this.dataGridViewTextBoxColumn9.ReadOnly = true;
-            this.dataGridViewTextBoxColumn9.Width = 145;
-            // 
-            // dataGridViewTextBoxColumn7
-            // 
-            this.dataGridViewTextBoxColumn7.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn7.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
-            this.dataGridViewTextBoxColumn7.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn12
-            // 
-            this.dataGridViewTextBoxColumn12.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn12.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
-            this.dataGridViewTextBoxColumn12.ReadOnly = true;
-            this.dataGridViewTextBoxColumn12.Width = 145;
-            // 
-            // dataGridViewTextBoxColumn10
-            // 
-            this.dataGridViewTextBoxColumn10.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn10.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
-            this.dataGridViewTextBoxColumn10.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn15
-            // 
-            this.dataGridViewTextBoxColumn15.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn15.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn15.Name = "dataGridViewTextBoxColumn15";
-            this.dataGridViewTextBoxColumn15.ReadOnly = true;
-            this.dataGridViewTextBoxColumn15.Width = 145;
-            // 
-            // dataGridViewTextBoxColumn14
-            // 
-            this.dataGridViewTextBoxColumn14.DataPropertyName = "Location";
-            this.dataGridViewTextBoxColumn14.HeaderText = "Location";
-            this.dataGridViewTextBoxColumn14.Name = "dataGridViewTextBoxColumn14";
-            // 
-            // timeColumn6
-            // 
-            this.timeColumn6.DataPropertyName = "Time";
-            this.timeColumn6.HeaderText = "Time";
-            this.timeColumn6.Name = "timeColumn6";
-            // 
-            // dataGridViewTextBoxColumn13
-            // 
-            this.dataGridViewTextBoxColumn13.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn13.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
-            this.dataGridViewTextBoxColumn13.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn18
-            // 
-            this.dataGridViewTextBoxColumn18.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn18.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn18.Name = "dataGridViewTextBoxColumn18";
-            this.dataGridViewTextBoxColumn18.ReadOnly = true;
-            this.dataGridViewTextBoxColumn18.Width = 145;
-            // 
-            // dataGridViewTextBoxColumn17
-            // 
-            this.dataGridViewTextBoxColumn17.DataPropertyName = "Location";
-            this.dataGridViewTextBoxColumn17.HeaderText = "Location";
-            this.dataGridViewTextBoxColumn17.Name = "dataGridViewTextBoxColumn17";
-            // 
-            // timeColumn7
-            // 
-            this.timeColumn7.DataPropertyName = "Time";
-            this.timeColumn7.HeaderText = "Time";
-            this.timeColumn7.Name = "timeColumn7";
-            // 
-            // dataGridViewTextBoxColumn16
-            // 
-            this.dataGridViewTextBoxColumn16.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn16.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn16.Name = "dataGridViewTextBoxColumn16";
-            this.dataGridViewTextBoxColumn16.Visible = false;
-            // 
-            // dataGridViewCheckBoxColumn1
-            // 
-            this.dataGridViewCheckBoxColumn1.DataPropertyName = "Status";
-            this.dataGridViewCheckBoxColumn1.FalseValue = "false";
-            this.dataGridViewCheckBoxColumn1.HeaderText = "Status";
-            this.dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
-            this.dataGridViewCheckBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewCheckBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.dataGridViewCheckBoxColumn1.TrueValue = "true";
-            this.dataGridViewCheckBoxColumn1.Width = 20;
-            // 
-            // dataGridViewTextBoxColumn53
-            // 
-            this.dataGridViewTextBoxColumn53.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn53.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn53.Name = "dataGridViewTextBoxColumn53";
-            this.dataGridViewTextBoxColumn53.ReadOnly = true;
-            this.dataGridViewTextBoxColumn53.Width = 145;
-            // 
-            // Column1
-            // 
-            this.Column1.DataPropertyName = "StartDate";
-            this.Column1.HeaderText = "Start";
-            this.Column1.Name = "Column1";
-            // 
-            // Column2
-            // 
-            this.Column2.DataPropertyName = "DueDate";
-            this.Column2.HeaderText = "Due";
-            this.Column2.Name = "Column2";
-            // 
-            // dataGridViewTextBoxColumn51
-            // 
-            this.dataGridViewTextBoxColumn51.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn51.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn51.Name = "dataGridViewTextBoxColumn51";
-            this.dataGridViewTextBoxColumn51.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn43
-            // 
-            this.dataGridViewTextBoxColumn43.DataPropertyName = "Status";
-            this.dataGridViewTextBoxColumn43.FalseValue = "false";
-            this.dataGridViewTextBoxColumn43.HeaderText = "Status";
-            this.dataGridViewTextBoxColumn43.Name = "dataGridViewTextBoxColumn43";
-            this.dataGridViewTextBoxColumn43.TrueValue = "true";
-            this.dataGridViewTextBoxColumn43.Width = 20;
-            // 
-            // dataGridViewTextBoxColumn33
-            // 
-            this.dataGridViewTextBoxColumn33.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn33.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn33.Name = "dataGridViewTextBoxColumn33";
-            this.dataGridViewTextBoxColumn33.ReadOnly = true;
-            this.dataGridViewTextBoxColumn33.Width = 145;
-            // 
-            // dataGridViewTextBoxColumn32
-            // 
-            this.dataGridViewTextBoxColumn32.DataPropertyName = "Priority";
-            this.dataGridViewTextBoxColumn32.HeaderText = "Priority";
-            this.dataGridViewTextBoxColumn32.Name = "dataGridViewTextBoxColumn32";
-            this.dataGridViewTextBoxColumn32.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn31
-            // 
-            this.dataGridViewTextBoxColumn31.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn31.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn31.Name = "dataGridViewTextBoxColumn31";
-            this.dataGridViewTextBoxColumn31.Visible = false;
-            // 
             // dataGridViewTextBoxColumn50
             // 
             this.dataGridViewTextBoxColumn50.DataPropertyName = "Status";
@@ -1083,193 +1204,80 @@ namespace MultiDesktop
             this.dataGridViewTextBoxColumn40.Name = "dataGridViewTextBoxColumn40";
             this.dataGridViewTextBoxColumn40.Visible = false;
             // 
-            // dataGridViewTextBoxColumn44
+            // groupBox3
             // 
-            this.dataGridViewTextBoxColumn44.DataPropertyName = "Status";
-            this.dataGridViewTextBoxColumn44.FalseValue = "false";
-            this.dataGridViewTextBoxColumn44.HeaderText = "Status";
-            this.dataGridViewTextBoxColumn44.Name = "dataGridViewTextBoxColumn44";
-            this.dataGridViewTextBoxColumn44.TrueValue = "true";
-            this.dataGridViewTextBoxColumn44.Width = 20;
+            this.groupBox3.Controls.Add(this.goalDataGridView);
+            this.groupBox3.Location = new System.Drawing.Point(405, 402);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(376, 222);
+            this.groupBox3.TabIndex = 12;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Current Goals";
             // 
-            // dataGridViewTextBoxColumn36
+            // goalDataGridView
             // 
-            this.dataGridViewTextBoxColumn36.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn36.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn36.Name = "dataGridViewTextBoxColumn36";
-            this.dataGridViewTextBoxColumn36.ReadOnly = true;
-            this.dataGridViewTextBoxColumn36.Width = 145;
+            this.goalDataGridView.AllowUserToAddRows = false;
+            this.goalDataGridView.AllowUserToDeleteRows = false;
+            this.goalDataGridView.AllowUserToResizeColumns = false;
+            this.goalDataGridView.AllowUserToResizeRows = false;
+            this.goalDataGridView.BackgroundColor = System.Drawing.Color.White;
+            this.goalDataGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.goalDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.goalDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewCheckBoxColumn1,
+            this.dataGridViewTextBoxColumn53,
+            this.Column1,
+            this.Column2,
+            this.dataGridViewTextBoxColumn51});
+            this.goalDataGridView.Location = new System.Drawing.Point(6, 19);
+            this.goalDataGridView.MultiSelect = false;
+            this.goalDataGridView.Name = "goalDataGridView";
+            this.goalDataGridView.RowHeadersVisible = false;
+            this.goalDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.goalDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.goalDataGridView.Size = new System.Drawing.Size(364, 197);
+            this.goalDataGridView.TabIndex = 20;
+            this.goalDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.goalDataGridView_CellContentClick);
             // 
-            // dataGridViewTextBoxColumn35
+            // dataGridViewCheckBoxColumn1
             // 
-            this.dataGridViewTextBoxColumn35.DataPropertyName = "Priority";
-            this.dataGridViewTextBoxColumn35.HeaderText = "Priority";
-            this.dataGridViewTextBoxColumn35.Name = "dataGridViewTextBoxColumn35";
-            this.dataGridViewTextBoxColumn35.Visible = false;
+            this.dataGridViewCheckBoxColumn1.DataPropertyName = "Complete";
+            this.dataGridViewCheckBoxColumn1.FalseValue = "false";
+            this.dataGridViewCheckBoxColumn1.HeaderText = "Status";
+            this.dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
+            this.dataGridViewCheckBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewCheckBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.dataGridViewCheckBoxColumn1.TrueValue = "true";
+            this.dataGridViewCheckBoxColumn1.Width = 50;
             // 
-            // dataGridViewTextBoxColumn34
+            // dataGridViewTextBoxColumn53
             // 
-            this.dataGridViewTextBoxColumn34.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn34.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn34.Name = "dataGridViewTextBoxColumn34";
-            this.dataGridViewTextBoxColumn34.Visible = false;
+            this.dataGridViewTextBoxColumn53.DataPropertyName = "Summary";
+            this.dataGridViewTextBoxColumn53.HeaderText = "Summary";
+            this.dataGridViewTextBoxColumn53.Name = "dataGridViewTextBoxColumn53";
+            this.dataGridViewTextBoxColumn53.ReadOnly = true;
+            this.dataGridViewTextBoxColumn53.Width = 155;
             // 
-            // dataGridViewTextBoxColumn45
+            // Column1
             // 
-            this.dataGridViewTextBoxColumn45.DataPropertyName = "Status";
-            this.dataGridViewTextBoxColumn45.FalseValue = "false";
-            this.dataGridViewTextBoxColumn45.HeaderText = "Status";
-            this.dataGridViewTextBoxColumn45.Name = "dataGridViewTextBoxColumn45";
-            this.dataGridViewTextBoxColumn45.TrueValue = "true";
-            this.dataGridViewTextBoxColumn45.Width = 20;
+            this.Column1.DataPropertyName = "Start";
+            this.Column1.HeaderText = "Start";
+            this.Column1.Name = "Column1";
+            this.Column1.Width = 80;
             // 
-            // dataGridViewTextBoxColumn39
+            // Column2
             // 
-            this.dataGridViewTextBoxColumn39.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn39.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn39.Name = "dataGridViewTextBoxColumn39";
-            this.dataGridViewTextBoxColumn39.ReadOnly = true;
-            this.dataGridViewTextBoxColumn39.Width = 145;
+            this.Column2.DataPropertyName = "Due";
+            this.Column2.HeaderText = "Due";
+            this.Column2.Name = "Column2";
+            this.Column2.Width = 80;
             // 
-            // dataGridViewTextBoxColumn38
+            // dataGridViewTextBoxColumn51
             // 
-            this.dataGridViewTextBoxColumn38.DataPropertyName = "Priority";
-            this.dataGridViewTextBoxColumn38.HeaderText = "Priority";
-            this.dataGridViewTextBoxColumn38.Name = "dataGridViewTextBoxColumn38";
-            this.dataGridViewTextBoxColumn38.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn37
-            // 
-            this.dataGridViewTextBoxColumn37.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn37.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn37.Name = "dataGridViewTextBoxColumn37";
-            this.dataGridViewTextBoxColumn37.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn46
-            // 
-            this.dataGridViewTextBoxColumn46.DataPropertyName = "Status";
-            this.dataGridViewTextBoxColumn46.FalseValue = "false";
-            this.dataGridViewTextBoxColumn46.HeaderText = "Status";
-            this.dataGridViewTextBoxColumn46.Name = "dataGridViewTextBoxColumn46";
-            this.dataGridViewTextBoxColumn46.TrueValue = "true";
-            this.dataGridViewTextBoxColumn46.Width = 20;
-            // 
-            // dataGridViewTextBoxColumn30
-            // 
-            this.dataGridViewTextBoxColumn30.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn30.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn30.Name = "dataGridViewTextBoxColumn30";
-            this.dataGridViewTextBoxColumn30.ReadOnly = true;
-            this.dataGridViewTextBoxColumn30.Width = 145;
-            // 
-            // dataGridViewTextBoxColumn29
-            // 
-            this.dataGridViewTextBoxColumn29.DataPropertyName = "Priority";
-            this.dataGridViewTextBoxColumn29.HeaderText = "Priority";
-            this.dataGridViewTextBoxColumn29.Name = "dataGridViewTextBoxColumn29";
-            this.dataGridViewTextBoxColumn29.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn28
-            // 
-            this.dataGridViewTextBoxColumn28.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn28.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn28.Name = "dataGridViewTextBoxColumn28";
-            this.dataGridViewTextBoxColumn28.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn47
-            // 
-            this.dataGridViewTextBoxColumn47.DataPropertyName = "Status";
-            this.dataGridViewTextBoxColumn47.FalseValue = "false";
-            this.dataGridViewTextBoxColumn47.HeaderText = "Status";
-            this.dataGridViewTextBoxColumn47.Name = "dataGridViewTextBoxColumn47";
-            this.dataGridViewTextBoxColumn47.TrueValue = "true";
-            this.dataGridViewTextBoxColumn47.Width = 20;
-            // 
-            // dataGridViewTextBoxColumn21
-            // 
-            this.dataGridViewTextBoxColumn21.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn21.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn21.Name = "dataGridViewTextBoxColumn21";
-            this.dataGridViewTextBoxColumn21.ReadOnly = true;
-            this.dataGridViewTextBoxColumn21.Width = 145;
-            // 
-            // dataGridViewTextBoxColumn20
-            // 
-            this.dataGridViewTextBoxColumn20.DataPropertyName = "Priority";
-            this.dataGridViewTextBoxColumn20.HeaderText = "Priority";
-            this.dataGridViewTextBoxColumn20.Name = "dataGridViewTextBoxColumn20";
-            this.dataGridViewTextBoxColumn20.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn19
-            // 
-            this.dataGridViewTextBoxColumn19.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn19.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn19.Name = "dataGridViewTextBoxColumn19";
-            this.dataGridViewTextBoxColumn19.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn48
-            // 
-            this.dataGridViewTextBoxColumn48.DataPropertyName = "Status";
-            this.dataGridViewTextBoxColumn48.FalseValue = "false";
-            this.dataGridViewTextBoxColumn48.HeaderText = "Status";
-            this.dataGridViewTextBoxColumn48.Name = "dataGridViewTextBoxColumn48";
-            this.dataGridViewTextBoxColumn48.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn48.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.dataGridViewTextBoxColumn48.TrueValue = "true";
-            this.dataGridViewTextBoxColumn48.Width = 20;
-            // 
-            // dataGridViewTextBoxColumn24
-            // 
-            this.dataGridViewTextBoxColumn24.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn24.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn24.Name = "dataGridViewTextBoxColumn24";
-            this.dataGridViewTextBoxColumn24.ReadOnly = true;
-            this.dataGridViewTextBoxColumn24.Width = 145;
-            // 
-            // dataGridViewTextBoxColumn23
-            // 
-            this.dataGridViewTextBoxColumn23.DataPropertyName = "Priority";
-            this.dataGridViewTextBoxColumn23.HeaderText = "Priority";
-            this.dataGridViewTextBoxColumn23.Name = "dataGridViewTextBoxColumn23";
-            this.dataGridViewTextBoxColumn23.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn22
-            // 
-            this.dataGridViewTextBoxColumn22.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn22.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn22.Name = "dataGridViewTextBoxColumn22";
-            this.dataGridViewTextBoxColumn22.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn49
-            // 
-            this.dataGridViewTextBoxColumn49.DataPropertyName = "Status";
-            this.dataGridViewTextBoxColumn49.FalseValue = "false";
-            this.dataGridViewTextBoxColumn49.HeaderText = "Status";
-            this.dataGridViewTextBoxColumn49.Name = "dataGridViewTextBoxColumn49";
-            this.dataGridViewTextBoxColumn49.TrueValue = "true";
-            this.dataGridViewTextBoxColumn49.Width = 20;
-            // 
-            // dataGridViewTextBoxColumn27
-            // 
-            this.dataGridViewTextBoxColumn27.DataPropertyName = "Summary";
-            this.dataGridViewTextBoxColumn27.HeaderText = "Summary";
-            this.dataGridViewTextBoxColumn27.Name = "dataGridViewTextBoxColumn27";
-            this.dataGridViewTextBoxColumn27.ReadOnly = true;
-            this.dataGridViewTextBoxColumn27.Width = 145;
-            // 
-            // dataGridViewTextBoxColumn26
-            // 
-            this.dataGridViewTextBoxColumn26.DataPropertyName = "Priority";
-            this.dataGridViewTextBoxColumn26.HeaderText = "Priority";
-            this.dataGridViewTextBoxColumn26.Name = "dataGridViewTextBoxColumn26";
-            this.dataGridViewTextBoxColumn26.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn25
-            // 
-            this.dataGridViewTextBoxColumn25.DataPropertyName = "UID";
-            this.dataGridViewTextBoxColumn25.HeaderText = "UID";
-            this.dataGridViewTextBoxColumn25.Name = "dataGridViewTextBoxColumn25";
-            this.dataGridViewTextBoxColumn25.Visible = false;
+            this.dataGridViewTextBoxColumn51.DataPropertyName = "ID";
+            this.dataGridViewTextBoxColumn51.HeaderText = "ID";
+            this.dataGridViewTextBoxColumn51.Name = "dataGridViewTextBoxColumn51";
+            this.dataGridViewTextBoxColumn51.Visible = false;
             // 
             // PlannerPanel
             // 
@@ -1279,12 +1287,12 @@ namespace MultiDesktop
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.monthCalendar2);
+            this.Controls.Add(this.monthCalendar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "PlannerPanel";
             this.ShowInTaskbar = false;
             this.Text = "Planner Panel";
-            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.todoDataGridView3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.todoDataGridView2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.todoDataGridView1)).EndInit();
@@ -1311,13 +1319,13 @@ namespace MultiDesktop
 
         #endregion
 
-        public PlannerPanel(EventManager eventManager, TodoManager todoManager, TaskManager taskManager) : base("Planner")
+        public PlannerPanel(EventManager eventManager, TodoManager todoManager, GoalPlanner goalManager) : base("Planner")
         {
             InitializeComponent();
 
             eventController = eventManager;
             todoController = todoManager;
-            taskController = taskManager;
+            goalController = goalManager;
 
             dateLabel1.BackColor = weeklyColor(DateTime.Today.DayOfWeek);
             eventDataGridView1.BackgroundColor = weeklyColor(DateTime.Today.DayOfWeek);
@@ -1491,12 +1499,82 @@ namespace MultiDesktop
             lateTodoDataGridView.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
 
             DataView currentGoalView = new DataView();
-            currentGoalView.Table = taskController.TaskTable;
+            currentGoalView.Table = goalController.SGoalTable;
             currentGoalView.RowFilter = String.Format(System.Globalization.DateTimeFormatInfo.InvariantInfo, "Complete = false AND (Convert(Start, System.DateTime) <= #{0}# OR Convert(Due, System.DateTime) <= #{0}#)", DateTime.Today.AddDays(6));
             currentGoalView.Sort = "Start ASC";
 
             goalDataGridView.AutoGenerateColumns = false;
             goalDataGridView.DataSource = currentGoalView;
+        }
+
+        public void expandPanel(IProjectManager projectManager)
+        {
+            projectController = projectManager;
+
+            planningPanel.Size = new Size(757, 476);
+            tableLayoutPanel.Size = new Size(1050, 337);
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 116F));
+
+            for (int i = 0; i < 7; i++)
+            {
+                DataView dataView = new DataView();
+                dataView.Table = projectController.ITaskTable;
+                dataView.RowFilter = String.Format(System.Globalization.DateTimeFormatInfo.InvariantInfo, "Convert(StartDate, System.DateTime) <= #{0}# And Convert(DueDate, System.DateTime) >= #{0}#)", DateTime.Today.AddDays(i));
+                dataView.Sort = "Start ASC";
+
+                DataGridView dataGridView = getITaskDataGridView();
+                dataGridView.AutoGenerateColumns = false;
+                dataGridView.BackgroundColor = weeklyColor(DateTime.Today.AddDays(i).DayOfWeek);
+                dataGridView.DataSource = dataView;
+                dataGridView.DefaultCellStyle.BackColor = weeklyColor(DateTime.Today.AddDays(i).DayOfWeek);
+
+                tableLayoutPanel.Controls.Add(dataGridView, 0, 3);
+            }
+        }
+
+        private DataGridView getITaskDataGridView()
+        {
+            DataGridViewCheckBoxColumn statusGridViewCheckBoxColumn = new DataGridViewCheckBoxColumn();
+            statusGridViewCheckBoxColumn.DataPropertyName = "Complete";
+            statusGridViewCheckBoxColumn.FalseValue = "false";
+            statusGridViewCheckBoxColumn.HeaderText = "Status";
+            statusGridViewCheckBoxColumn.TrueValue = "true";
+            statusGridViewCheckBoxColumn.Width = 20;
+
+            DataGridViewTextBoxColumn summaryGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            summaryGridViewTextBoxColumn.DataPropertyName = "Summary";
+            summaryGridViewTextBoxColumn.HeaderText = "Summary";
+            summaryGridViewTextBoxColumn.ReadOnly = true;
+            summaryGridViewTextBoxColumn.Width = 145;
+
+            DataGridViewTextBoxColumn idGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            idGridViewTextBoxColumn.DataPropertyName = "ID";
+            idGridViewTextBoxColumn.HeaderText = "ID";
+            idGridViewTextBoxColumn.Visible = false;
+
+            DataGridView iTaskDataGridView = new DataGridView();
+            iTaskDataGridView.AllowUserToAddRows = false;
+            iTaskDataGridView.AllowUserToDeleteRows = false;
+            iTaskDataGridView.AllowUserToResizeColumns = false;
+            iTaskDataGridView.AllowUserToResizeRows = false;
+            iTaskDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            iTaskDataGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            iTaskDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            iTaskDataGridView.ColumnHeadersVisible = false;
+            iTaskDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            statusGridViewCheckBoxColumn,
+            summaryGridViewTextBoxColumn,
+            idGridViewTextBoxColumn});
+            iTaskDataGridView.Location = new System.Drawing.Point(3, 137);
+            iTaskDataGridView.MultiSelect = false;
+            iTaskDataGridView.RowHeadersVisible = false;
+            iTaskDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            iTaskDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            iTaskDataGridView.Size = new System.Drawing.Size(144, 197);
+            iTaskDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
+            iTaskDataGridView.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
+            
+            return iTaskDataGridView;
         }
 
         private Color weeklyColor(DayOfWeek day)
@@ -1572,17 +1650,31 @@ namespace MultiDesktop
             if (e.ColumnIndex == 0)
             {
                 DataGridView source = (DataGridView)sender;
-                ITodo todo = todoController.TodoList[source.Rows[e.RowIndex].Cells[3].Value.ToString()];
-                if (todo.Status == TodoStatus.Completed)
-                    todo.Status = TodoStatus.NeedsAction;
-                else
-                {   
-                    if (todo.RecurrenceRules.Count > 0)
-                        todoController.setNextOccurrence(todo);
+                string uid = source.Rows[e.RowIndex].Cells[3].Value.ToString();
+
+                if (!goalController.TaskManager.GTaskList.ContainsKey(uid))
+                {
+                    ITodo todo = todoController.TodoList[uid];
+                    if (todo.Status == TodoStatus.Completed)
+                        todo.Status = TodoStatus.NeedsAction;
                     else
-                        todo.Status = TodoStatus.Completed;
+                    {
+                        if (todo.RecurrenceRules.Count > 0)
+                            todoController.setNextOccurrence(todo);
+                        else
+                            todo.Status = TodoStatus.Completed;
+                    }
+                    todoController.updateTodo(todo);
                 }
-                todoController.updateTodo(todo);
+                else
+                {
+                    GTask task = goalController.TaskManager.GTaskList[uid];
+                    if (task.Todo.Status == TodoStatus.Completed)
+                        task.Todo.Status = TodoStatus.NeedsAction;
+                    else
+                        task.Todo.Status = TodoStatus.Completed;
+                    goalController.TaskManager.updateGTask(task);
+                }
             }
         }
 
@@ -1599,7 +1691,8 @@ namespace MultiDesktop
                     if (info.RowIndex >= 0)
                     {
                         string uid = (string)source.Rows[info.RowIndex].Cells[3].Value;
-                        source.DoDragDrop(uid, DragDropEffects.Move);
+                        if (!goalController.TaskManager.GTaskList.ContainsKey(uid))
+                            source.DoDragDrop(uid, DragDropEffects.Move);
                     }
                 }
             }
@@ -1623,8 +1716,6 @@ namespace MultiDesktop
 
             if (e.Data.GetDataPresent(typeof(string)))
             {
-                Point p = destination.PointToClient(new Point(e.X, e.Y));
-                DataGridView.HitTestInfo info = destination.HitTest(p.X, p.Y);
                 string uid = (string)e.Data.GetData(typeof(string));
 
                 if (uid.Length != 0)
@@ -1682,23 +1773,42 @@ namespace MultiDesktop
 
         private void goalDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == 1)
+            if (e.ColumnIndex == 0)
             {
-                string uid = goalDataGridView.Rows[e.RowIndex].Cells[4].Value.ToString();
-                if (taskController.GTaskList.ContainsKey(uid))
-                {
-                    GTask task = taskController.GTaskList[uid];
+                int id = Int32.Parse(goalDataGridView.Rows[e.RowIndex].Cells[4].Value.ToString());
+                bool check = (bool)goalDataGridView.Rows[e.RowIndex].Cells[0].Value;
+                DialogResult option;
 
-                    if (task.Todo.Status == TodoStatus.Completed)
-                        task.Todo.Status = TodoStatus.NeedsAction;
-                    else
-                        task.Todo.Status = TodoStatus.Completed;
-                    
-                    taskController.updateGTask(task);
-                }
+                if (check)
+                    option = MessageBox.Show("Are you sure that you complete this goal? Completing this goal will complete all of its associated tasks.", "Complete Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 else
+                    option = MessageBox.Show("Are you sure that you did not complete this goal? By doing so will set the status of all of its associated tasks to be incomplete.", "Complete Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                
+                if (option == DialogResult.Yes)
                 {
-                    taskController.completeITask(Int64.Parse(uid));
+                    Goal goal = goalController.GoalList[id];
+                    goal.Complete = check ? 1.0f : 0.0f;
+                    if (goal.GetType() == typeof(LGoal))
+                        goalController.updateLGoal((LGoal)goal);
+                    else
+                        goalController.updateSGoal((SGoal)goal);
+
+                    foreach (GTask task in goalController.TaskManager.GTaskList.Values)
+                    {
+                        if (task.RelatedGoalID == goal.ID)
+                        {
+                            if (task.Todo.Status == TodoStatus.Completed && !check)
+                            {
+                                task.Todo.Status = TodoStatus.NeedsAction;
+                                goalController.TaskManager.updateGTask(task);
+                            }
+                            else if (task.Todo.Status == TodoStatus.NeedsAction && check)
+                            {
+                                task.Todo.Status = TodoStatus.Completed;
+                                goalController.TaskManager.updateGTask(task);
+                            }
+                        }
+                    }
                 }
             }
         }

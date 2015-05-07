@@ -28,7 +28,7 @@ namespace MultiDesktop
         public List<Subcategory> Subcategories
         {
             get;
-            internal set;
+            private set;
         }
     }
 }
