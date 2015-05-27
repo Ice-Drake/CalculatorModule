@@ -35,6 +35,7 @@ namespace MultiDesktop
 		{
             Dictionary<string, ArrayList> collection = new Dictionary<string, ArrayList>();
             ArrayList projectPlugins = new ArrayList();
+            ArrayList databasePlugins = new ArrayList();
             ArrayList panelPlugins = new ArrayList();
 			
             foreach(XmlNode node in section.ChildNodes)
@@ -46,13 +47,19 @@ namespace MultiDesktop
                     //passing in the type name specified in the attribute value
                     object plugObject = Activator.CreateInstance(Type.GetType(node.Attributes["name"].Value));
 
-                    //IProjectPanel Plugin
-                    if (node.Attributes["type"].Value.Equals("IProjDBManager"))
+                    //Project Database Plugin
+                    if (node.Attributes["type"].Value.Equals("IProjDatabase"))
                     {
                         //Add this to the project plugin list
                         projectPlugins.Add(plugObject);
                     }
-                    //IPanel Plugin
+                    //Database Plugin
+                    else if (node.Attributes["type"].Value.Equals("IDatabasePlugin"))
+                    {
+                        //Add this to the project plugin list
+                        databasePlugins.Add(plugObject);
+                    }
+                    //Panel Plugin
                     else if (node.Attributes["type"].Value.Equals("IPanelPlugin"))
                     {
                         //Add this to the panel plugin list
@@ -66,7 +73,8 @@ namespace MultiDesktop
 				}
 			}
 
-            collection.Add("IProjDBManager", projectPlugins);
+            collection.Add("IProjDatabase", projectPlugins);
+            collection.Add("IDatabasePlugin", databasePlugins);
             collection.Add("IPanelPlugin", panelPlugins);
 
 			return collection;

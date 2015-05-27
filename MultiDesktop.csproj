@@ -191,7 +191,6 @@
     <None Include="Calendars\US Holidays.ics">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="packages.config" />
     <None Include="User.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -378,6 +377,17 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>Goal.mdf</DependentUpon>
     </Content>
+    <None Include="Resources\Birthday.png" />
+    <None Include="Resources\Cake.png" />
+    <None Include="Resources\Camera.png" />
+    <None Include="Resources\Chess.png" />
+    <None Include="Resources\Football.png" />
+    <None Include="Resources\Gameboy.png" />
+    <None Include="Resources\Group.png" />
+    <None Include="Resources\Holiday.png" />
+    <None Include="Resources\LifeSaver.png" />
+    <None Include="Resources\Present.png" />
+    <None Include="Resources\Soccer.png" />
     <Content Include="Setting.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -47,9 +47,11 @@ namespace MultiDesktop
 
         private SettingManager settingManager;
         private SettingDialog settingDialog;
+        private IProjectManager iProjectManager;
+        private SortedList<string, MainPanel> panelList;
         private SortedList<JournalBook, JournalPanel> journalPanels;
-        private List<IProjDBManager> projectPlugins;
         private List<IPanelPlugin> panelPlugins;
+        private List<IDatabasePlugin> databasePlugins;
 
         //Member variables
         /// <summary>
@@ -413,6 +415,8 @@ namespace MultiDesktop
 
         public void loadPanels()
         {
+            panelList = new SortedList<string, MainPanel>();
+
             CalendarManager calendarManager = settingManager.CalendarManager;
             GoalPlanner goalPlanner = settingManager.GoalManager;
 
@@ -420,18 +424,23 @@ namespace MultiDesktop
 
             CalendarPanel calendarPanel = new CalendarPanel(calendarManager.EventManager);
             panelDropDownButton.DropDownItems.Add(calendarPanel.MenuItem);
+            panelList.Add("Calendar", calendarPanel);
 
             TodoPanel todoPanel = new TodoPanel(calendarManager.TodoManager, goalPlanner.TaskManager);
             panelDropDownButton.DropDownItems.Add(todoPanel.MenuItem);
+            panelList.Add("Todo", todoPanel);
 
             JournalManagerPanel journalManagerPanel = new JournalManagerPanel(calendarManager);
             panelDropDownButton.DropDownItems.Add(journalManagerPanel.MenuItem);
+            panelList.Add("Journal", journalManagerPanel);
             
             PlannerPanel plannerPanel = new PlannerPanel(calendarManager.EventManager, calendarManager.TodoManager, settingManager.GoalManager);
             panelDropDownButton.DropDownItems.Add(plannerPanel.MenuItem);
+            panelList.Add("Planner", plannerPanel);
 
             GoalPanel goalPanel = new GoalPanel(goalPlanner);
             panelDropDownButton.DropDownItems.Add(goalPanel.MenuItem);
+            panelList.Add("Goal", goalPanel);
 
             CalendarForm.SettingController = settingManager;
             TodoForm.SettingController = settingManager;
@@ -478,25 +487,48 @@ namespace MultiDesktop
         {
             //Retrieve a plugin collection using our custom Configuration section handler
             Dictionary<string, ArrayList> plugins = (Dictionary<string, ArrayList>)System.Configuration.ConfigurationManager.GetSection("plugins");
-            projectPlugins = new List<IProjDBManager>();
             panelPlugins = new List<IPanelPlugin>();
+            databasePlugins = new List<IDatabasePlugin>();
 
             pluginDropDownButton.DropDownItems.Clear();
 
             //Create the delegate right from the start
             //no need to create one for each menu item separately
-            EventHandler projectHandler = new EventHandler(OnProjectPluginClick);
             EventHandler panelHandler = new EventHandler(OnPanelPluginClick);
 
-            foreach (IProjDBManager plugin in plugins["IProjDBManager"])
+            if (plugins["IProjDatabase"].Count > 0)
             {
-                projectPlugins.Add(plugin);
+                iProjectManager = new IProjectManager();
+
+                foreach (IProjDatabase plugin in plugins["IProjDatabase"])
+                {
+                    iProjectManager.addDatabase(plugin);
+
+                    panelPlugins.Add(plugin);
+                    ToolStripMenuItem item = new ToolStripMenuItem();
+                    item.Name = plugin.PanelName;
+                    item.CheckOnClick = true;
+                    item.Size = new System.Drawing.Size(152, 22);
+                    item.Text = plugin.PanelName;
+                    item.Click += new System.EventHandler(panelHandler);
+                    pluginDropDownButton.DropDownItems.Add(item);
+                    plugin.PanelClosing += new FormClosingEventHandler(plugin_PanelClosing);
+                }
+
+                ((PlannerPanel)panelList["Planner"]).expandPanel(iProjectManager);
+            }
+
+            foreach (IDatabasePlugin plugin in plugins["IDatabasePlugin"])
+            {
+                databasePlugins.Add(plugin);
+
+                panelPlugins.Add(plugin);
                 ToolStripMenuItem item = new ToolStripMenuItem();
                 item.Name = plugin.PanelName;
                 item.CheckOnClick = true;
                 item.Size = new System.Drawing.Size(152, 22);
                 item.Text = plugin.PanelName;
-                item.Click += new System.EventHandler(projectHandler);
+                item.Click += new System.EventHandler(panelHandler);
                 pluginDropDownButton.DropDownItems.Add(item);
                 plugin.PanelClosing += new FormClosingEventHandler(plugin_PanelClosing);
             }
@@ -519,33 +551,18 @@ namespace MultiDesktop
 
         public void loadPluginDatabase()
         {
-            foreach (IProjDBManager plugin in projectPlugins)
+            if (iProjectManager != null)
+            {
+                iProjectManager.loadDatabase();
+            }
+
+            foreach(IDatabasePlugin plugin in databasePlugins)
             {
                 plugin.loadDatabase();
             }
         }
 
         #region Plugin Event Handler
-
-        private void OnProjectPluginClick(object sender, EventArgs args)
-        {
-            string pluginName = ((ToolStripMenuItem)sender).Text;
-
-            foreach (IProjDBManager plugin in projectPlugins)
-            {
-                if (plugin.PanelName == pluginName)
-                {
-                    if (((ToolStripMenuItem)sender).Checked)
-                    {
-                        plugin.showPanel();
-                    }
-                    else
-                    {
-                        plugin.hidePanel();
-                    }
-                }
-            }
-        }
 
         private void OnPanelPluginClick(object sender, EventArgs args)
         {

@@ -11,65 +11,69 @@ namespace MultiDesktop
     public class IProjectManager
     {
         public DataTable ITaskTable { get; private set; }
-        public SortedList<long, ITask> ITaskList { get; private set; }
-        private List<IProjDBManager> projDBList;
+        public SortedList<string, ITask> ITaskList { get; private set; }
+        private List<IProjDatabase> projDBList;
         
         public IProjectManager()
         {
-            ITaskList = new SortedList<long, ITask>();
-            projDBList = new List<IProjDBManager>();
+            ITaskList = new SortedList<string, ITask>();
+            projDBList = new List<IProjDatabase>();
             
             ITaskTable = new DataTable();
             ITaskTable.TableName = "ITask Table";
-            ITaskTable.Columns.Add("ID", typeof(long));
+            ITaskTable.Columns.Add("UID", typeof(string));
             ITaskTable.Columns.Add("Summary", typeof(string));
             ITaskTable.Columns.Add("Start", typeof(DateTime));
             ITaskTable.Columns.Add("Due", typeof(DateTime));
             ITaskTable.Columns.Add("Complete", typeof(bool));
         }
 
-        public bool addDatabase(IProjDBManager projDBManager)
+        public bool addDatabase(IProjDatabase projDatabase)
         {
-            if (projDBList.Contains(projDBManager))
+            if (projDBList.Contains(projDatabase))
                 return false;
-
-            projDBManager.loadDatabase();
-            projDBList.Add(projDBManager);
-
-            ushort projDBID = (ushort)projDBList.IndexOf(projDBManager);
-
-            foreach (uint taskID in projDBManager.ITaskList.Keys)
-            {
-                ITask task = projDBManager.ITaskList[taskID];
-                long newTaskID = taskID + projDBID * ((long)uint.MaxValue + 1);
-                ITaskList.Add(newTaskID, task);
-                addITask(task, newTaskID);
-            }
-
-            projDBManager.DatabaseChanged += new ITaskHandler(projDBManager_DatabaseChanged);
+            projDBList.Add(projDatabase);
 
             return true;
         }
 
-        public bool completeITask(long id)
+        public void loadDatabase()
         {
-            if (!ITaskList.ContainsKey(id))
+            for (int i = 0; i < projDBList.Count; i++)
+            {
+                IProjDatabase projDatabase = projDBList[i];
+
+                foreach (uint taskID in projDatabase.ITaskList.Keys)
+                {
+                    ITask task = projDatabase.ITaskList[taskID];
+                    string newTaskID = taskID.ToString().Insert(0, i.ToString());
+                    ITaskList.Add(newTaskID, task);
+                    addITask(task, newTaskID);
+                }
+
+                projDatabase.DatabaseChanged += new ITaskHandler(projDBManager_DatabaseChanged);
+            }
+        }
+
+        public bool completeITask(string uid)
+        {
+            if (!ITaskList.ContainsKey(uid))
                 return false;
 
-            ITaskList[id].Complete = true;
+            ITaskList[uid].Complete = true;
 
             // Find the corresponding Task row in the table
-            DataRow existingRow = ITaskTable.Select(String.Format("UID = {0}", id))[0];
+            DataRow existingRow = ITaskTable.Select(String.Format("UID = {0}", uid))[0];
             existingRow["Complete"] = true;
 
             return true;
         }
 
         // Add ITask to the ITaskTable
-        private void addITask(ITask newTask, long id)
+        private void addITask(ITask newTask, string uid)
         {
             DataRow newRow = ITaskTable.NewRow();
-            newRow["ID"] = id;
+            newRow["UID"] = uid;
             newRow["Summary"] = newTask.Summary;
             newRow["Start"] = newTask.StartDate.ToShortDateString();
             newRow["Due"] = newTask.DueDate.ToShortDateString();
@@ -77,25 +81,25 @@ namespace MultiDesktop
             ITaskTable.Rows.Add(newRow);
         }
 
-        private void projDBManager_DatabaseChanged(IProjDBManager sender, ITask task, StatusArgs e)
+        private void projDBManager_DatabaseChanged(IProjDatabase sender, ITask task, StatusArgs e)
         {
             if (e.Status == ITaskStatus.Added)
             {
                 uint taskID = sender.ITaskList.Keys[sender.ITaskList.IndexOfValue(task)];
-                long id = taskID + projDBList.IndexOf(sender) * ((long)uint.MaxValue + 1);
-                ITaskList.Add(id, task);
-                addITask(task, id);
+                string uid = taskID.ToString().Insert(0, projDBList.IndexOf(sender).ToString());
+                ITaskList.Add(uid, task);
+                addITask(task, uid);
             }
             else
             {
-                long id = ITaskList.Keys[ITaskList.IndexOfValue(task)];
+                string uid = ITaskList.Keys[ITaskList.IndexOfValue(task)];
 
                 // Find the corresponding Task row in the table
-                int rowID = ITaskTable.Rows.IndexOf(ITaskTable.Select(String.Format("ID = {0}", id))[0]);
+                int rowID = ITaskTable.Rows.IndexOf(ITaskTable.Select(String.Format("UID = {0}", uid))[0]);
 
                 if (e.Status == ITaskStatus.Removed)
                 {
-                    ITaskList.Remove(id);
+                    ITaskList.Remove(uid);
                     ITaskTable.Rows.RemoveAt(rowID);
                 }
                 else //if (e.Status == ITaskStatus.Modified)

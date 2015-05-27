@@ -1321,7 +1321,7 @@ namespace MultiDesktop
             todoController = todoManager;
             goalController = goalManager;
 
-            monthCalendar = eventController.Calendar;
+            monthCalendar = new Library.MonthCalendar(eventController.Calendar.Dates);
 
             InitializeComponent();
 
