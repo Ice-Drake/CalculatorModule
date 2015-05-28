@@ -1,18 +1,30 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
 
 namespace MultiDesktop
 {
-    public partial class Calculator : UserControl
+    public class Calculator
     {
+        public string Console { get; private set; }
+
         public Calculator()
         {
-            InitializeComponent();
+
+        }
+
+        public void clear()
+        {
+            Console = "";
+        }
+
+        public double compute(string input)
+        {
+            Postfixer postFixer = new Postfixer();
+            postFixer.convert(input);
+
+
+
+            return 0;
         }
     }
 }
