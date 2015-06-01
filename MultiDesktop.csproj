@@ -80,7 +80,9 @@
     </Compile>
     <Compile Include="Calculator.cs" />
     <Compile Include="Calendar.cs" />
-    <Compile Include="CalculatorPanel.cs" />
+    <Compile Include="CalculatorPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Converter.cs" />
     <Compile Include="JournalBookForm.cs">
       <SubType>Form</SubType>
@@ -348,7 +350,7 @@
       <Project>{898ecb12-d464-4514-ae2e-45fe430fe04e}</Project>
       <Name>Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PluginSDK\PluginSDK.csproj">
+    <ProjectReference Include="..\..\PluginSDK\PluginSDK.csproj">
       <Project>{67161f85-556e-4def-9899-6464bdc55773}</Project>
       <Name>PluginSDK</Name>
     </ProjectReference>
