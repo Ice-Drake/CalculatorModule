@@ -17,11 +17,13 @@ namespace MultiDesktop
 
         }
 
+        private readonly string symbols = "+-/*%^";
+        private readonly string SIN = "sin";
+        private readonly string COS = "cos";
+        private readonly string TAN = "tan";
+        private readonly string LOG = "log";
+        private readonly string FACTORIAL = "!";
 
-        private readonly string precedence2 = "+-";
-        private readonly string precedence3 = "*/%";
-        private readonly string precedence4 = "^!";
-        
 
         private double calculate;
         private double number1;
@@ -131,175 +133,116 @@ namespace MultiDesktop
 
         public double compute(string input)
         {
-            var operands = new Stack<string>();
-            var operators = new Stack<string>();
+            Postfixer postFixer = new Postfixer();
+            List<string> postFixed = postFixer.convert(input);
+            var stack = new Stack<string>();
 
 
-            for (int i = 0; i < input.Length; i++)
+            for (int i = 0; i < postFixed.Count; i++)
             {
-                if (Char.IsDigit(input[i]) || input[i].Equals('.')) //If this character is a number or decimal point
+                double retNum;
+                if (Double.TryParse(postFixed[i], out retNum)) //If incoming character is a number
                 {
-                    string result = "";
-                    while (Char.IsDigit(input[i]) || input[i].Equals('.')) //Concat additional digits to string result  (Allows us to get numbers with more than 1 digit)
-                    {
-                        result += input[i];
-                        if (i < input.Length - 1)
-                        {
-                            i++;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    operands.Push(result);
-
-                    if (!(i == input.Length - 1))
-                    {
-                        i--; //Don't wanna skip the next operator; the for loop will increment the i back
-                    }
+                    stack.Push(postFixed[i]);
                 }
 
-                else if (operators.Count == 0 || input[i].Equals('(')) //If operator stack is empty or input is left parenthesis, push the operator onto the stack
+                else if (symbols.Contains(postFixed[i])) //Else If incoming character is an arithmetic symbol
                 {
-                    operators.Push(input[i].ToString());
+                    string operand = operate(stack.Pop(), stack.Pop(), postFixed[i]).ToString();
+                    stack.Push(operand);
                 }
-
-                else if (input[i].Equals(')')) //If this character is a closing parenthesis
+                
+                else //Else it is a function (Sin, log, etc)
                 {
-                    while (!operators.Peek().Equals("(")) //While the top of the operators stack is not an opening parenthesis
-                    {
-                        double anOperand = operate(operands.Pop(), operands.Pop(), operators.Pop());
-                        operands.Push(anOperand.ToString());
-                    }
-                    operators.Pop(); //Disposes of '('
-                }
-
-                else //If not ),(, number, or trig function, this character is an operator
-                {
-                    int precedence = comparePrecedence(input[i].ToString(), operators.Peek());
-                    if (precedence > 0)  //This character has higher precedence
-                    {
-                        operators.Push(input[i].ToString());
-                    }
-                    else if (precedence < 0) //This character has lower precedence
-                    {
-                        double result = operate(operands.Pop(), operands.Pop(), operators.Pop());
-                        operands.Push(result.ToString());
-                        i--;
-                    }
-                    else //This character has the same precedence
-                    {
-                        if (input[i].Equals('^')) //Right associativity
-                        {
-                            operators.Push(input[i].ToString());
-                        }
-                        else //Left associativity
-                        {
-                            double result = operate(operands.Pop(), operands.Pop(), operators.Pop());
-                            operands.Push(result.ToString());
-                            operators.Push(input[i].ToString());
-                        }
-                    }
+                    string operand = performFunction(stack.Pop(), postFixed[i]).ToString();
+                    stack.Push(operand);
                 }
             }
-            
 
-            double answer = 0;
-            while (operands.Count >= 2) //While operand stack still has 2 or more numbers, perform operations
-            {
-                answer = operate(operands.Pop(), operands.Pop(), operators.Pop());
-                if (operators.Count != 0) //If there are still more operators, push the result into the operand stack
-                {
-                    operands.Push(answer.ToString());
-                }
-            }
-            return answer; 
-
+            return Convert.ToDouble(stack.Pop());
         }
 
 
+        /*
+         * Performs a basic arithmetic operation
+         * <param> anOperand1 an operand
+         * <param> anOperand2 another operand
+         * <param> anOperator the operator
+         * <return> the answer of the operation
+         */
         private double operate(string anOperand1, string anOperand2, string anOperator)
         {
-
             double operand1 = Convert.ToDouble(anOperand1);
             double operand2 = Convert.ToDouble(anOperand2);
-            double answer = 0;
+            double output = 0;
 
             if (anOperator.Equals("+"))
             {
-                answer = operand2 + operand1;
+                output = operand2 + operand1;
             }
             else if (anOperator.Equals("-"))
             {
-                answer = operand2 - operand1;
+                output = operand2 - operand1;
             }
             else if (anOperator.Equals("*"))
             {
-                answer = operand2 * operand1;
+                output = operand2 * operand1;
             }
             else if (anOperator.Equals("/"))
             {
-                answer = operand2 / operand1;
+                output = operand2 / operand1;
             }
             else if (anOperator.Equals("%"))
             {
-                answer = operand2 % operand1;
+                output = operand2 % operand1;
             }
             else if (anOperator.Equals("^"))
             {
-                answer = Math.Pow(operand2,operand1);
+                output = Math.Pow(operand2,operand1);
             }
-            return answer;
+            return output;
         }
 
-        /*
-         * Compares operator precedence
-         * <param> operator1 the operator to compare with
-         * <param> operator2 the operator at the top of the operators stack
-         * <return> positive number if operator1 has higher precedence, negative number if lower precedence, 0 if same precedence
-         */
-        private int comparePrecedence(string operator1, string operator2)
+        private double performFunction(string anOperand, string function)
         {
-            int thisPrecedence;
-            int topPrecedence;
-            if (precedence4.Contains(operator1))
+            double operand = Convert.ToDouble(anOperand);
+            if (function.Equals(SIN))
             {
-                thisPrecedence = 4;
+                return Math.Sin(operand);
             }
-            else if (precedence3.Contains(operator1))
+
+            else if(function.Equals(COS))
             {
-                thisPrecedence = 3;
+                return Math.Cos(operand);
             }
-            else if (precedence2.Contains(operator1))
+
+            else if (function.Equals(TAN))
             {
-                thisPrecedence = 2;
+                return Math.Tan(operand);
+            }
+
+            else if (function.Equals("!"))
+            {
+                return factorial((int) operand);
+            }
+
+            else
+            {
+                return Math.Log10(operand);
+            }
+        }
+
+
+        private int factorial(int n)
+        {
+            if (n == 0)
+            {
+                return 1;
             }
             else
             {
-                thisPrecedence = 1;
+                return n * factorial(n - 1);
             }
-
-            if (precedence4.Contains(operator2))
-            {
-                topPrecedence = 4;
-            }
-            else if (precedence3.Contains(operator2))
-            {
-                topPrecedence = 3;
-            }
-            else if (precedence2.Contains(operator2))
-            {
-                topPrecedence = 2;
-            }
-            else
-            {
-                topPrecedence = 1;
-            }
-
-            int comparison = thisPrecedence.CompareTo(topPrecedence);
-            return comparison;
         }
     }
 }
