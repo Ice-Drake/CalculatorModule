@@ -56,7 +56,7 @@ namespace MultiDesktop
                     string operand = operate(stack.Pop(), stack.Pop(), postFixed[i]).ToString();
                     stack.Push(operand);
                 }
-                
+
                 else //Else it is a function (Sin, log, etc)
                 {
                     string operand = performFunction(stack.Pop(), postFixed[i]).ToString();
@@ -103,7 +103,7 @@ namespace MultiDesktop
             }
             else if (anOperator.Equals("^"))
             {
-                output = Math.Pow(operand2,operand1);
+                output = Math.Pow(operand2, operand1);
             }
             return output;
         }
@@ -116,7 +116,7 @@ namespace MultiDesktop
                 return Math.Sin(operand);
             }
 
-            else if(function.Equals(COS))
+            else if (function.Equals(COS))
             {
                 return Math.Cos(operand);
             }
@@ -128,9 +128,9 @@ namespace MultiDesktop
 
             else if (function.Equals(FACTORIAL))
             {
-                return factorial((int) operand);
+                return factorial((int)operand);
             }
-                
+
             else if (function.Equals(ASIN))
             {
                 return Math.Asin(operand);
