@@ -9,127 +9,32 @@ namespace MultiDesktop
     {
         public string Console { get; private set; }
 
-        Stack stack = new Stack(); //The normal stack 
-        Stack reverse = new Stack(); //The other stack
-
         public Calculator()
         {
 
         }
 
-        private readonly string symbols = "+-/*%^";
+        private readonly string symbols = "+−/*%^"; //The subtraction symbol is character U+2212 on the Arial Character Map.
         private readonly string SIN = "sin";
         private readonly string COS = "cos";
         private readonly string TAN = "tan";
         private readonly string LOG = "log";
         private readonly string FACTORIAL = "!";
-
-
-        private double calculate;
-        private double number1;
-        private double number2;
-        private string total;
-        private string final;
-        private char operation;
-        private bool input = true;
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Reset();
-            check();
-            reverseStack();
-
-            while (stack.Count != 0)
-            {
-                reverse.Push(stack.Pop());
-            }
-
-        }
-
-        private void Reset()
-        {
-            stack.Clear();
-            reverse.Clear();
-            calculate = 0;
-            number1 = 0;
-            number2 = 0;
-            total = " ";
-            final = " ";
-            input = true;
-        }
-
-        private void reverseStack()
-        {
-            while (stack.Count != 0)
-            {
-                reverse.Push(stack.Pop());
-            }
-        }
-
-        private void check()
-        {
-            while (reverse.Count != 0)
-            {
-                stack.Push(reverse.Pop());
-            }
-        }
-
-        private void checkOther(char e)
-        {
-            switch (e)
-            {
-                case '+':
-                    while (reverse.Count != 0)
-                    {
-                        stack.Push(reverse.Pop());
-                    }
-
-                    reverse.Push(e);
-
-                    break;
-
-                case '-':
-                    while (reverse.Count != 0)
-                    {
-                        stack.Push(reverse.Pop());
-                    }
-
-                    reverse.Push(e);
-
-                    break;
-
-                case '*':
-                    while (reverse.Count != 0)
-                    {
-                        stack.Push(reverse.Pop());
-                    }
-
-                    reverse.Push(e);
-
-                    break;
-
-                case '/':
-                    while (reverse.Count != 0)
-                    {
-                        stack.Push(reverse.Pop());
-                    }
-
-                    reverse.Push(e);
-
-                    break;
-
-                case '(':
-                    reverse.Push(e);
-                    {
-                        break;
-                    }
-            }
-        }
+        private readonly string ASIN = "asin";
+        private readonly string ACOS = "acos";
+        private readonly string ATAN = "atan";
+        private readonly string SINH = "sinh";
+        private readonly string COSH = "cosh";
+        private readonly string TANH = "tanh";
+        private readonly string LN = "ln";
+        private readonly string NEGATIVE = "-"; //This is a hyphen
+        private readonly string SQRT = "√";
 
         public void clear()
         {
             Console = "";
         }
+
 
         public double compute(string input)
         {
@@ -180,7 +85,7 @@ namespace MultiDesktop
             {
                 output = operand2 + operand1;
             }
-            else if (anOperator.Equals("-"))
+            else if (anOperator.Equals("−"))
             {
                 output = operand2 - operand1;
             }
@@ -221,14 +126,59 @@ namespace MultiDesktop
                 return Math.Tan(operand);
             }
 
-            else if (function.Equals("!"))
+            else if (function.Equals(FACTORIAL))
             {
                 return factorial((int) operand);
+            }
+                
+            else if (function.Equals(ASIN))
+            {
+                return Math.Asin(operand);
+            }
+
+            else if (function.Equals(ACOS))
+            {
+                return Math.Acos(operand);
+            }
+
+            else if (function.Equals(ATAN))
+            {
+                return Math.Atan(operand);
+            }
+
+            else if (function.Equals(SINH))
+            {
+                return Math.Sinh(operand);
+            }
+
+            else if (function.Equals(COSH))
+            {
+                return Math.Cosh(operand);
+            }
+
+            else if (function.Equals(TANH))
+            {
+                return Math.Tanh(operand);
+            }
+
+            else if (function.Equals(LOG))
+            {
+                return Math.Log10(operand);
+            }
+
+            else if (function.Equals(LN))
+            {
+                return Math.Log(operand, Math.E);
+            }
+
+            else if (function.Equals(NEGATIVE))
+            {
+                return 0.0 - operand;
             }
 
             else
             {
-                return Math.Log10(operand);
+                return Math.Sqrt(operand);
             }
         }
 

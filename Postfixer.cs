@@ -6,19 +6,14 @@ namespace MultiDesktop
 {
     public class Postfixer
     {
-        public Stack<string> Operator { get; private set; }
-        public Stack<string> Operand { get; private set; }
-
-
-        private readonly string precedence2 = "+-";
+        private readonly string precedence2 = "+−";
         private readonly string precedence3 = "*/%";
-        private readonly string precedence4 = "^!sincostanlog";
-        private readonly string[] tokenList = { "sin", "cos", "tan", "log" };
+        private readonly string precedence4 = "^!sincostanloglnasinacosatansinhcoshtanh-√"; //So ugly. Will think of better way later.
+        private readonly string[] tokenList = { "sin", "cos", "tan", "log", "ln", "asin", "acos", "atan", "sinh", "cosh", "tanh"  };
 
         public Postfixer()
         {
-            Operator = new Stack<string>();
-            Operand = new Stack<string>();
+
         }
 
         public List<string> convert(string infix)
@@ -34,7 +29,7 @@ namespace MultiDesktop
                     i++;
                 }
 
-                if (Char.IsDigit(infix[i]))
+                if (Char.IsDigit(infix[i]) || infix[i].Equals('.'))
                 {
                     string number = infix[i].ToString();
                     while ((i + 1) < infix.Length && (Char.IsDigit(infix[i + 1]) || infix[i + 1].Equals('.'))) //Concat additional digits to string result  (Allows us to get numbers with more than 1 digit)
@@ -45,12 +40,13 @@ namespace MultiDesktop
                     postFix.Add(number);
                 }
 
+                //May cause issues with stored variables. (This only works with trig functions)
                 else if(Char.IsLetter(infix[i]))
                 {
                     aToken += infix[i];
                     foreach (string token in tokenList)
                     {
-                        if (aToken.Equals(token)) //If aToken is a COMPLETE token (E.G. sin and not si)
+                        if (aToken.Equals(token) && !Char.IsLetter(infix[i+1])) //If aToken is a COMPLETE token (E.G. sin and not si)
                         {
                             operators.Push(aToken);
                             aToken = ""; //Reset aToken
@@ -58,7 +54,7 @@ namespace MultiDesktop
                     }
                 }
 
-                else if (operators.Count == 0 || infix[i].Equals('(') || infix[i].Equals('!'))
+                else if (operators.Count == 0 || infix[i].Equals('(') || precedence4.Contains(infix[i].ToString()))
                 {
                     operators.Push(infix[i].ToString());
                 }
@@ -86,17 +82,11 @@ namespace MultiDesktop
                     }
                     else//This character has the same precedence
                     {
-                        if (infix[i].Equals('^')) //Right associativity
-                        {
-                            operators.Push(infix[i].ToString());
-                        }
-                        else //Left associativity
-                        {
-                            postFix.Add(operators.Pop());
-                            operators.Push(infix[i].ToString());
-                        }
+                        postFix.Add(operators.Pop());
+                        operators.Push(infix[i].ToString());
                     }
                 }
+                
             }
 
 
