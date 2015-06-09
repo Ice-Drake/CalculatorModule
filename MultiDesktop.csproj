@@ -53,11 +53,11 @@
   <ItemGroup>
     <Reference Include="antlr.runtime, Version=2.7.6.2, Culture=neutral, PublicKeyToken=1790ba318ebc5d56, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\antlr.runtime.dll</HintPath>
+      <HintPath>.\antlr.runtime.dll</HintPath>
     </Reference>
     <Reference Include="DDay.iCal, Version=1.0.1.490, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DDay.iCal.dll</HintPath>
+      <HintPath>.\DDay.iCal.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -80,7 +80,9 @@
     </Compile>
     <Compile Include="Calculator.cs" />
     <Compile Include="Calendar.cs" />
-    <Compile Include="CalculatorPanel.cs" />
+    <Compile Include="CalculatorPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Converter.cs" />
     <Compile Include="JournalBookForm.cs">
       <SubType>Form</SubType>
@@ -180,9 +182,6 @@
     <Compile Include="VisionManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Calendars\Birthdays.ics">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Calendars\Personal.ics">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

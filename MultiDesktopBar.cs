@@ -33,7 +33,6 @@ namespace MultiDesktop
         private ToolStrip sideToolbar;
         private ToolStripDropDownButton panelDropDownButton;
         private ToolStripButton desktopButton;
-        private ToolStripMenuItem calculatorMenu;
         private ToolStripMenuItem musicPlayerMenu;
         private ToolStripMenuItem pictureGalleryMenu;
         private ToolStripMenuItem rssFeedMenu;
@@ -95,7 +94,6 @@ namespace MultiDesktop
             this.newJournalButton = new System.Windows.Forms.ToolStripButton();
             this.newCalendarButton = new System.Windows.Forms.ToolStripButton();
             this.panelDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
-            this.calculatorMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.musicPlayerMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureGalleryMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.rssFeedMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -250,7 +248,6 @@ namespace MultiDesktop
             // 
             this.panelDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.panelDropDownButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.calculatorMenu,
             this.musicPlayerMenu,
             this.pictureGalleryMenu,
             this.rssFeedMenu,
@@ -259,14 +256,6 @@ namespace MultiDesktop
             this.panelDropDownButton.Name = "panelDropDownButton";
             this.panelDropDownButton.Size = new System.Drawing.Size(24, 52);
             this.panelDropDownButton.Text = "Panels";
-            // 
-            // calculatorMenu
-            // 
-            this.calculatorMenu.CheckOnClick = true;
-            this.calculatorMenu.Name = "calculatorMenu";
-            this.calculatorMenu.Size = new System.Drawing.Size(152, 22);
-            this.calculatorMenu.Text = "Calculator";
-            this.calculatorMenu.Click += new System.EventHandler(this.calculatorMenu_Click);
             // 
             // musicPlayerMenu
             // 
@@ -466,6 +455,10 @@ namespace MultiDesktop
 
             calendarManager.JournalManager.JournalBookCreate += JournalManager_JournalBookCreate;
             calendarManager.JournalManager.JournalBookRemove += JournalManager_JournalBookRemove;
+
+            CalculatorPanel calculatorPanel = new CalculatorPanel();
+            panelDropDownButton.DropDownItems.Add(calculatorPanel.MenuItem);
+            panelList.Add("Calculator", calculatorPanel);
         }
 
         private void JournalManager_JournalBookCreate(JournalBook sender)
@@ -642,12 +635,6 @@ namespace MultiDesktop
         {
             JournalBookForm newForm = new JournalBookForm();
             newForm.Show();
-        }
-
-        private void calculatorMenu_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Not implemented till Gamma Version");
-            calculatorMenu.Checked = false;
         }
 
         private void musicPlayerMenu_Click(object sender, EventArgs e)
