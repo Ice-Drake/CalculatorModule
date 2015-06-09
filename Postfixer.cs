@@ -46,6 +46,7 @@ namespace MultiDesktop
                     aToken += infix[i];
                     foreach (string token in tokenList)
                     {
+                        //Possible bug: tansin0 will NOT work, but tan sin 0 will. tan(sin 0) also works...
                         if (aToken.Equals(token) && !Char.IsLetter(infix[i+1])) //If aToken is a COMPLETE token (E.G. sin and not si)
                         {
                             operators.Push(aToken);

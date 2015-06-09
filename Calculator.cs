@@ -8,10 +8,13 @@ namespace MultiDesktop
     public class Calculator
     {
         public string Console { get; private set; }
+        public List<string> Variables { get; private set; }
+        public List<double> Values { get; private set; }
 
         public Calculator()
         {
-
+            Variables = new List<string>();
+            Values = new List<double>();
         }
 
         private readonly string symbols = "+−/*%^"; //The subtraction symbol is character U+2212 on the Arial Character Map.
@@ -29,17 +32,34 @@ namespace MultiDesktop
         private readonly string LN = "ln";
         private readonly string NEGATIVE = "-"; //This is a hyphen
         private readonly string SQRT = "√";
+        private readonly string EQUAL = "=";
+        private readonly string precedence2 = "+−";
+        private readonly string precedence3 = "*/%";
+        private readonly string precedence4 = "^!sincostanloglnasinacosatansinhcoshtanh-√"; //So ugly. Will think of better way later.
+        private readonly string[] tokenList = { "sin", "cos", "tan", "log", "ln", "asin", "acos", "atan", "sinh", "cosh", "tanh" };
+
 
         public void clear()
         {
             Console = "";
         }
-
+        
+        public void resetVariables()
+        {
+            Variables.Clear();
+            Values.Clear();
+        }
 
         public double compute(string input)
         {
-            Postfixer postFixer = new Postfixer();
-            List<string> postFixed = postFixer.convert(input);
+            bool storeVariable = false;
+            if (input.Contains(EQUAL)) //If it contains an equal sign, then the user is trying to store a variable
+            {
+                Variables.Add(input.Substring(0, input.IndexOf(EQUAL)));
+                input = input.Substring(input.IndexOf(EQUAL) + 1);
+                storeVariable = true;
+            }
+            List<string> postFixed = convert(input);
             var stack = new Stack<string>();
 
 
@@ -62,6 +82,11 @@ namespace MultiDesktop
                     string operand = performFunction(stack.Pop(), postFixed[i]).ToString();
                     stack.Push(operand);
                 }
+            }
+
+            if (storeVariable)
+            {
+                Values.Add(Convert.ToDouble(stack.Peek()));
             }
 
             return Convert.ToDouble(stack.Pop());
@@ -193,6 +218,163 @@ namespace MultiDesktop
             {
                 return n * factorial(n - 1);
             }
+        }
+
+        private List<string> convert(string infix)
+        {
+            List<string> postFix = new List<string>();
+            Stack<string> operators = new Stack<string>();
+            string aToken = "";
+
+            for (int i = 0; i < infix.Length; i++)
+            {
+                while (infix[i].Equals(' ')) //Skips over whitespace
+                {
+                    i++;
+                }
+
+                if (Char.IsDigit(infix[i]) || infix[i].Equals('.'))
+                {
+                    string number = infix[i].ToString();
+                    while ((i + 1) < infix.Length && (Char.IsDigit(infix[i + 1]) || infix[i + 1].Equals('.'))) //Concat additional digits to string result  (Allows us to get numbers with more than 1 digit)
+                    {
+                        i++;
+                        number += infix[i];
+                    }
+                    postFix.Add(number);
+                }
+
+                else if(Char.IsLetter(infix[i])) //Variable or trig function
+                {
+                    aToken += infix[i];
+                    bool trig = false;
+                    foreach (string token in tokenList)
+                    {
+                        //Possible bug: tansin0 will NOT work, but tan sin 0 will. tan(sin 0) also works...
+                        if (aToken.Equals(token) && !Char.IsLetter(infix[i+1])) //If aToken is a COMPLETE token (E.G. sin and not si) (Also ensures that you can get sinh instead of sin)
+                        {
+                            operators.Push(aToken);
+                            aToken = ""; //Reset aToken
+                            trig = true;
+                        }
+                    }
+
+                    if (!trig)
+                    {
+                        for (int var = 0; var < Variables.Count; var++)
+                        {
+                            try
+                            {
+                                if (aToken.Equals(Variables[var]) && !Char.IsLetter(infix[i + 1])) //May cause out of bounds error
+                                {
+                                    postFix.Add(Values[var].ToString());
+                                    aToken = "";
+                                }
+                            }
+                            catch(IndexOutOfRangeException e)
+                            {
+                                if (aToken.Equals(Variables[var]))
+                                {
+                                    postFix.Add(Values[var].ToString());
+                                    aToken = "";
+                                }
+                            }
+                        }
+                    }
+                }
+
+                else if (operators.Count == 0 || infix[i].Equals('(') || precedence4.Contains(infix[i].ToString()))
+                {
+                    operators.Push(infix[i].ToString());
+                }
+
+                else if (infix[i].Equals(')'))
+                {
+                    while (!operators.Peek().Equals("("))
+                    {
+                        postFix.Add(operators.Pop());
+                    }
+                    operators.Pop(); //Disposes of '('
+                }
+
+                else //If not ),(, number, or trig function, this character is an operator
+                {
+                    int precedence = comparePrecedence(infix[i].ToString(), operators.Peek());
+                    if (precedence > 0)  //This character has higher precedence
+                    {
+                        operators.Push(infix[i].ToString());
+                    }
+                    else if (precedence < 0) //This character has lower precedence
+                    {
+                        postFix.Add(operators.Pop());
+                        i--;
+                    }
+                    else//This character has the same precedence
+                    {
+                        postFix.Add(operators.Pop());
+                        operators.Push(infix[i].ToString());
+                    }
+                }
+                
+            }
+
+
+            int size = operators.Count;
+            for (int i = 0; i < size; i++)
+            {
+                postFix.Add(operators.Pop());
+            }
+
+            return postFix;
+        }
+
+
+        /*
+       * Compares operator precedence
+       * <param> operator1 the operator to compare with
+       * <param> operator2 the operator at the top of the operators stack
+       * <return> positive number if operator1 has higher precedence, negative number if lower precedence, 0 if same precedence
+       */
+        private int comparePrecedence(string operator1, string operator2)
+        {
+            int thisPrecedence;
+            int topPrecedence;
+            if (precedence4.Contains(operator1))
+            {
+                thisPrecedence = 4;
+            }
+            else if (precedence3.Contains(operator1))
+            {
+                thisPrecedence = 3;
+            }
+            else if (precedence2.Contains(operator1))
+            {
+                thisPrecedence = 2;
+            }
+            else
+            {
+                thisPrecedence = 1;
+            }
+
+            if (precedence4.Contains(operator2))
+            {
+                topPrecedence = 4;
+            }
+            else if (precedence3.Contains(operator2))
+            {
+                topPrecedence = 3;
+            }
+            else if (precedence2.Contains(operator2))
+            {
+                topPrecedence = 2;
+            }
+            else
+            {
+                topPrecedence = 1;
+            }
+
+            int comparison = thisPrecedence.CompareTo(topPrecedence);
+            return comparison;
         }
     }
 }
