@@ -21,11 +21,17 @@ namespace MultiDesktop
         private readonly string SIN = "sin";
         private readonly string COS = "cos";
         private readonly string TAN = "tan";
+        private readonly string COSEC = "cosec";
+        private readonly string SEC = "sec";
+        private readonly string COTAN = "cotan";
         private readonly string LOG = "log";
         private readonly string FACTORIAL = "!";
         private readonly string ASIN = "asin";
         private readonly string ACOS = "acos";
         private readonly string ATAN = "atan";
+        private readonly string ACOSEC = "acosec";
+        private readonly string ASEC = "asec";
+        private readonly string ACOTAN = "acotan";
         private readonly string SINH = "sinh";
         private readonly string COSH = "cosh";
         private readonly string TANH = "tanh";
@@ -35,6 +41,11 @@ namespace MultiDesktop
         private readonly string EQUAL = "=";
         private readonly string precedence2 = "+−";
         private readonly string precedence3 = "*/%";
+        private readonly string COSECH = "cosech";
+        private readonly string SECH = "sech";
+        private readonly string COTANH = "cotanh";
+        private readonly string NEGATIVE = "-"; //This is a hyphen
+        private readonly string SQRT = "√";
         private readonly string precedence4 = "^!sincostanloglnasinacosatansinhcoshtanh-√"; //So ugly. Will think of better way later.
         private readonly string[] tokenList = { "sin", "cos", "tan", "log", "ln", "asin", "acos", "atan", "sinh", "cosh", "tanh" };
 
@@ -68,8 +79,9 @@ namespace MultiDesktop
             for (int i = 0; i < postFixed.Count; i++)
             {
                 double retNum;
+
                 if (Double.TryParse(postFixed[i], out retNum)) //If incoming character is a number
-                {
+                {                    
                     stack.Push(postFixed[i]);
                 }
 
@@ -104,6 +116,7 @@ namespace MultiDesktop
          */
         private double operate(string anOperand1, string anOperand2, string anOperator)
         {
+
             double operand1 = Convert.ToDouble(anOperand1);
             double operand2 = Convert.ToDouble(anOperand2);
             double output = 0;
@@ -124,20 +137,25 @@ namespace MultiDesktop
             {
                 output = operand2 / operand1;
             }
+
             else if (anOperator.Equals("%"))
             {
                 output = operand2 % operand1;
             }
+
             else if (anOperator.Equals("^"))
             {
                 output = Math.Pow(operand2, operand1);
             }
+            
             return output;
         }
 
         private double performFunction(string anOperand, string function)
         {
             double operand = Convert.ToDouble(anOperand);
+            double operand2 = Convert.ToDouble(anOperand);
+
             if (function.Equals(SIN))
             {
                 return Math.Sin(operand);
@@ -151,6 +169,21 @@ namespace MultiDesktop
             else if (function.Equals(TAN))
             {
                 return Math.Tan(operand);
+            }
+
+            else if (function.Equals(COSEC))
+            {
+                return 1 / Math.Sin(operand);
+            }
+
+            else if (function.Equals(SEC))
+            {
+                return 1 / Math.Cos(operand);
+            }
+
+            else if (function.Equals(COTAN))
+            {
+                return 1 / Math.Tan(operand);
             }
 
             else if (function.Equals(FACTORIAL))
@@ -173,6 +206,21 @@ namespace MultiDesktop
                 return Math.Atan(operand);
             }
 
+            else if (function.Equals(ACOSEC))
+            {
+                return Math.Atan(Math.Sign(operand) / Math.Sqrt(operand * operand - 1));
+            }
+
+            else if (function.Equals(ASEC))
+            {
+                return 2 * Math.Atan(1) - Math.Atan(Math.Sign(operand) / Math.Sqrt(operand * operand - 1));
+            }
+
+            else if (function.Equals(ACOTAN))
+            {
+                return 2 * Math.Atan(1) - Math.Atan(operand);
+            }
+
             else if (function.Equals(SINH))
             {
                 return Math.Sinh(operand);
@@ -186,11 +234,41 @@ namespace MultiDesktop
             else if (function.Equals(TANH))
             {
                 return Math.Tanh(operand);
+            } 
+
+            else if (function.Equals(COSECH))
+            {
+                return 2 / Math.Pow(operand2, operand);
+            }
+
+            else if (function.Equals(SECH))
+            {
+                return 2 / (Math.Pow(operand2, operand) + Math.Pow(-operand2, operand));
+            }
+
+            else if (function.Equals(COTANH))
+            {
+                return (Math.Pow(operand2, operand) + Math.Pow(-operand2, operand)) / (Math.Pow(operand2, operand) - Math.Pow(-operand2, operand));
             }
 
             else if (function.Equals(LOG))
             {
                 return Math.Log10(operand);
+            }
+
+            else if (function.Equals(LN))
+            {
+                return Math.Log(operand, Math.E);
+            }
+
+            else if (function.Equals(NEGATIVE))
+            {
+                return 0.0 - operand;
+            }
+
+            else
+            {
+                return Math.Sqrt(operand);
             }
 
             else if (function.Equals(LN))
