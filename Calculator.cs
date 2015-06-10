@@ -55,7 +55,9 @@ namespace MultiDesktop
             bool storeVariable = false;
             if (input.Contains(EQUAL)) //If it contains an equal sign, then the user is trying to store a variable
             {
-                Variables.Add(input.Substring(0, input.IndexOf(EQUAL)));
+                string variableName = input.Substring(0, input.IndexOf(EQUAL));
+                variableName = variableName.Replace(" ", "");
+                Variables.Add(variableName);
                 input = input.Substring(input.IndexOf(EQUAL) + 1);
                 storeVariable = true;
             }
@@ -224,11 +226,10 @@ namespace MultiDesktop
         {
             List<string> postFix = new List<string>();
             Stack<string> operators = new Stack<string>();
-            string aToken = "";
 
             for (int i = 0; i < infix.Length; i++)
             {
-                while (infix[i].Equals(' ')) //Skips over whitespace
+                while (infix[i].Equals(' '))
                 {
                     i++;
                 }
@@ -236,7 +237,7 @@ namespace MultiDesktop
                 if (Char.IsDigit(infix[i]) || infix[i].Equals('.'))
                 {
                     string number = infix[i].ToString();
-                    while ((i + 1) < infix.Length && (Char.IsDigit(infix[i + 1]) || infix[i + 1].Equals('.'))) //Concat additional digits to string result  (Allows us to get numbers with more than 1 digit)
+                    while ((i + 1) < infix.Length && (Char.IsDigit(infix[i + 1]) || infix[i + 1].Equals('.')))
                     {
                         i++;
                         number += infix[i];
@@ -246,38 +247,30 @@ namespace MultiDesktop
 
                 else if(Char.IsLetter(infix[i])) //Variable or trig function
                 {
-                    aToken += infix[i];
+                    //Possible bug: tansin0 will NOT work, but tan sin 0 will. tan(sin 0) also works...
+                    string aToken = infix[i].ToString();
+                    while ((i + 1) < infix.Length && Char.IsLetter(infix[i+1]))
+                    {
+                        i++;
+                        aToken += infix[i];
+                    }
                     bool trig = false;
                     foreach (string token in tokenList)
                     {
-                        //Possible bug: tansin0 will NOT work, but tan sin 0 will. tan(sin 0) also works...
-                        if (aToken.Equals(token) && !Char.IsLetter(infix[i+1])) //If aToken is a COMPLETE token (E.G. sin and not si) (Also ensures that you can get sinh instead of sin)
+                        if (aToken.ToLower().Equals(token))
                         {
                             operators.Push(aToken);
-                            aToken = ""; //Reset aToken
                             trig = true;
                         }
                     }
 
                     if (!trig)
                     {
-                        for (int var = 0; var < Variables.Count; var++)
+                        for (int j = 0; j < Variables.Count; j++ )
                         {
-                            try
+                            if (aToken.Equals(Variables[j]))
                             {
-                                if (aToken.Equals(Variables[var]) && !Char.IsLetter(infix[i + 1])) //May cause out of bounds error
-                                {
-                                    postFix.Add(Values[var].ToString());
-                                    aToken = "";
-                                }
-                            }
-                            catch(IndexOutOfRangeException e)
-                            {
-                                if (aToken.Equals(Variables[var]))
-                                {
-                                    postFix.Add(Values[var].ToString());
-                                    aToken = "";
-                                }
+                                postFix.Add(Values[j].ToString());
                             }
                         }
                     }
@@ -315,7 +308,6 @@ namespace MultiDesktop
                         operators.Push(infix[i].ToString());
                     }
                 }
-                
             }
 
 
