@@ -11,10 +11,13 @@ namespace MultiDesktop
         public List<string> Variables { get; private set; }
         public List<double> Values { get; private set; }
 
+        private double ans;
+
         public Calculator()
         {
             Variables = new List<string>();
             Values = new List<double>();
+            ans = 0;
         }
 
         private readonly string symbols = "+−/*%^"; //The subtraction symbol is character U+2212 on the Arial Character Map.
@@ -85,6 +88,10 @@ namespace MultiDesktop
 
                 else if (symbols.Contains(postFixed[i])) //Else If incoming character is an arithmetic symbol
                 {
+                    if (stack.Count < 2)
+                    {
+                        throw new ArgumentException("I honestly do not know what throwing is. Does this even work?");
+                    }
                     string operand = operate(stack.Pop(), stack.Pop(), postFixed[i]).ToString();
                     stack.Push(operand);
                 }
@@ -101,7 +108,8 @@ namespace MultiDesktop
                 Values.Add(Convert.ToDouble(stack.Peek()));
             }
 
-            return Convert.ToDouble(stack.Pop());
+            ans = Convert.ToDouble(stack.Pop());
+            return ans;
         }
 
 
@@ -314,23 +322,30 @@ namespace MultiDesktop
                         i++;
                         aToken += infix[i];
                     }
-                    bool trig = false;
-                    foreach (string token in tokenList)
+                    if (aToken.Equals("ans"))
                     {
-                        if (aToken.ToLower().Equals(token))
-                        {
-                            operators.Push(aToken);
-                            trig = true;
-                        }
+                        postFix.Add(ans.ToString());
                     }
-
-                    if (!trig)
+                    else
                     {
-                        for (int j = 0; j < Variables.Count; j++ )
+                        bool trig = false;
+                        foreach (string token in tokenList)
                         {
-                            if (aToken.Equals(Variables[j]))
+                            if (aToken.ToLower().Equals(token))
                             {
-                                postFix.Add(Values[j].ToString());
+                                operators.Push(aToken);
+                                trig = true;
+                            }
+                        }
+
+                        if (!trig)
+                        {
+                            for (int j = 0; j < Variables.Count; j++)
+                            {
+                                if (aToken.Equals(Variables[j]))
+                                {
+                                    postFix.Add(Values[j].ToString());
+                                }
                             }
                         }
                     }
