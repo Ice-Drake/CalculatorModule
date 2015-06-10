@@ -159,7 +159,6 @@ namespace MultiDesktop
         private double performFunction(string anOperand, string function)
         {
             double operand = Convert.ToDouble(anOperand);
-            double operand2 = Convert.ToDouble(anOperand);
 
             if (function.Equals(SIN))
             {
@@ -243,17 +242,17 @@ namespace MultiDesktop
 
             else if (function.Equals(COSECH))
             {
-                return 2 / Math.Pow(operand2, operand);
+                return 2 / Math.Pow(Math.E, operand);
             }
 
             else if (function.Equals(SECH))
             {
-                return 2 / (Math.Pow(operand2, operand) + Math.Pow(-operand2, operand));
+                return 2 / (Math.Pow(Math.E, operand) + Math.Pow(-Math.E, operand));
             }
 
             else if (function.Equals(COTANH))
             {
-                return (Math.Pow(operand2, operand) + Math.Pow(-operand2, operand)) / (Math.Pow(operand2, operand) - Math.Pow(-operand2, operand));
+                return (Math.Pow(Math.E, operand) + Math.Pow(Math.E, operand)) / (Math.Pow(Math.E, operand) - Math.Pow(-Math.E, operand));
             }
 
             else if (function.Equals(LOG))
