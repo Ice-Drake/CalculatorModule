@@ -12,12 +12,14 @@ namespace MultiDesktop
         public List<double> Values { get; private set; }
 
         private double ans;
+        private bool degrees; //Radians and degrees switch
 
         public Calculator()
         {
             Variables = new List<string>();
             Values = new List<double>();
             ans = 0;
+            degrees = false;
         }
 
         private readonly string symbols = "+−/*%^"; //The subtraction symbol is character U+2212 on the Arial Character Map.
@@ -62,6 +64,22 @@ namespace MultiDesktop
         {
             Variables.Clear();
             Values.Clear();
+        }
+
+        public void removeVariable(int n)
+        {
+            Variables.RemoveAt(n);
+            Values.RemoveAt(n);
+        }
+
+        public void setRadians()
+        {
+            degrees = false;
+        }
+
+        public void setDegrees()
+        {
+            degrees = true;
         }
 
         public double compute(string input)
@@ -175,34 +193,40 @@ namespace MultiDesktop
 
         private double performFunction(double operand, string function)
         {
+            double convertedOperand = 0;
+            if (degrees)
+            {
+                convertedOperand = operand * Math.PI / 180.0;
+            }
+
             if (function.Equals(SIN))
             {
-                return Math.Sin(operand);
+                return Math.Sin(convertedOperand);
             }
 
             else if (function.Equals(COS))
             {
-                return Math.Cos(operand);
+                return Math.Cos(convertedOperand);
             }
 
             else if (function.Equals(TAN))
             {
-                return Math.Tan(operand);
+                return Math.Tan(convertedOperand);
             }
 
             else if (function.Equals(COSEC))
             {
-                return 1 / Math.Sin(operand);
+                return 1 / Math.Sin(convertedOperand);
             }
 
             else if (function.Equals(SEC))
             {
-                return 1 / Math.Cos(operand);
+                return 1 / Math.Cos(convertedOperand);
             }
 
             else if (function.Equals(COTAN))
             {
-                return 1 / Math.Tan(operand);
+                return 1 / Math.Tan(convertedOperand);
             }
 
             else if (function.Equals(FACTORIAL))
@@ -219,62 +243,62 @@ namespace MultiDesktop
 
             else if (function.Equals(ASIN))
             {
-                return Math.Asin(operand);
+                return Math.Asin(convertedOperand);
             }
 
             else if (function.Equals(ACOS))
             {
-                return Math.Acos(operand);
+                return Math.Acos(convertedOperand);
             }
 
             else if (function.Equals(ATAN))
             {
-                return Math.Atan(operand);
+                return Math.Atan(convertedOperand);
             }
 
             else if (function.Equals(ACOSEC))
             {
-                return Math.Atan(Math.Sign(operand) / Math.Sqrt(operand * operand - 1));
+                return Math.Atan(Math.Sign(convertedOperand) / Math.Sqrt(convertedOperand * convertedOperand - 1));
             }
 
             else if (function.Equals(ASEC))
             {
-                return 2 * Math.Atan(1) - Math.Atan(Math.Sign(operand) / Math.Sqrt(operand * operand - 1));
+                return 2 * Math.Atan(1) - Math.Atan(Math.Sign(convertedOperand) / Math.Sqrt(convertedOperand * convertedOperand - 1));
             }
 
             else if (function.Equals(ACOTAN))
             {
-                return 2 * Math.Atan(1) - Math.Atan(operand);
+                return 2 * Math.Atan(1) - Math.Atan(convertedOperand);
             }
 
             else if (function.Equals(SINH))
             {
-                return Math.Sinh(operand);
+                return Math.Sinh(convertedOperand);
             }
 
             else if (function.Equals(COSH))
             {
-                return Math.Cosh(operand);
+                return Math.Cosh(convertedOperand);
             }
 
             else if (function.Equals(TANH))
             {
-                return Math.Tanh(operand);
+                return Math.Tanh(convertedOperand);
             }
 
             else if (function.Equals(COSECH))
             {
-                return 2 / Math.Pow(Math.E, operand);
+                return 2 / Math.Pow(Math.E, convertedOperand);
             }
 
             else if (function.Equals(SECH))
             {
-                return 2 / (Math.Pow(Math.E, operand) + Math.Pow(-Math.E, operand));
+                return 2 / (Math.Pow(Math.E, convertedOperand) + Math.Pow(-Math.E, convertedOperand));
             }
 
             else if (function.Equals(COTANH))
             {
-                return (Math.Pow(Math.E, operand) + Math.Pow(Math.E, operand)) / (Math.Pow(Math.E, operand) - Math.Pow(-Math.E, operand));
+                return (Math.Pow(Math.E, convertedOperand) + Math.Pow(Math.E, convertedOperand)) / (Math.Pow(Math.E, convertedOperand) - Math.Pow(-Math.E, convertedOperand));
             }
 
             else if (function.Equals(LOG))
@@ -355,15 +379,20 @@ namespace MultiDesktop
                     {
                         operators.Push(aToken);
                     }
-                    else
+                    else if (Variables.Contains(aToken))
                     {
                         for (int j = 0; j < Variables.Count; j++)
                         {
                             if (aToken.Equals(Variables[j]))
                             {
                                 postFix.Add(Values[j].ToString());
+                                break;
                             }
                         }
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Not a variable or trig function.");
                     }
                 }
                 else if (operators.Count == 0 || infix[i].Equals('(') || precedence4.Contains(infix[i].ToString()))
