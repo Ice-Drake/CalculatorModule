@@ -193,7 +193,7 @@ namespace MultiDesktop
 
         private double performFunction(double operand, string function)
         {
-            double convertedOperand = 0;
+            double convertedOperand = operand;
             if (degrees)
             {
                 convertedOperand = operand * Math.PI / 180.0;
