@@ -49,7 +49,7 @@ namespace MultiDesktop
         private readonly string precedence2 = "+−";
         private readonly string precedence3 = "*/%";
         private readonly string precedence4 = "^!sincostancotseccosecloglnasinacosatanacotasecacosecsinhcoshtanhcotanhsechcosech-√"; //So ugly. Will think of better way later.
-       
+
         private readonly string[] tokenList = { "sin", "cos", "tan", "cot", "sec", "cosec", "log", "ln", "asin", "acos", "atan", "acot", "asec", "acosec", "sinh", "cosh", "tanh", "cotanh", "sech", "cosech" };
 
 
@@ -57,7 +57,7 @@ namespace MultiDesktop
         {
             Console = "";
         }
-        
+
         public void resetVariables()
         {
             Variables.Clear();
@@ -76,14 +76,24 @@ namespace MultiDesktop
                 storeVariable = true;
             }
             List<string> postFixed = convert(input);
-            var stack = new Stack<string>();
+            var stack = new Stack<double>();
 
             for (int i = 0; i < postFixed.Count; i++)
             {
                 double retNum;
                 if (Double.TryParse(postFixed[i], out retNum)) //If incoming character is a number
-                {                    
-                    stack.Push(postFixed[i]);
+                {
+                    stack.Push(Convert.ToDouble(postFixed[i]));
+                }
+
+                else if (postFixed[i].Equals("π"))
+                {
+                    stack.Push(Math.PI);
+                }
+
+                else if (postFixed[i].Equals("e"))
+                {
+                    stack.Push(Math.E);
                 }
 
                 else if (symbols.Contains(postFixed[i])) //Else If incoming character is an arithmetic symbol
@@ -92,15 +102,24 @@ namespace MultiDesktop
                     {
                         throw new ArgumentException("I honestly do not know what throwing is. Does this even work?");
                     }
-                    string operand = operate(stack.Pop(), stack.Pop(), postFixed[i]).ToString();
+                    double operand = operate(stack.Pop(), stack.Pop(), postFixed[i]);
                     stack.Push(operand);
                 }
 
                 else //Else it is a function (Sin, log, etc)
                 {
-                    string operand = performFunction(stack.Pop(), postFixed[i]).ToString();
+                    if (stack.Count < 1)
+                    {
+                        throw new ArgumentException("Why would you put a trig function without a number..? Just why?");
+                    }
+                    double operand = performFunction(stack.Pop(), postFixed[i]);
                     stack.Push(operand);
                 }
+            }
+
+            if (!(stack.Count == 1))
+            {
+                throw new ArgumentException("Is this working?");
             }
 
             if (storeVariable)
@@ -120,10 +139,8 @@ namespace MultiDesktop
          * <param> anOperator the operator
          * <return> the answer of the operation
          */
-        private double operate(string anOperand1, string anOperand2, string anOperator)
+        private double operate(double operand1, double operand2, string anOperator)
         {
-            double operand1 = Convert.ToDouble(anOperand1);
-            double operand2 = Convert.ToDouble(anOperand2);
             double output = 0;
 
             if (anOperator.Equals("+"))
@@ -152,14 +169,12 @@ namespace MultiDesktop
             {
                 output = Math.Pow(operand2, operand1);
             }
-            
+
             return output;
         }
 
-        private double performFunction(string anOperand, string function)
+        private double performFunction(double operand, string function)
         {
-            double operand = Convert.ToDouble(anOperand);
-
             if (function.Equals(SIN))
             {
                 return Math.Sin(operand);
@@ -192,7 +207,14 @@ namespace MultiDesktop
 
             else if (function.Equals(FACTORIAL))
             {
-                return factorial((int)operand);
+                if (operand == (int)operand && operand >= 0)
+                {
+                    return factorial((int)operand);
+                }
+                else
+                {
+                    throw new ArgumentException("Donald is useless in KH.");
+                }
             }
 
             else if (function.Equals(ASIN))
@@ -238,7 +260,7 @@ namespace MultiDesktop
             else if (function.Equals(TANH))
             {
                 return Math.Tanh(operand);
-            } 
+            }
 
             else if (function.Equals(COSECH))
             {
@@ -312,11 +334,11 @@ namespace MultiDesktop
                     postFix.Add(number);
                 }
 
-                else if(Char.IsLetter(infix[i])) //Variable or trig function
+                else if (Char.IsLetter(infix[i]))
                 {
                     //Possible bug: tansin0 will NOT work, but tan sin 0 will. tan(sin 0) also works...
                     string aToken = infix[i].ToString();
-                    while ((i + 1) < infix.Length && Char.IsLetter(infix[i+1]))
+                    while ((i + 1) < infix.Length && Char.IsLetter(infix[i + 1]))
                     {
                         i++;
                         aToken += infix[i];
@@ -325,31 +347,25 @@ namespace MultiDesktop
                     {
                         postFix.Add(ans.ToString());
                     }
+                    else if (aToken.Equals("e") || aToken.Equals("π"))
+                    {
+                        postFix.Add(aToken);
+                    }
+                    else if (IsTrigFunction(aToken))
+                    {
+                        operators.Push(aToken);
+                    }
                     else
                     {
-                        bool trig = false;
-                        foreach (string token in tokenList)
+                        for (int j = 0; j < Variables.Count; j++)
                         {
-                            if (aToken.ToLower().Equals(token))
+                            if (aToken.Equals(Variables[j]))
                             {
-                                operators.Push(aToken);
-                                trig = true;
-                            }
-                        }
-
-                        if (!trig)
-                        {
-                            for (int j = 0; j < Variables.Count; j++)
-                            {
-                                if (aToken.Equals(Variables[j]))
-                                {
-                                    postFix.Add(Values[j].ToString());
-                                }
+                                postFix.Add(Values[j].ToString());
                             }
                         }
                     }
                 }
-
                 else if (operators.Count == 0 || infix[i].Equals('(') || precedence4.Contains(infix[i].ToString()))
                 {
                     operators.Push(infix[i].ToString());
@@ -392,6 +408,21 @@ namespace MultiDesktop
             }
 
             return postFix;
+        }
+
+
+
+        private bool IsTrigFunction(string input)
+        {
+            bool IsTrig = false;
+            foreach (string token in tokenList)
+            {
+                if (input.ToLower().Equals(token))
+                {
+                    IsTrig = true;
+                }
+            }
+            return IsTrig;
         }
 
 
