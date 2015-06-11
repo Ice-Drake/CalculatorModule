@@ -11,23 +11,23 @@ namespace MultiDesktop
         private readonly string SIN = "sin";
         private readonly string COS = "cos";
         private readonly string TAN = "tan";
-        private readonly string COSEC = "cosec";
+        private readonly string CSC = "csc";
         private readonly string SEC = "sec";
-        private readonly string COTAN = "cotan";
+        private readonly string COT = "cot";
         private readonly string LOG = "log";
         private readonly string FACTORIAL = "!";
         private readonly string ASIN = "asin";
         private readonly string ACOS = "acos";
         private readonly string ATAN = "atan";
-        private readonly string ACOSEC = "acosec";
+        private readonly string ACSC = "acsc";
         private readonly string ASEC = "asec";
-        private readonly string ACOTAN = "acotan";
+        private readonly string ACOT = "acot";
         private readonly string SINH = "sinh";
         private readonly string COSH = "cosh";
         private readonly string TANH = "tanh";
-        private readonly string COSECH = "cosech";
+        private readonly string CSCH = "csch";
         private readonly string SECH = "sech";
-        private readonly string COTANH = "cotanh";
+        private readonly string COTH = "coth";
         private readonly string LN = "ln";
         private readonly string NEGATIVE = "-"; //This is a hyphen
         private readonly string SQRT = "√";
@@ -125,7 +125,7 @@ namespace MultiDesktop
                 return Math.Tan(operand);
             }
 
-            else if (function.Equals(COSEC))
+            else if (function.Equals(CSC))
             {
                 return 1 / Math.Sin(operand);
             }
@@ -135,7 +135,7 @@ namespace MultiDesktop
                 return 1 / Math.Cos(operand);
             }
 
-            else if (function.Equals(COTAN))
+            else if (function.Equals(COT))
             {
                 return 1 / Math.Tan(operand);
             }
@@ -160,7 +160,7 @@ namespace MultiDesktop
                 return Math.Atan(operand);
             }
 
-            else if (function.Equals(ACOSEC))
+            else if (function.Equals(ACSC))
             {
                 return Math.Atan(Math.Sign(operand) / Math.Sqrt(operand * operand - 1));
             }
@@ -170,7 +170,7 @@ namespace MultiDesktop
                 return 2 * Math.Atan(1) - Math.Atan(Math.Sign(operand) / Math.Sqrt(operand * operand - 1));
             }
 
-            else if (function.Equals(ACOTAN))
+            else if (function.Equals(ACOT))
             {
                 return 2 * Math.Atan(1) - Math.Atan(operand);
             }
@@ -190,7 +190,7 @@ namespace MultiDesktop
                 return Math.Tanh(operand);
             } 
 
-            else if (function.Equals(COSECH))
+            else if (function.Equals(CSCH))
             {
                 return 2 / Math.Pow(Math.E, operand);
             }
@@ -200,7 +200,7 @@ namespace MultiDesktop
                 return 2 / (Math.Pow(Math.E, operand) + Math.Pow(-Math.E, operand));
             }
 
-            else if (function.Equals(COTANH))
+            else if (function.Equals(COTH))
             {
                 return (Math.Pow(Math.E, operand) + Math.Pow(Math.E, operand)) / (Math.Pow(Math.E, operand) - Math.Pow(-Math.E, operand));
             }
