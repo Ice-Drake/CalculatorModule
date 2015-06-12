@@ -25,8 +25,13 @@ namespace MultiDesktop
         private double m_dblOpacityDecrement = .1;
         private const int TIMER_INTERVAL = 50;
         static SplashScreen ms_frmSplash = null;
+
         // A static entry point to launch SplashScreen.
         static Thread ms_oThread = null;
+
+        // This delegate enables asynchronous calls for setting
+        // the text property on a TextBox control.
+        delegate void SetTextCallback(string text);
 
         /// <summary>
         /// Required designer variable.
@@ -215,7 +220,7 @@ namespace MultiDesktop
             if (ms_frmSplash != null)
             {
                 ms_frmSplash.m_sStatus = newStatus;
-                ms_frmSplash.statusLabel.Text = ms_frmSplash.m_sStatus;
+                ms_frmSplash.SetText(ms_frmSplash.m_sStatus);
             }
         }
 
@@ -223,7 +228,30 @@ namespace MultiDesktop
         static public void AddStatusDetail(string newDetail)
         {
             if (ms_frmSplash != null)
-                ms_frmSplash.statusLabel.Text = ms_frmSplash.m_sStatus + ": " + newDetail;
+                ms_frmSplash.SetText(ms_frmSplash.m_sStatus + ": " + newDetail);
+        }
+
+        // If the calling thread is different from the thread that
+        // created the TextBox control, this method creates a
+        // SetTextCallback and calls itself asynchronously using the
+        // Invoke method.
+        //
+        // If the calling thread is the same as the thread that created
+        // the Form, the Text property of its Label control is set directly. 
+        private void SetText(string text)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (ms_frmSplash.statusLabel.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(SetText);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                ms_frmSplash.statusLabel.Text = text;
+            }
         }
     }
 }
