@@ -8,7 +8,6 @@ namespace MultiDesktop
 {
     public class Calculator
     {
-        public string Console { get; private set; }
         private SharedData Variables;
 
         private double ans;
@@ -52,12 +51,6 @@ namespace MultiDesktop
         private readonly string precedence4 = "^!sincostancotseccscloglnarcsinarccosarctanarccotarcsecarccscsinhcoshtanhcothsechcsch-√"; //So ugly. Will think of better way later.
 
         private readonly string[] tokenList = { "sin", "cos", "tan", "cot", "sec", "csc", "log", "ln", "arcsin", "arccos", "arctan", "arccot", "arcsec", "arccsc", "sinh", "cosh", "tanh", "coth", "sech", "csch" };
-
-
-        public void clear()
-        {
-            Console = "";
-        }
 
         public void setRadians()
         {

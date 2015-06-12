@@ -853,12 +853,12 @@ namespace MultiDesktop
 
         private void degRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-
+            calculator.setDegrees();
         }
 
         private void radRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-
+            calculator.setRadians();
         }
 
         private void piButton_Click(object sender, EventArgs e)
