@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using PluginSDK;
 
 
 namespace MultiDesktop
@@ -8,14 +9,14 @@ namespace MultiDesktop
     public class Calculator
     {
         public string Console { get; private set; }
-        private PluginSDK.SharedData Variables;
+        private SharedData Variables;
 
         private double ans;
         private bool degrees; //Radians and degrees switch
 
         public Calculator()
         {
-            Variables = new PluginSDK.SharedData();
+            Variables = new SharedData();
             ans = 0;
             degrees = false;
         }
@@ -30,12 +31,12 @@ namespace MultiDesktop
         private readonly string LOG = "log";
         private readonly string LN = "ln";
         private readonly string FACTORIAL = "!";
-        private readonly string ASIN = "asin";
-        private readonly string ACOS = "acos";
-        private readonly string ATAN = "atan";
-        private readonly string ACSC = "acsc";
-        private readonly string ASEC = "asec";
-        private readonly string ACOT = "acot";
+        private readonly string ASIN = "arcsin";
+        private readonly string ACOS = "arccos";
+        private readonly string ATAN = "arctan";
+        private readonly string ACSC = "arccsc";
+        private readonly string ASEC = "arcsec";
+        private readonly string ACOT = "arccot";
         private readonly string SINH = "sinh";
         private readonly string COSH = "cosh";
         private readonly string TANH = "tanh";
@@ -48,9 +49,9 @@ namespace MultiDesktop
 
         private readonly string precedence2 = "+−";
         private readonly string precedence3 = "*/%";
-        private readonly string precedence4 = "^!sincostancotseccscloglnasinacosatanacotasecacscsinhcoshtanhcothsechcsch-√"; //So ugly. Will think of better way later.
+        private readonly string precedence4 = "^!sincostancotseccscloglnarcsinarccosarctanarccotarcsecarccscsinhcoshtanhcothsechcsch-√"; //So ugly. Will think of better way later.
 
-        private readonly string[] tokenList = { "sin", "cos", "tan", "cot", "sec", "csc", "log", "ln", "asin", "acos", "atan", "acot", "asec", "acsc", "sinh", "cosh", "tanh", "coth", "sech", "csch" };
+        private readonly string[] tokenList = { "sin", "cos", "tan", "cot", "sec", "csc", "log", "ln", "arcsin", "arccos", "arctan", "arccot", "arcsec", "arccsc", "sinh", "cosh", "tanh", "coth", "sech", "csch" };
 
 
         public void clear()
@@ -160,6 +161,10 @@ namespace MultiDesktop
             }
             else if (anOperator.Equals("/"))
             {
+                if (operand1 == 0)
+                {
+                    throw new ArgumentException("Cannot divide by 0");
+                }
                 output = operand2 / operand1;
             }
 
@@ -273,7 +278,7 @@ namespace MultiDesktop
 
             else if (function.Equals(CSCH))
             {
-                return 2 / Math.Pow(Math.E, convertedOperand);
+                return 2 / (Math.Pow(Math.E, convertedOperand) - Math.Pow(Math.E, -convertedOperand));
             }
 
             else if (function.Equals(SECH))
@@ -283,7 +288,7 @@ namespace MultiDesktop
 
             else if (function.Equals(COTH))
             {
-                return (Math.Pow(Math.E, convertedOperand) + Math.Pow(Math.E, convertedOperand)) / (Math.Pow(Math.E, convertedOperand) - Math.Pow(-Math.E, convertedOperand));
+                return (Math.Pow(Math.E, convertedOperand) + Math.Pow(Math.E, -convertedOperand)) / (Math.Pow(Math.E, convertedOperand) - Math.Pow(Math.E, -convertedOperand));
             }
 
             else if (function.Equals(LOG))
