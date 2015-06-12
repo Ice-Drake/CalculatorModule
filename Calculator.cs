@@ -8,16 +8,14 @@ namespace MultiDesktop
     public class Calculator
     {
         public string Console { get; private set; }
-        public List<string> Variables { get; private set; }
-        public List<double> Values { get; private set; }
+        private PluginSDK.SharedData Variables;
 
         private double ans;
         private bool degrees; //Radians and degrees switch
 
         public Calculator()
         {
-            Variables = new List<string>();
-            Values = new List<double>();
+            Variables = new PluginSDK.SharedData();
             ans = 0;
             degrees = false;
         }
@@ -44,34 +42,20 @@ namespace MultiDesktop
         private readonly string CSCH = "csch";
         private readonly string SECH = "sech";
         private readonly string COTH = "coth";
-        private readonly string SECH = "sech";
-        private readonly string COSECH = "cosech";
         private readonly string SQRT = "√";
         private readonly string EQUAL = "=";
         private readonly string NEGATIVE = "-"; //This is a hyphen
 
         private readonly string precedence2 = "+−";
         private readonly string precedence3 = "*/%";
-        private readonly string precedence4 = "^!sincostancotseccosecloglnasinacosatanacotasecacosecsinhcoshtanhcotanhsechcosech-√"; //So ugly. Will think of better way later.
+        private readonly string precedence4 = "^!sincostancotseccscloglnasinacosatanacotasecacscsinhcoshtanhcothsechcsch-√"; //So ugly. Will think of better way later.
 
-        private readonly string[] tokenList = { "sin", "cos", "tan", "cot", "sec", "cosec", "log", "ln", "asin", "acos", "atan", "acot", "asec", "acosec", "sinh", "cosh", "tanh", "cotanh", "sech", "cosech" };
+        private readonly string[] tokenList = { "sin", "cos", "tan", "cot", "sec", "csc", "log", "ln", "asin", "acos", "atan", "acot", "asec", "acsc", "sinh", "cosh", "tanh", "coth", "sech", "csch" };
 
 
         public void clear()
         {
             Console = "";
-        }
-
-        public void resetVariables()
-        {
-            Variables.Clear();
-            Values.Clear();
-        }
-
-        public void removeVariable(int n)
-        {
-            Variables.RemoveAt(n);
-            Values.RemoveAt(n);
         }
 
         public void setRadians()
@@ -87,11 +71,10 @@ namespace MultiDesktop
         public double compute(string input)
         {
             bool storeVariable = false;
+            string variableName = "";
             if (input.Contains(EQUAL)) //If it contains an equal sign, then the user is trying to store a variable
             {
-                string variableName = input.Substring(0, input.IndexOf(EQUAL));
-                variableName = variableName.Replace(" ", "");
-                Variables.Add(variableName);
+                variableName = input.Substring(0, input.IndexOf(EQUAL));
                 input = input.Substring(input.IndexOf(EQUAL) + 1);
                 storeVariable = true;
             }
@@ -144,7 +127,7 @@ namespace MultiDesktop
 
             if (storeVariable)
             {
-                Values.Add(Convert.ToDouble(stack.Peek()));
+                Variables.store(variableName, Convert.ToDouble(stack.Peek()));
             }
 
             ans = Convert.ToDouble(stack.Pop());
@@ -381,20 +364,16 @@ namespace MultiDesktop
                     {
                         operators.Push(aToken);
                     }
-                    else if (Variables.Contains(aToken))
-                    {
-                        for (int j = 0; j < Variables.Count; j++)
-                        {
-                            if (aToken.Equals(Variables[j]))
-                            {
-                                postFix.Add(Values[j].ToString());
-                                break;
-                            }
-                        }
-                    }
                     else
                     {
-                        throw new ArgumentException("Not a variable or trig function.");
+                        if (Variables.retrieve(aToken) != null)
+                        {
+                            postFix.Add(Variables.retrieve(aToken).ToString());
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Not a variable or trig function");
+                        }
                     }
                 }
                 else if (operators.Count == 0 || infix[i].Equals('(') || precedence4.Contains(infix[i].ToString()))
