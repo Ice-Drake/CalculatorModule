@@ -68,9 +68,17 @@ namespace MultiDesktop
             string variableName = "";
             if (input.Contains(EQUAL)) //If it contains an equal sign, then the user is trying to store a variable
             {
-                variableName = input.Substring(0, input.IndexOf(EQUAL));
-                input = input.Substring(input.IndexOf(EQUAL) + 1);
-                storeVariable = true;
+                if (IsValidVariableName(input))
+                {
+                    variableName = input.Substring(0, input.IndexOf(EQUAL));
+                    variableName = variableName.Replace(" ", "");
+                    input = input.Substring(input.IndexOf(EQUAL) + 1);
+                    storeVariable = true;
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid variable name");
+                }
             }
             List<string> postFixed = convert(input);
             var stack = new Stack<double>();
@@ -299,9 +307,14 @@ namespace MultiDesktop
                 return 0.0 - operand;
             }
 
-            else
+            else if (function.Equals(SQRT))
             {
                 return Math.Sqrt(operand);
+            }
+
+            else
+            {
+                throw new ArgumentException("Idk what happened here"); //The only way to end up here is if the user messed up the # of parenthesis
             }
         }
 
@@ -345,7 +358,7 @@ namespace MultiDesktop
                 {
                     //Possible bug: tansin0 will NOT work, but tan sin 0 will. tan(sin 0) also works...
                     string aToken = infix[i].ToString();
-                    while ((i + 1) < infix.Length && Char.IsLetter(infix[i + 1]))
+                    while ((i + 1) < infix.Length && (Char.IsLetter(infix[i + 1]) || Char.IsDigit(infix[i+1])))
                     {
                         i++;
                         aToken += infix[i];
@@ -481,5 +494,37 @@ namespace MultiDesktop
             int comparison = thisPrecedence.CompareTo(topPrecedence);
             return comparison;
         }
+
+
+
+        private bool IsValidVariableName(string input)
+        {
+            bool isValid = true;
+            string variableName = input.Substring(0, input.IndexOf(EQUAL));
+            string[] separator = variableName.Split(' ');
+            int n = 0;
+
+            for (int i = 0; i < separator.Length; i++ )
+            {
+                if (separator[i].Equals(""))
+                {
+                    n++;
+                }
+            }
+
+                if ((separator.Length - n) > 1)
+                {
+                    isValid = false;
+                }
+
+            variableName = variableName.Replace(" ", "");
+
+                if (IsTrigFunction(variableName) || variableName.Equals("e") || variableName.Equals("π") || Char.IsDigit(variableName[0]))
+                {
+                    isValid = false;
+                }
+            return isValid;
+        }
+
     }
 }
