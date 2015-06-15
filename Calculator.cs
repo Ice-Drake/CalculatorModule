@@ -105,7 +105,7 @@ namespace MultiDesktop
                 {
                     if (stack.Count < 2)
                     {
-                        throw new ArgumentException("I honestly do not know what throwing is. Does this even work?");
+                        throw new ArgumentException("Invalid Input");
                     }
                     double operand = operate(stack.Pop(), stack.Pop(), postFixed[i]);
                     stack.Push(operand);
@@ -124,7 +124,7 @@ namespace MultiDesktop
 
             if (!(stack.Count == 1))
             {
-                throw new ArgumentException("Is this working?");
+                throw new ArgumentException("Invalid Input");
             }
 
             if (storeVariable)
@@ -314,7 +314,7 @@ namespace MultiDesktop
 
             else
             {
-                throw new ArgumentException("Idk what happened here"); //The only way to end up here is if the user messed up the # of parenthesis
+                throw new ArgumentException("Invalid input"); //The only way to end up here is if the user messed up the # of parenthesis
             }
         }
 
@@ -371,7 +371,7 @@ namespace MultiDesktop
                     {
                         postFix.Add(aToken);
                     }
-                    else if (IsTrigFunction(aToken))
+                    else if (IsFunction(aToken))
                     {
                         operators.Push(aToken);
                     }
@@ -383,7 +383,7 @@ namespace MultiDesktop
                         }
                         else
                         {
-                            throw new ArgumentException("Not a variable or trig function");
+                            throw new ArgumentException("Not a variable or function");
                         }
                     }
                 }
@@ -433,7 +433,7 @@ namespace MultiDesktop
 
 
 
-        private bool IsTrigFunction(string input)
+        private bool IsFunction(string input)
         {
             bool IsTrig = false;
             foreach (string token in tokenList)
@@ -518,8 +518,14 @@ namespace MultiDesktop
                 }
 
             variableName = variableName.Replace(" ", "");
-
-                if (IsTrigFunction(variableName) || variableName.Equals("e") || variableName.Equals("π") || Char.IsDigit(variableName[0]))
+            for (int i = 0; i < variableName.Length; i++)
+            {
+                if (symbols.Contains(variableName[i].ToString()))
+                {
+                    isValid = false;
+                }
+            }
+                if (IsFunction(variableName) || variableName.Equals("e") || variableName.Equals("π") || Char.IsDigit(variableName[0]))
                 {
                     isValid = false;
                 }
