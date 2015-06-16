@@ -42,16 +42,16 @@ namespace MultiDesktop
         private readonly string CSCH = "csch";
         private readonly string SECH = "sech";
         private readonly string COTH = "coth";
-        private readonly string LN = "ln";
-        private readonly string NEGATIVE = "-"; //This is a hyphen
         private readonly string SQRT = "√";
         private readonly string EQUAL = "=";
-        
+        private readonly string NEGATIVE = "-"; //This is a hyphen
+
         private readonly string precedence2 = "+−";
         private readonly string precedence3 = "*/%";
         private readonly string precedence4 = "^!sincostancotseccscloglnarcsinarccosarctanarccotarcsecarccscsinhcoshtanhcothsechcsch-√"; //So ugly. Will think of better way later.
 
         private readonly string[] tokenList = { "sin", "cos", "tan", "cot", "sec", "csc", "log", "ln", "arcsin", "arccos", "arctan", "arccot", "arcsec", "arccsc", "sinh", "cosh", "tanh", "coth", "sech", "csch" };
+
 
         public void setRadians()
         {
@@ -83,14 +83,13 @@ namespace MultiDesktop
             }
             
             List<string> postFixed = convert(input);
-            var stack = new Stack<string>();
+            var stack = new Stack<double>();
 
             for (int i = 0; i < postFixed.Count; i++)
             {
                 double retNum;
-
                 if (Double.TryParse(postFixed[i], out retNum)) //If incoming character is a number
-                {                    
+                {
                     stack.Push(Convert.ToDouble(postFixed[i]));
                 }
 
@@ -110,30 +109,7 @@ namespace MultiDesktop
                     {
                         throw new ArgumentException("Invalid Input");
                     }
-                    
                     double operand = operate(stack.Pop(), stack.Pop(), postFixed[i]);
-                }
-            }
-
-            if (storeVariable)
-            {
-                Values.Add(Convert.ToDouble(stack.Peek()));
-            }
-
-            ans = Convert.ToDouble(stack.Pop());
-            return ans;
-
-            for (int i = 0; i < postFixed.Count; i++)
-            {
-                double retNum;
-
-                if (Double.TryParse(postFixed[i], out retNum)) //If incoming character is a number
-                {
-                    stack.Push(postFixed[i]);
-                }
-                else if (symbols.Contains(postFixed[i])) //Else If incoming character is an arithmetic symbol
-                {
-                    string operand = operate(stack.Pop(), stack.Pop(), postFixed[i]).ToString();
                     stack.Push(operand);
                 }
 
@@ -172,8 +148,6 @@ namespace MultiDesktop
          */
         private double operate(double operand1, double operand2, string anOperator)
         {
-            double operand1 = Convert.ToDouble(anOperand1);
-            double operand2 = Convert.ToDouble(anOperand2);
             double output = 0;
 
             if (anOperator.Equals("+"))
@@ -218,12 +192,6 @@ namespace MultiDesktop
                 convertedOperand = operand * Math.PI / 180.0;
             }
 
-            double convertedOperand = operand;
-            if (degrees)
-            {
-                convertedOperand = operand * Math.PI / 180.0;
-            }
-            
             if (function.Equals(SIN))
             {
                 return Math.Sin(convertedOperand);
@@ -328,27 +296,22 @@ namespace MultiDesktop
 
             else if (function.Equals(LOG))
             {
-                return Math.Log10(convertedOperand);
+                return Math.Log10(operand);
             }
 
             else if (function.Equals(LN))
             {
-                return Math.Log(convertedOperand, Math.E);
+                return Math.Log(operand, Math.E);
             }
 
             else if (function.Equals(NEGATIVE))
             {
-                return 0.0 - convertedOperand;
+                return 0.0 - operand;
             }
 
             else if (function.Equals(SQRT))
             {
-                return Math.Sqrt(convertedOperand);
-            }
-
-            else if (function.Equals(SQRT))
-            {
-                throw new ArgumentException("Idk what happened here"); //The only way to end up here is if the user messed up the # of parenthesis
+                return Math.Sqrt(operand);
             }
 
             else
@@ -368,161 +331,6 @@ namespace MultiDesktop
             {
                 return n * factorial(n - 1);
             }
-        }
-
-        private List<string> convert(string infix)
-        {
-            List<string> postFix = new List<string>();
-            Stack<string> operators = new Stack<string>();
-
-            for (int i = 0; i < infix.Length; i++)
-            {
-                while (infix[i].Equals(' ')) //Skips over whitespace
-                {
-                    i++;
-                }
-
-                if (Char.IsDigit(infix[i]) || infix[i].Equals('.'))
-                {
-                    string number = infix[i].ToString();
-                    while ((i + 1) < infix.Length && (Char.IsDigit(infix[i + 1]) || infix[i + 1].Equals('.'))) //Concat additional digits to string result  (Allows us to get numbers with more than 1 digit)
-                    {
-                        i++;
-                        number += infix[i];
-                    }
-                    postFix.Add(number);
-                }
-
-                else if (Char.IsLetter(infix[i])) //Variable or trig function
-                {
-                    string aToken = infix[i].ToString();
-                    while ((i + 1) < infix.Length && Char.IsLetter(infix[i + 1]))
-                    {
-                        i++;
-                        aToken += infix[i];
-                    }
-
-                    if (aToken.Equals("ans"))
-                    {
-                        postFix.Add(ans.ToString());
-                    }
-
-                    else
-                    {
-                        bool trig = false;
-                        foreach (string token in tokenList)
-                        {
-                            if (aToken.ToLower().Equals(token))
-                            {
-                                operators.Push(aToken);
-                                trig = true;
-                            }
-                        }
-                    }
-
-                    if (!trig)
-                    {
-                        for (int j = 0; j < Variables.Count; j++ )
-                        {
-                            if (aToken.Equals(Variables[j]))
-                            {
-                                postFix.Add(Values[j].ToString());
-                            }
-                        }
-                }
-
-                else if (operators.Count == 0 || infix[i].Equals('(') || precedence4.Contains(infix[i].ToString()))
-                {
-                    operators.Push(infix[i].ToString());
-                }
-
-                else if (infix[i].Equals(')'))
-                {
-                    while (!operators.Peek().Equals("("))
-                    {
-                        postFix.Add(operators.Pop());
-                    }
-                    operators.Pop(); //Disposes of '('
-                }
-
-                else //If not ),(, number, or trig function, this character is an operator
-                {
-                    int precedence = comparePrecedence(infix[i].ToString(), operators.Peek());
-                    if (precedence > 0)  //This character has higher precedence
-                    {
-                        operators.Push(infix[i].ToString());
-                    }
-                    else if (precedence < 0) //This character has lower precedence
-                    {
-                        postFix.Add(operators.Pop());
-                        i--;
-                    }
-                    else//This character has the same precedence
-                    {
-                        postFix.Add(operators.Pop());
-                        operators.Push(infix[i].ToString());
-                    }
-                }
-
-            }
-
-
-            int size = operators.Count;
-            for (int i = 0; i < size; i++)
-            {
-                postFix.Add(operators.Pop());
-            }
-
-            return postFix;
-        }
-
-
-        /*
-       * Compares operator precedence
-       * <param> operator1 the operator to compare with
-       * <param> operator2 the operator at the top of the operators stack
-       * <return> positive number if operator1 has higher precedence, negative number if lower precedence, 0 if same precedence
-       */
-        private int comparePrecedence(string operator1, string operator2)
-        {
-            int thisPrecedence;
-            int topPrecedence;
-            if (precedence4.Contains(operator1))
-            {
-                thisPrecedence = 4;
-            }
-            else if (precedence3.Contains(operator1))
-            {
-                thisPrecedence = 3;
-            }
-            else if (precedence2.Contains(operator1))
-            {
-                thisPrecedence = 2;
-            }
-            else
-            {
-                thisPrecedence = 1;
-            }
-
-            if (precedence4.Contains(operator2))
-            {
-                topPrecedence = 4;
-            }
-            else if (precedence3.Contains(operator2))
-            {
-                topPrecedence = 3;
-            }
-            else if (precedence2.Contains(operator2))
-            {
-                topPrecedence = 2;
-            }
-            else
-            {
-                topPrecedence = 1;
-            }
-
-            int comparison = thisPrecedence.CompareTo(topPrecedence);
-            return comparison;
         }
 
         private List<string> convert(string infix)
@@ -552,7 +360,7 @@ namespace MultiDesktop
                 {
                     //Possible bug: tansin0 will NOT work, but tan sin 0 will. tan(sin 0) also works...
                     string aToken = infix[i].ToString();
-                    while ((i + 1) < infix.Length && (Char.IsLetter(infix[i + 1]) || Char.IsDigit(infix[i+1])))
+                    while ((i + 1) < infix.Length && (Char.IsLetter(infix[i + 1]) || Char.IsDigit(infix[i + 1])))
                     {
                         i++;
                         aToken += infix[i];
@@ -624,9 +432,7 @@ namespace MultiDesktop
 
             return postFix;
         }
-
-
-
+        
         private bool IsFunction(string input)
         {
             bool IsTrig = false;
