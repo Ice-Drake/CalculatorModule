@@ -6,6 +6,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using Library;
+using PluginSDK;
 
 namespace MultiDesktop
 {
@@ -13,6 +14,7 @@ namespace MultiDesktop
     {
         private Calculator calculator;
         private Converter converter;
+        private SharedData sharedData;
         private TabPage tabPage4;
         private TabPage tabPage3;
         private TabPage tabPage1;
@@ -73,6 +75,66 @@ namespace MultiDesktop
         private Button eightButton;
         private Button sevenButton;
         private Button mulButton;
+        private GroupBox groupBox1;
+        private Button retrieveA1Button;
+        private TextBox angleBox2;
+        private Label label2;
+        private ComboBox angleComboBox1;
+        private TextBox angleBox1;
+        private GroupBox groupBox6;
+        private Button storeW2Button;
+        private Button retrieveW2Button;
+        private Button storeW1Button;
+        private Button retrieveW1Button;
+        private TextBox weightBox2;
+        private Label label7;
+        private ComboBox weightComboBox1;
+        private TextBox weightBox1;
+        private GroupBox groupBox5;
+        private Button storeV2Button;
+        private Button retrieveV2Button;
+        private Button storeV1Button;
+        private Button retrieveV1Button;
+        private TextBox volumeBox2;
+        private Label label6;
+        private ComboBox volumeComboBox1;
+        private TextBox volumeBox1;
+        private GroupBox groupBox4;
+        private Button storeT2Button;
+        private Button retrieveT2Button;
+        private Button storeT1Button;
+        private Button retrieveT1Button;
+        private TextBox tempBox2;
+        private Label label5;
+        private ComboBox tempComboBox1;
+        private TextBox tempBox1;
+        private GroupBox groupBox3;
+        private Button storeL2Button;
+        private Button retrieveL2Button;
+        private Button storeL1Button;
+        private Button retrieveL1Button;
+        private TextBox lengthBox2;
+        private Label label4;
+        private ComboBox lengthComboBox1;
+        private TextBox lengthBox1;
+        private GroupBox groupBox2;
+        private Button storeA4Button;
+        private Button retrieveA4Button;
+        private Button storeA3Button;
+        private Button retrieveButtonA3;
+        private TextBox areaBox2;
+        private Label label3;
+        private ComboBox areaComboBox1;
+        private TextBox areaBox1;
+        private Button storeA2Button;
+        private Button retrieveA2Button;
+        private Button storeA1Button;
+        private ComboBox angleComboBox2;
+        private ComboBox weightComboBox2;
+        private ComboBox volumeComboBox2;
+        private ComboBox tempComboBox2;
+        private ComboBox lengthComboBox2;
+        private ComboBox areaComboBox2;
 
         #region Component Designer variables
 
@@ -103,6 +165,66 @@ namespace MultiDesktop
         {
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.weightComboBox2 = new System.Windows.Forms.ComboBox();
+            this.storeW2Button = new System.Windows.Forms.Button();
+            this.retrieveW2Button = new System.Windows.Forms.Button();
+            this.storeW1Button = new System.Windows.Forms.Button();
+            this.retrieveW1Button = new System.Windows.Forms.Button();
+            this.weightBox2 = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.weightComboBox1 = new System.Windows.Forms.ComboBox();
+            this.weightBox1 = new System.Windows.Forms.TextBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.volumeComboBox2 = new System.Windows.Forms.ComboBox();
+            this.storeV2Button = new System.Windows.Forms.Button();
+            this.retrieveV2Button = new System.Windows.Forms.Button();
+            this.storeV1Button = new System.Windows.Forms.Button();
+            this.retrieveV1Button = new System.Windows.Forms.Button();
+            this.volumeBox2 = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.volumeComboBox1 = new System.Windows.Forms.ComboBox();
+            this.volumeBox1 = new System.Windows.Forms.TextBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.tempComboBox2 = new System.Windows.Forms.ComboBox();
+            this.storeT2Button = new System.Windows.Forms.Button();
+            this.retrieveT2Button = new System.Windows.Forms.Button();
+            this.storeT1Button = new System.Windows.Forms.Button();
+            this.retrieveT1Button = new System.Windows.Forms.Button();
+            this.tempBox2 = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.tempComboBox1 = new System.Windows.Forms.ComboBox();
+            this.tempBox1 = new System.Windows.Forms.TextBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.lengthComboBox2 = new System.Windows.Forms.ComboBox();
+            this.storeL2Button = new System.Windows.Forms.Button();
+            this.retrieveL2Button = new System.Windows.Forms.Button();
+            this.storeL1Button = new System.Windows.Forms.Button();
+            this.retrieveL1Button = new System.Windows.Forms.Button();
+            this.lengthBox2 = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.lengthComboBox1 = new System.Windows.Forms.ComboBox();
+            this.lengthBox1 = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.areaComboBox2 = new System.Windows.Forms.ComboBox();
+            this.storeA4Button = new System.Windows.Forms.Button();
+            this.retrieveA4Button = new System.Windows.Forms.Button();
+            this.storeA3Button = new System.Windows.Forms.Button();
+            this.retrieveButtonA3 = new System.Windows.Forms.Button();
+            this.areaBox2 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.areaComboBox1 = new System.Windows.Forms.ComboBox();
+            this.areaBox1 = new System.Windows.Forms.TextBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.angleComboBox2 = new System.Windows.Forms.ComboBox();
+            this.storeA2Button = new System.Windows.Forms.Button();
+            this.retrieveA2Button = new System.Windows.Forms.Button();
+            this.storeA1Button = new System.Windows.Forms.Button();
+            this.retrieveA1Button = new System.Windows.Forms.Button();
+            this.angleBox2 = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.angleComboBox1 = new System.Windows.Forms.ComboBox();
+            this.angleBox1 = new System.Windows.Forms.TextBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.basicGroupBox = new System.Windows.Forms.GroupBox();
             this.equalButton = new System.Windows.Forms.Button();
@@ -161,6 +283,13 @@ namespace MultiDesktop
             this.inputBox = new System.Windows.Forms.TextBox();
             this.consoleBox = new System.Windows.Forms.ListBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage3.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.basicGroupBox.SuspendLayout();
             this.sciGroupBox.SuspendLayout();
@@ -173,20 +302,818 @@ namespace MultiDesktop
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(524, 396);
+            this.tabPage4.Size = new System.Drawing.Size(524, 486);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Plugin";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.groupBox6);
+            this.tabPage3.Controls.Add(this.groupBox5);
+            this.tabPage3.Controls.Add(this.groupBox4);
+            this.tabPage3.Controls.Add(this.groupBox3);
+            this.tabPage3.Controls.Add(this.groupBox2);
+            this.tabPage3.Controls.Add(this.groupBox1);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(524, 396);
+            this.tabPage3.Size = new System.Drawing.Size(524, 486);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Converter";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.weightComboBox2);
+            this.groupBox6.Controls.Add(this.storeW2Button);
+            this.groupBox6.Controls.Add(this.retrieveW2Button);
+            this.groupBox6.Controls.Add(this.storeW1Button);
+            this.groupBox6.Controls.Add(this.retrieveW1Button);
+            this.groupBox6.Controls.Add(this.weightBox2);
+            this.groupBox6.Controls.Add(this.label7);
+            this.groupBox6.Controls.Add(this.weightComboBox1);
+            this.groupBox6.Controls.Add(this.weightBox1);
+            this.groupBox6.Location = new System.Drawing.Point(6, 406);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(512, 74);
+            this.groupBox6.TabIndex = 11;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Weight";
+            // 
+            // weightComboBox2
+            // 
+            this.weightComboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.weightComboBox2.FormattingEnabled = true;
+            this.weightComboBox2.Items.AddRange(new object[] {
+            "Carat",
+            "Centigram",
+            "Decigram",
+            "Dekagram",
+            "Gram",
+            "Hectogram",
+            "Kilogram",
+            "Long Ton",
+            "Milligram",
+            "Ounce",
+            "Pound",
+            "Short Ton",
+            "Stone",
+            "Tonne"});
+            this.weightComboBox2.Location = new System.Drawing.Point(375, 19);
+            this.weightComboBox2.Name = "weightComboBox2";
+            this.weightComboBox2.Size = new System.Drawing.Size(131, 21);
+            this.weightComboBox2.TabIndex = 9;
+            this.weightComboBox2.SelectedIndex = 10;
+            this.weightComboBox2.SelectedIndexChanged += new System.EventHandler(this.weightComboBox2_SelectedIndexChanged);
+            // 
+            // storeW2Button
+            // 
+            this.storeW2Button.Location = new System.Drawing.Point(269, 45);
+            this.storeW2Button.Name = "storeW2Button";
+            this.storeW2Button.Size = new System.Drawing.Size(44, 23);
+            this.storeW2Button.TabIndex = 8;
+            this.storeW2Button.Text = "→W2";
+            this.storeW2Button.UseVisualStyleBackColor = true;
+            this.storeW2Button.Click += new System.EventHandler(this.storeW2Button_Click);
+            // 
+            // retrieveW2Button
+            // 
+            this.retrieveW2Button.Location = new System.Drawing.Point(325, 45);
+            this.retrieveW2Button.Name = "retrieveW2Button";
+            this.retrieveW2Button.Size = new System.Drawing.Size(44, 23);
+            this.retrieveW2Button.TabIndex = 7;
+            this.retrieveW2Button.Text = "←W2";
+            this.retrieveW2Button.UseVisualStyleBackColor = true;
+            this.retrieveW2Button.Click += new System.EventHandler(this.retrieveW2Button_Click);
+            // 
+            // storeW1Button
+            // 
+            this.storeW1Button.Location = new System.Drawing.Point(6, 45);
+            this.storeW1Button.Name = "storeW1Button";
+            this.storeW1Button.Size = new System.Drawing.Size(44, 23);
+            this.storeW1Button.TabIndex = 6;
+            this.storeW1Button.Text = "→W1";
+            this.storeW1Button.UseVisualStyleBackColor = true;
+            this.storeW1Button.Click += new System.EventHandler(this.storeW1Button_Click);
+            // 
+            // retrieveW1Button
+            // 
+            this.retrieveW1Button.Location = new System.Drawing.Point(62, 45);
+            this.retrieveW1Button.Name = "retrieveW1Button";
+            this.retrieveW1Button.Size = new System.Drawing.Size(44, 23);
+            this.retrieveW1Button.TabIndex = 5;
+            this.retrieveW1Button.Text = "←W1";
+            this.retrieveW1Button.UseVisualStyleBackColor = true;
+            this.retrieveW1Button.Click += new System.EventHandler(this.retrieveW1Button_Click);
+            // 
+            // weightBox2
+            // 
+            this.weightBox2.Location = new System.Drawing.Point(269, 19);
+            this.weightBox2.Name = "weightBox2";
+            this.weightBox2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.weightBox2.Size = new System.Drawing.Size(100, 20);
+            this.weightBox2.TabIndex = 3;
+            this.weightBox2.Text = "1";
+            this.weightBox2.TextChanged += new System.EventHandler(this.weightBox2_TextChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(249, 22);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(13, 13);
+            this.label7.TabIndex = 2;
+            this.label7.Text = "=";
+            // 
+            // weightComboBox1
+            // 
+            this.weightComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.weightComboBox1.FormattingEnabled = true;
+            this.weightComboBox1.Items.AddRange(new object[] {
+            "Carat",
+            "Centigram",
+            "Decigram",
+            "Dekagram",
+            "Gram",
+            "Hectogram",
+            "Kilogram",
+            "Long Ton",
+            "Milligram",
+            "Ounce",
+            "Pound",
+            "Short Ton",
+            "Stone",
+            "Tonne"});
+            this.weightComboBox1.Location = new System.Drawing.Point(112, 19);
+            this.weightComboBox1.Name = "weightComboBox1";
+            this.weightComboBox1.Size = new System.Drawing.Size(131, 21);
+            this.weightComboBox1.TabIndex = 1;
+            this.weightComboBox1.SelectedIndex = 10;
+            this.weightComboBox1.SelectedIndexChanged += new System.EventHandler(this.weightComboBox1_SelectedIndexChanged);
+            // 
+            // weightBox1
+            // 
+            this.weightBox1.Location = new System.Drawing.Point(6, 19);
+            this.weightBox1.Name = "weightBox1";
+            this.weightBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.weightBox1.Size = new System.Drawing.Size(100, 20);
+            this.weightBox1.TabIndex = 0;
+            this.weightBox1.Text = "1";
+            this.weightBox1.TextChanged += new System.EventHandler(this.weightBox1_TextChanged);
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.volumeComboBox2);
+            this.groupBox5.Controls.Add(this.storeV2Button);
+            this.groupBox5.Controls.Add(this.retrieveV2Button);
+            this.groupBox5.Controls.Add(this.storeV1Button);
+            this.groupBox5.Controls.Add(this.retrieveV1Button);
+            this.groupBox5.Controls.Add(this.volumeBox2);
+            this.groupBox5.Controls.Add(this.label6);
+            this.groupBox5.Controls.Add(this.volumeComboBox1);
+            this.groupBox5.Controls.Add(this.volumeBox1);
+            this.groupBox5.Location = new System.Drawing.Point(6, 326);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(512, 74);
+            this.groupBox5.TabIndex = 10;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Volume";
+            // 
+            // volumeComboBox2
+            // 
+            this.volumeComboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.volumeComboBox2.FormattingEnabled = true;
+            this.volumeComboBox2.Items.AddRange(new object[] {
+            "Cubic Centimeter",
+            "Cubic Feet",
+            "Cubic Inch",
+            "Cubic Meter",
+            "Cubic Yard",
+            "Fluid Ounce (UK)",
+            "Fluid Ounce (US)",
+            "Gallon (UK)",
+            "Gallon (US)",
+            "Liter",
+            "Pint (UK)",
+            "Pint (US)",
+            "Quart (UK)",
+            "Quart (US)"});
+            this.volumeComboBox2.Location = new System.Drawing.Point(375, 19);
+            this.volumeComboBox2.Name = "volumeComboBox2";
+            this.volumeComboBox2.Size = new System.Drawing.Size(131, 21);
+            this.volumeComboBox2.TabIndex = 9;
+            this.volumeComboBox2.SelectedIndex = 8;
+            this.volumeComboBox2.SelectedIndexChanged += new System.EventHandler(this.volumeComboBox2_SelectedIndexChanged);
+            // 
+            // storeV2Button
+            // 
+            this.storeV2Button.Location = new System.Drawing.Point(269, 45);
+            this.storeV2Button.Name = "storeV2Button";
+            this.storeV2Button.Size = new System.Drawing.Size(44, 23);
+            this.storeV2Button.TabIndex = 8;
+            this.storeV2Button.Text = "→V2";
+            this.storeV2Button.UseVisualStyleBackColor = true;
+            this.storeV2Button.Click += new System.EventHandler(this.storeV2Button_Click);
+            // 
+            // retrieveV2Button
+            // 
+            this.retrieveV2Button.Location = new System.Drawing.Point(325, 45);
+            this.retrieveV2Button.Name = "retrieveV2Button";
+            this.retrieveV2Button.Size = new System.Drawing.Size(44, 23);
+            this.retrieveV2Button.TabIndex = 7;
+            this.retrieveV2Button.Text = "←V2";
+            this.retrieveV2Button.UseVisualStyleBackColor = true;
+            this.retrieveV2Button.Click += new System.EventHandler(this.retrieveV2Button_Click);
+            // 
+            // storeV1Button
+            // 
+            this.storeV1Button.Location = new System.Drawing.Point(6, 45);
+            this.storeV1Button.Name = "storeV1Button";
+            this.storeV1Button.Size = new System.Drawing.Size(44, 23);
+            this.storeV1Button.TabIndex = 6;
+            this.storeV1Button.Text = "→V1";
+            this.storeV1Button.UseVisualStyleBackColor = true;
+            this.storeV1Button.Click += new System.EventHandler(this.storeV1Button_Click);
+            // 
+            // retrieveV1Button
+            // 
+            this.retrieveV1Button.Location = new System.Drawing.Point(62, 45);
+            this.retrieveV1Button.Name = "retrieveV1Button";
+            this.retrieveV1Button.Size = new System.Drawing.Size(44, 23);
+            this.retrieveV1Button.TabIndex = 5;
+            this.retrieveV1Button.Text = "←V1";
+            this.retrieveV1Button.UseVisualStyleBackColor = true;
+            this.retrieveV1Button.Click += new System.EventHandler(this.retrieveV1Button_Click);
+            // 
+            // volumeBox2
+            // 
+            this.volumeBox2.Location = new System.Drawing.Point(269, 19);
+            this.volumeBox2.Name = "volumeBox2";
+            this.volumeBox2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.volumeBox2.Size = new System.Drawing.Size(100, 20);
+            this.volumeBox2.TabIndex = 3;
+            this.volumeBox2.Text = "1";
+            this.volumeBox2.TextChanged += new System.EventHandler(this.volumeBox2_TextChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(249, 22);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(13, 13);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "=";
+            // 
+            // volumeComboBox1
+            // 
+            this.volumeComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.volumeComboBox1.FormattingEnabled = true;
+            this.volumeComboBox1.Items.AddRange(new object[] {
+            "Cubic Centimeter",
+            "Cubic Feet",
+            "Cubic Inch",
+            "Cubic Meter",
+            "Cubic Yard",
+            "Fluid Ounce (UK)",
+            "Fluid Ounce (US)",
+            "Gallon (UK)",
+            "Gallon (US)",
+            "Liter",
+            "Pint (UK)",
+            "Pint (US)",
+            "Quart (UK)",
+            "Quart (US)"});
+            this.volumeComboBox1.Location = new System.Drawing.Point(112, 19);
+            this.volumeComboBox1.Name = "volumeComboBox1";
+            this.volumeComboBox1.Size = new System.Drawing.Size(131, 21);
+            this.volumeComboBox1.TabIndex = 1;
+            this.volumeComboBox1.SelectedIndex = 8;
+            this.volumeComboBox1.SelectedIndexChanged += new System.EventHandler(this.volumeComboBox1_SelectedIndexChanged);
+            // 
+            // volumeBox1
+            // 
+            this.volumeBox1.Location = new System.Drawing.Point(6, 19);
+            this.volumeBox1.Name = "volumeBox1";
+            this.volumeBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.volumeBox1.Size = new System.Drawing.Size(100, 20);
+            this.volumeBox1.TabIndex = 0;
+            this.volumeBox1.Text = "1";
+            this.volumeBox1.TextChanged += new System.EventHandler(this.volumeBox1_TextChanged);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.tempComboBox2);
+            this.groupBox4.Controls.Add(this.storeT2Button);
+            this.groupBox4.Controls.Add(this.retrieveT2Button);
+            this.groupBox4.Controls.Add(this.storeT1Button);
+            this.groupBox4.Controls.Add(this.retrieveT1Button);
+            this.groupBox4.Controls.Add(this.tempBox2);
+            this.groupBox4.Controls.Add(this.label5);
+            this.groupBox4.Controls.Add(this.tempComboBox1);
+            this.groupBox4.Controls.Add(this.tempBox1);
+            this.groupBox4.Location = new System.Drawing.Point(6, 246);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(512, 74);
+            this.groupBox4.TabIndex = 9;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Temperature";
+            // 
+            // tempComboBox2
+            // 
+            this.tempComboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.tempComboBox2.FormattingEnabled = true;
+            this.tempComboBox2.Items.AddRange(new object[] {
+            "°C",
+            "°F",
+            "°K"});
+            this.tempComboBox2.Location = new System.Drawing.Point(375, 19);
+            this.tempComboBox2.Name = "tempComboBox2";
+            this.tempComboBox2.Size = new System.Drawing.Size(131, 21);
+            this.tempComboBox2.TabIndex = 9;
+            this.tempComboBox2.SelectedIndex = 0;
+            this.tempComboBox2.SelectedIndexChanged += new System.EventHandler(this.tempComboBox2_SelectedIndexChanged);
+            // 
+            // storeT2Button
+            // 
+            this.storeT2Button.Location = new System.Drawing.Point(269, 45);
+            this.storeT2Button.Name = "storeT2Button";
+            this.storeT2Button.Size = new System.Drawing.Size(44, 23);
+            this.storeT2Button.TabIndex = 8;
+            this.storeT2Button.Text = "→T2";
+            this.storeT2Button.UseVisualStyleBackColor = true;
+            this.storeT2Button.Click += new System.EventHandler(this.storeT2Button_Click);
+            // 
+            // retrieveT2Button
+            // 
+            this.retrieveT2Button.Location = new System.Drawing.Point(325, 45);
+            this.retrieveT2Button.Name = "retrieveT2Button";
+            this.retrieveT2Button.Size = new System.Drawing.Size(44, 23);
+            this.retrieveT2Button.TabIndex = 7;
+            this.retrieveT2Button.Text = "←T2";
+            this.retrieveT2Button.UseVisualStyleBackColor = true;
+            this.retrieveT2Button.Click += new System.EventHandler(this.retrieveT2Button_Click);
+            // 
+            // storeT1Button
+            // 
+            this.storeT1Button.Location = new System.Drawing.Point(6, 45);
+            this.storeT1Button.Name = "storeT1Button";
+            this.storeT1Button.Size = new System.Drawing.Size(44, 23);
+            this.storeT1Button.TabIndex = 6;
+            this.storeT1Button.Text = "→T1";
+            this.storeT1Button.UseVisualStyleBackColor = true;
+            this.storeT1Button.Click += new System.EventHandler(this.storeT1Button_Click);
+            // 
+            // retrieveT1Button
+            // 
+            this.retrieveT1Button.Location = new System.Drawing.Point(62, 45);
+            this.retrieveT1Button.Name = "retrieveT1Button";
+            this.retrieveT1Button.Size = new System.Drawing.Size(44, 23);
+            this.retrieveT1Button.TabIndex = 5;
+            this.retrieveT1Button.Text = "←T1";
+            this.retrieveT1Button.UseVisualStyleBackColor = true;
+            this.retrieveT1Button.Click += new System.EventHandler(this.retrieveT1Button_Click);
+            // 
+            // tempBox2
+            // 
+            this.tempBox2.Location = new System.Drawing.Point(269, 19);
+            this.tempBox2.Name = "tempBox2";
+            this.tempBox2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.tempBox2.Size = new System.Drawing.Size(100, 20);
+            this.tempBox2.TabIndex = 3;
+            this.tempBox2.Text = "1";
+            this.tempBox2.TextChanged += new System.EventHandler(this.tempBox2_TextChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(249, 22);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(13, 13);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "=";
+            // 
+            // tempComboBox1
+            // 
+            this.tempComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.tempComboBox1.FormattingEnabled = true;
+            this.tempComboBox1.Items.AddRange(new object[] {
+            "°C",
+            "°F",
+            "°K"});
+            this.tempComboBox1.Location = new System.Drawing.Point(112, 19);
+            this.tempComboBox1.Name = "tempComboBox1";
+            this.tempComboBox1.Size = new System.Drawing.Size(131, 21);
+            this.tempComboBox1.TabIndex = 1;
+            this.tempComboBox1.SelectedIndex = 0;
+            this.tempComboBox1.SelectedIndexChanged += new System.EventHandler(this.tempComboBox1_SelectedIndexChanged);
+            // 
+            // tempBox1
+            // 
+            this.tempBox1.Location = new System.Drawing.Point(6, 19);
+            this.tempBox1.Name = "tempBox1";
+            this.tempBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.tempBox1.Size = new System.Drawing.Size(100, 20);
+            this.tempBox1.TabIndex = 0;
+            this.tempBox1.Text = "1";
+            this.tempBox1.TextChanged += new System.EventHandler(this.tempBox1_TextChanged);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.lengthComboBox2);
+            this.groupBox3.Controls.Add(this.storeL2Button);
+            this.groupBox3.Controls.Add(this.retrieveL2Button);
+            this.groupBox3.Controls.Add(this.storeL1Button);
+            this.groupBox3.Controls.Add(this.retrieveL1Button);
+            this.groupBox3.Controls.Add(this.lengthBox2);
+            this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.lengthComboBox1);
+            this.groupBox3.Controls.Add(this.lengthBox1);
+            this.groupBox3.Location = new System.Drawing.Point(6, 166);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(512, 74);
+            this.groupBox3.TabIndex = 9;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Length";
+            // 
+            // lengthComboBox2
+            // 
+            this.lengthComboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.lengthComboBox2.FormattingEnabled = true;
+            this.lengthComboBox2.Items.AddRange(new object[] {
+            "Angstrom",
+            "Centimeters",
+            "Chain",
+            "Fathom",
+            "Feet",
+            "Hand",
+            "Inch",
+            "Kilometers",
+            "Link",
+            "Meter",
+            "Microns",
+            "Mile",
+            "Millimeters",
+            "Nanometer",
+            "Nautical Miles",
+            "PICA",
+            "Rods",
+            "Span",
+            "Yard"});
+            this.lengthComboBox2.Location = new System.Drawing.Point(375, 19);
+            this.lengthComboBox2.Name = "lengthComboBox2";
+            this.lengthComboBox2.Size = new System.Drawing.Size(131, 21);
+            this.lengthComboBox2.TabIndex = 9;
+            this.lengthComboBox2.SelectedIndex = 6;
+            this.lengthComboBox2.SelectedIndexChanged += new System.EventHandler(this.lengthComboBox2_SelectedIndexChanged);
+            // 
+            // storeL2Button
+            // 
+            this.storeL2Button.Location = new System.Drawing.Point(269, 45);
+            this.storeL2Button.Name = "storeL2Button";
+            this.storeL2Button.Size = new System.Drawing.Size(44, 23);
+            this.storeL2Button.TabIndex = 8;
+            this.storeL2Button.Text = "→L2";
+            this.storeL2Button.UseVisualStyleBackColor = true;
+            this.storeL2Button.Click += new System.EventHandler(this.storeL2Button_Click);
+            // 
+            // retrieveL2Button
+            // 
+            this.retrieveL2Button.Location = new System.Drawing.Point(325, 45);
+            this.retrieveL2Button.Name = "retrieveL2Button";
+            this.retrieveL2Button.Size = new System.Drawing.Size(44, 23);
+            this.retrieveL2Button.TabIndex = 7;
+            this.retrieveL2Button.Text = "←L2";
+            this.retrieveL2Button.UseVisualStyleBackColor = true;
+            this.retrieveL2Button.Click += new System.EventHandler(this.retrieveL2Button_Click);
+            // 
+            // storeL1Button
+            // 
+            this.storeL1Button.Location = new System.Drawing.Point(6, 45);
+            this.storeL1Button.Name = "storeL1Button";
+            this.storeL1Button.Size = new System.Drawing.Size(44, 23);
+            this.storeL1Button.TabIndex = 6;
+            this.storeL1Button.Text = "→L1";
+            this.storeL1Button.UseVisualStyleBackColor = true;
+            this.storeL1Button.Click += new System.EventHandler(this.storeL1Button_Click);
+            // 
+            // retrieveL1Button
+            // 
+            this.retrieveL1Button.Location = new System.Drawing.Point(62, 45);
+            this.retrieveL1Button.Name = "retrieveL1Button";
+            this.retrieveL1Button.Size = new System.Drawing.Size(44, 23);
+            this.retrieveL1Button.TabIndex = 5;
+            this.retrieveL1Button.Text = "←L1";
+            this.retrieveL1Button.UseVisualStyleBackColor = true;
+            this.retrieveL1Button.Click += new System.EventHandler(this.retrieveL1Button_Click);
+            // 
+            // lengthBox2
+            // 
+            this.lengthBox2.Location = new System.Drawing.Point(269, 19);
+            this.lengthBox2.Name = "lengthBox2";
+            this.lengthBox2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lengthBox2.Size = new System.Drawing.Size(100, 20);
+            this.lengthBox2.TabIndex = 3;
+            this.lengthBox2.Text = "1";
+            this.lengthBox2.TextChanged += new System.EventHandler(this.lengthBox2_TextChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(249, 22);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(13, 13);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "=";
+            // 
+            // lengthComboBox1
+            // 
+            this.lengthComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.lengthComboBox1.FormattingEnabled = true;
+            this.lengthComboBox1.Items.AddRange(new object[] {
+            "Angstrom",
+            "Centimeters",
+            "Chain",
+            "Fathom",
+            "Feet",
+            "Hand",
+            "Inch",
+            "Kilometers",
+            "Link",
+            "Meter",
+            "Microns",
+            "Mile",
+            "Millimeters",
+            "Nanometer",
+            "Nautical Miles",
+            "PICA",
+            "Rods",
+            "Span",
+            "Yard"});
+            this.lengthComboBox1.Location = new System.Drawing.Point(112, 19);
+            this.lengthComboBox1.Name = "lengthComboBox1";
+            this.lengthComboBox1.Size = new System.Drawing.Size(131, 21);
+            this.lengthComboBox1.TabIndex = 1;
+            this.lengthComboBox1.SelectedIndex = 6;
+            this.lengthComboBox1.SelectedIndexChanged += new System.EventHandler(this.lengthComboBox1_SelectedIndexChanged);
+            // 
+            // lengthBox1
+            // 
+            this.lengthBox1.Location = new System.Drawing.Point(6, 19);
+            this.lengthBox1.Name = "lengthBox1";
+            this.lengthBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lengthBox1.Size = new System.Drawing.Size(100, 20);
+            this.lengthBox1.TabIndex = 0;
+            this.lengthBox1.Text = "1";
+            this.lengthBox1.TextChanged += new System.EventHandler(this.lengthBox1_TextChanged);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.areaComboBox2);
+            this.groupBox2.Controls.Add(this.storeA4Button);
+            this.groupBox2.Controls.Add(this.retrieveA4Button);
+            this.groupBox2.Controls.Add(this.storeA3Button);
+            this.groupBox2.Controls.Add(this.retrieveButtonA3);
+            this.groupBox2.Controls.Add(this.areaBox2);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.areaComboBox1);
+            this.groupBox2.Controls.Add(this.areaBox1);
+            this.groupBox2.Location = new System.Drawing.Point(6, 86);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(512, 74);
+            this.groupBox2.TabIndex = 9;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Area";
+            // 
+            // areaComboBox2
+            // 
+            this.areaComboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.areaComboBox2.FormattingEnabled = true;
+            this.areaComboBox2.Items.AddRange(new object[] {
+            "Acres",
+            "Hectares",
+            "Square Centimeter",
+            "Square Feet",
+            "Square Inch",
+            "Square Kilometer",
+            "Square Meters",
+            "Square Mile",
+            "Square Millimeter",
+            "Square Yard"});
+            this.areaComboBox2.Location = new System.Drawing.Point(375, 19);
+            this.areaComboBox2.Name = "areaComboBox2";
+            this.areaComboBox2.Size = new System.Drawing.Size(131, 21);
+            this.areaComboBox2.TabIndex = 9;
+            this.areaComboBox2.SelectedIndex = 4;
+            this.areaComboBox2.SelectedIndexChanged += new System.EventHandler(this.areaComboBox2_SelectedIndexChanged);
+            // 
+            // storeA4Button
+            // 
+            this.storeA4Button.Location = new System.Drawing.Point(269, 45);
+            this.storeA4Button.Name = "storeA4Button";
+            this.storeA4Button.Size = new System.Drawing.Size(44, 23);
+            this.storeA4Button.TabIndex = 8;
+            this.storeA4Button.Text = "→A4";
+            this.storeA4Button.UseVisualStyleBackColor = true;
+            this.storeA4Button.Click += new System.EventHandler(this.storeA4Button_Click);
+            // 
+            // retrieveA4Button
+            // 
+            this.retrieveA4Button.Location = new System.Drawing.Point(325, 45);
+            this.retrieveA4Button.Name = "retrieveA4Button";
+            this.retrieveA4Button.Size = new System.Drawing.Size(44, 23);
+            this.retrieveA4Button.TabIndex = 7;
+            this.retrieveA4Button.Text = "←A4";
+            this.retrieveA4Button.UseVisualStyleBackColor = true;
+            this.retrieveA4Button.Click += new System.EventHandler(this.retrieveA4Button_Click);
+            // 
+            // storeA3Button
+            // 
+            this.storeA3Button.Location = new System.Drawing.Point(6, 45);
+            this.storeA3Button.Name = "storeA3Button";
+            this.storeA3Button.Size = new System.Drawing.Size(44, 23);
+            this.storeA3Button.TabIndex = 6;
+            this.storeA3Button.Text = "→A3";
+            this.storeA3Button.UseVisualStyleBackColor = true;
+            this.storeA3Button.Click += new System.EventHandler(this.storeA3Button_Click);
+            // 
+            // retrieveButtonA3
+            // 
+            this.retrieveButtonA3.Location = new System.Drawing.Point(62, 45);
+            this.retrieveButtonA3.Name = "retrieveButtonA3";
+            this.retrieveButtonA3.Size = new System.Drawing.Size(44, 23);
+            this.retrieveButtonA3.TabIndex = 5;
+            this.retrieveButtonA3.Text = "←A3";
+            this.retrieveButtonA3.UseVisualStyleBackColor = true;
+            this.retrieveButtonA3.Click += new System.EventHandler(this.retrieveButtonA3_Click);
+            // 
+            // areaBox2
+            // 
+            this.areaBox2.Location = new System.Drawing.Point(269, 19);
+            this.areaBox2.Name = "areaBox2";
+            this.areaBox2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.areaBox2.Size = new System.Drawing.Size(100, 20);
+            this.areaBox2.TabIndex = 3;
+            this.areaBox2.Text = "1";
+            this.areaBox2.TextChanged += new System.EventHandler(this.areaBox2_TextChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(249, 22);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(13, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "=";
+            // 
+            // areaComboBox1
+            // 
+            this.areaComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.areaComboBox1.FormattingEnabled = true;
+            this.areaComboBox1.Items.AddRange(new object[] {
+            "Acres",
+            "Hectares",
+            "Square Centimeter",
+            "Square Feet",
+            "Square Inch",
+            "Square Kilometer",
+            "Square Meters",
+            "Square Mile",
+            "Square Millimeter",
+            "Square Yard"});
+            this.areaComboBox1.Location = new System.Drawing.Point(112, 19);
+            this.areaComboBox1.Name = "areaComboBox1";
+            this.areaComboBox1.Size = new System.Drawing.Size(131, 21);
+            this.areaComboBox1.TabIndex = 1;
+            this.areaComboBox1.SelectedIndex = 4;
+            this.areaComboBox1.SelectedIndexChanged += new System.EventHandler(this.areaComboBox1_SelectedIndexChanged);
+            // 
+            // areaBox1
+            // 
+            this.areaBox1.Location = new System.Drawing.Point(6, 19);
+            this.areaBox1.Name = "areaBox1";
+            this.areaBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.areaBox1.Size = new System.Drawing.Size(100, 20);
+            this.areaBox1.TabIndex = 0;
+            this.areaBox1.Text = "1";
+            this.areaBox1.TextChanged += new System.EventHandler(this.areaBox1_TextChanged);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.angleComboBox2);
+            this.groupBox1.Controls.Add(this.storeA2Button);
+            this.groupBox1.Controls.Add(this.retrieveA2Button);
+            this.groupBox1.Controls.Add(this.storeA1Button);
+            this.groupBox1.Controls.Add(this.retrieveA1Button);
+            this.groupBox1.Controls.Add(this.angleBox2);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.angleComboBox1);
+            this.groupBox1.Controls.Add(this.angleBox1);
+            this.groupBox1.Location = new System.Drawing.Point(6, 6);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(512, 74);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Angle";
+            // 
+            // angleComboBox2
+            // 
+            this.angleComboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.angleComboBox2.FormattingEnabled = true;
+            this.angleComboBox2.Items.AddRange(new object[] {
+            "Degree",
+            "Gradian",
+            "Radian"});
+            this.angleComboBox2.Location = new System.Drawing.Point(375, 19);
+            this.angleComboBox2.Name = "angleComboBox2";
+            this.angleComboBox2.Size = new System.Drawing.Size(131, 21);
+            this.angleComboBox2.TabIndex = 9;
+            this.angleComboBox2.SelectedIndex = 0;
+            this.angleComboBox2.SelectedIndexChanged += new System.EventHandler(this.angleComboBox2_SelectedIndexChanged);
+            // 
+            // storeA2Button
+            // 
+            this.storeA2Button.Location = new System.Drawing.Point(269, 45);
+            this.storeA2Button.Name = "storeA2Button";
+            this.storeA2Button.Size = new System.Drawing.Size(44, 23);
+            this.storeA2Button.TabIndex = 8;
+            this.storeA2Button.Text = "→A2";
+            this.storeA2Button.UseVisualStyleBackColor = true;
+            this.storeA2Button.Click += new System.EventHandler(this.storeA2Button_Click);
+            // 
+            // retrieveA2Button
+            // 
+            this.retrieveA2Button.Location = new System.Drawing.Point(325, 45);
+            this.retrieveA2Button.Name = "retrieveA2Button";
+            this.retrieveA2Button.Size = new System.Drawing.Size(44, 23);
+            this.retrieveA2Button.TabIndex = 7;
+            this.retrieveA2Button.Text = "←A2";
+            this.retrieveA2Button.UseVisualStyleBackColor = true;
+            this.retrieveA2Button.Click += new System.EventHandler(this.retrieveA2Button_Click);
+            // 
+            // storeA1Button
+            // 
+            this.storeA1Button.Location = new System.Drawing.Point(6, 45);
+            this.storeA1Button.Name = "storeA1Button";
+            this.storeA1Button.Size = new System.Drawing.Size(44, 23);
+            this.storeA1Button.TabIndex = 6;
+            this.storeA1Button.Text = "→A1";
+            this.storeA1Button.UseVisualStyleBackColor = true;
+            this.storeA1Button.Click += new System.EventHandler(this.storeA1Button_Click);
+            // 
+            // retrieveA1Button
+            // 
+            this.retrieveA1Button.Location = new System.Drawing.Point(62, 45);
+            this.retrieveA1Button.Name = "retrieveA1Button";
+            this.retrieveA1Button.Size = new System.Drawing.Size(44, 23);
+            this.retrieveA1Button.TabIndex = 5;
+            this.retrieveA1Button.Text = "←A1";
+            this.retrieveA1Button.UseVisualStyleBackColor = true;
+            this.retrieveA1Button.Click += new System.EventHandler(this.retrieveA1Button_Click);
+            // 
+            // angleBox2
+            // 
+            this.angleBox2.Location = new System.Drawing.Point(269, 19);
+            this.angleBox2.Name = "angleBox2";
+            this.angleBox2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.angleBox2.Size = new System.Drawing.Size(100, 20);
+            this.angleBox2.TabIndex = 3;
+            this.angleBox2.Text = "1";
+            this.angleBox2.TextChanged += new System.EventHandler(this.angleBox2_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(249, 22);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(13, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "=";
+            // 
+            // angleComboBox1
+            // 
+            this.angleComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.angleComboBox1.FormattingEnabled = true;
+            this.angleComboBox1.Items.AddRange(new object[] {
+            "Degree",
+            "Gradian",
+            "Radian"});
+            this.angleComboBox1.Location = new System.Drawing.Point(112, 19);
+            this.angleComboBox1.Name = "angleComboBox1";
+            this.angleComboBox1.Size = new System.Drawing.Size(131, 21);
+            this.angleComboBox1.TabIndex = 1;
+            this.angleComboBox1.SelectedIndex = 0;
+            this.angleComboBox1.SelectedIndexChanged += new System.EventHandler(this.angleComboBox1_SelectedIndexChanged);
+            // 
+            // angleBox1
+            // 
+            this.angleBox1.Location = new System.Drawing.Point(6, 19);
+            this.angleBox1.Name = "angleBox1";
+            this.angleBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.angleBox1.Size = new System.Drawing.Size(100, 20);
+            this.angleBox1.TabIndex = 0;
+            this.angleBox1.Text = "1";
+            this.angleBox1.TextChanged += new System.EventHandler(this.angleBox1_TextChanged);
             // 
             // tabPage1
             // 
@@ -198,7 +1125,7 @@ namespace MultiDesktop
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(524, 396);
+            this.tabPage1.Size = new System.Drawing.Size(524, 486);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Calculator";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -224,7 +1151,7 @@ namespace MultiDesktop
             this.basicGroupBox.Controls.Add(this.divButton);
             this.basicGroupBox.Controls.Add(this.negButton);
             this.basicGroupBox.Controls.Add(this.cButton);
-            this.basicGroupBox.Location = new System.Drawing.Point(368, 226);
+            this.basicGroupBox.Location = new System.Drawing.Point(368, 316);
             this.basicGroupBox.Name = "basicGroupBox";
             this.basicGroupBox.Size = new System.Drawing.Size(150, 164);
             this.basicGroupBox.TabIndex = 5;
@@ -438,7 +1365,7 @@ namespace MultiDesktop
             this.sciGroupBox.Controls.Add(this.yButton);
             this.sciGroupBox.Controls.Add(this.ceButton);
             this.sciGroupBox.Controls.Add(this.xButton);
-            this.sciGroupBox.Location = new System.Drawing.Point(212, 226);
+            this.sciGroupBox.Location = new System.Drawing.Point(212, 316);
             this.sciGroupBox.Name = "sciGroupBox";
             this.sciGroupBox.Size = new System.Drawing.Size(150, 164);
             this.sciGroupBox.TabIndex = 4;
@@ -614,7 +1541,7 @@ namespace MultiDesktop
             this.trigGroupBox.Controls.Add(this.label1);
             this.trigGroupBox.Controls.Add(this.degRadioButton);
             this.trigGroupBox.Controls.Add(this.coshButton);
-            this.trigGroupBox.Location = new System.Drawing.Point(6, 226);
+            this.trigGroupBox.Location = new System.Drawing.Point(6, 316);
             this.trigGroupBox.Name = "trigGroupBox";
             this.trigGroupBox.Size = new System.Drawing.Size(200, 164);
             this.trigGroupBox.TabIndex = 3;
@@ -796,18 +1723,20 @@ namespace MultiDesktop
             // 
             // inputBox
             // 
-            this.inputBox.Location = new System.Drawing.Point(6, 200);
+            this.inputBox.Location = new System.Drawing.Point(6, 8);
             this.inputBox.Name = "inputBox";
-            this.inputBox.TextAlign = HorizontalAlignment.Right;
             this.inputBox.Size = new System.Drawing.Size(512, 20);
             this.inputBox.TabIndex = 1;
+            this.inputBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.inputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputBox_KeyDown);
+            this.inputBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.inputBox_KeyPress);
             // 
             // consoleBox
             // 
             this.consoleBox.FormattingEnabled = true;
-            this.consoleBox.Location = new System.Drawing.Point(6, 6);
+            this.consoleBox.Location = new System.Drawing.Point(6, 34);
             this.consoleBox.Name = "consoleBox";
-            this.consoleBox.Size = new System.Drawing.Size(512, 186);
+            this.consoleBox.Size = new System.Drawing.Size(512, 277);
             this.consoleBox.TabIndex = 0;
             // 
             // tabControl1
@@ -818,13 +1747,13 @@ namespace MultiDesktop
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(532, 422);
+            this.tabControl1.Size = new System.Drawing.Size(532, 512);
             this.tabControl1.TabIndex = 1;
             // 
             // CalculatorPanel
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(556, 446);
+            this.ClientSize = new System.Drawing.Size(556, 536);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
@@ -832,6 +1761,19 @@ namespace MultiDesktop
             this.Name = "CalculatorPanel";
             this.ShowInTaskbar = false;
             this.Text = "Calculator Panel";
+            this.tabPage3.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.basicGroupBox.ResumeLayout(false);
@@ -849,6 +1791,42 @@ namespace MultiDesktop
         {
             InitializeComponent();
             calculator = new Calculator();
+            converter = new Converter();
+            sharedData = new SharedData();
+        }
+
+        private void compute()
+        {
+            try
+            {
+                double ans = calculator.compute(inputBox.Text);
+                consoleBox.Items.Insert(0, inputBox.Text);
+                consoleBox.Items.Insert(1, "\t\t\t\t\t\t\t\t       " + ans);
+                inputBox.Text = "";
+            }
+            catch (ArgumentException exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
+        }
+
+        private void inputBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Subtract || e.KeyCode == Keys.OemMinus)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                SendKeys.Send("−");
+            }
+        }
+
+        private void inputBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            {
+                e.Handled = true;
+                compute();
+            }
         }
 
         private void degRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -1378,16 +2356,762 @@ namespace MultiDesktop
 
         private void enterButton_Click(object sender, EventArgs e)
         {
+            compute();
+        }
+
+        private void angleBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (angleBox1.Focused && angleBox1.Text.Length > 0)
+            {
+                try
+                {
+                    double value = Double.Parse(angleBox1.Text);
+                    double answer = converter.convertAngle(angleComboBox1.SelectedIndex, angleComboBox2.SelectedIndex, value);
+                    angleBox2.Text = answer.ToString();
+                }
+                catch(FormatException)
+                {
+                    MessageBox.Show("You entered an invalid value.");
+                }
+                catch(OverflowException)
+                {
+                    MessageBox.Show("The value you entered is way too big to be handled properly.");
+                }
+            }
+        }
+
+        private void angleBox2_TextChanged(object sender, EventArgs e)
+        {
+            if (angleBox2.Focused && angleBox2.Text.Length > 0)
+            {
+                try
+                {
+                    double value = Double.Parse(angleBox2.Text);
+                    double answer = converter.convertAngle(angleComboBox2.SelectedIndex, angleComboBox1.SelectedIndex, value);
+                    angleBox1.Text = answer.ToString();
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("You entered an invalid value.");
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("The value you entered is way too big to be handled properly.");
+                }
+            }
+        }
+
+        private void areaBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (areaBox1.Focused && areaBox1.Text.Length > 0)
+            {
+                try
+                {
+                    double value = Double.Parse(areaBox1.Text);
+                    double answer = converter.convertArea(areaComboBox1.SelectedIndex, areaComboBox2.SelectedIndex, value);
+                    areaBox2.Text = answer.ToString();
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("You entered an invalid value.");
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("The value you entered is way too big to be handled properly.");
+                }
+            }
+        }
+
+        private void areaBox2_TextChanged(object sender, EventArgs e)
+        {
+            if (areaBox2.Focused && areaBox2.Text.Length > 0)
+            {
+                try
+                {
+                    double value = Double.Parse(areaBox2.Text);
+                    double answer = converter.convertArea(areaComboBox2.SelectedIndex, areaComboBox1.SelectedIndex, value);
+                    areaBox1.Text = answer.ToString();
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("You entered an invalid value.");
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("The value you entered is way too big to be handled properly.");
+                }
+            }
+        }
+
+        private void lengthBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (lengthBox1.Focused && lengthBox1.Text.Length > 0)
+            {
+                try
+                {
+                    double value = Double.Parse(lengthBox1.Text);
+                    double answer = converter.convertLength(lengthComboBox1.SelectedIndex, lengthComboBox2.SelectedIndex, value);
+                    lengthBox2.Text = answer.ToString();
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("You entered an invalid value.");
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("The value you entered is way too big to be handled properly.");
+                }
+            }
+        }
+
+        private void lengthBox2_TextChanged(object sender, EventArgs e)
+        {
+            if (lengthBox2.Focused && lengthBox2.Text.Length > 0)
+            {
+                try
+                {
+                    double value = Double.Parse(lengthBox2.Text);
+                    double answer = converter.convertLength(lengthComboBox2.SelectedIndex, lengthComboBox1.SelectedIndex, value);
+                    lengthBox1.Text = answer.ToString();
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("You entered an invalid value.");
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("The value you entered is way too big to be handled properly.");
+                }
+            }
+        }
+
+        private void tempBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (tempBox1.Focused && tempBox1.Text.Length > 0)
+            {
+                try
+                {
+                    double value = Double.Parse(tempBox1.Text);
+                    double answer = converter.convertTemp(tempComboBox1.SelectedIndex, tempComboBox2.SelectedIndex, value);
+                    tempBox2.Text = answer.ToString();
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("You entered an invalid value.");
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("The value you entered is way too big to be handled properly.");
+                }
+            }
+        }
+
+        private void tempBox2_TextChanged(object sender, EventArgs e)
+        {
+            if (tempBox2.Focused && tempBox2.Text.Length > 0)
+            {
+                try
+                {
+                    double value = Double.Parse(lengthBox2.Text);
+                    double answer = converter.convertTemp(tempComboBox2.SelectedIndex, tempComboBox1.SelectedIndex, value);
+                    tempBox1.Text = answer.ToString();
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("You entered an invalid value.");
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("The value you entered is way too big to be handled properly.");
+                }
+            }
+        }
+
+        private void volumeBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (volumeBox1.Focused && volumeBox1.Text.Length > 0)
+            {
+                try
+                {
+                    double value = Double.Parse(volumeBox1.Text);
+                    double answer = converter.convertVolume(volumeComboBox1.SelectedIndex, volumeComboBox2.SelectedIndex, value);
+                    volumeBox2.Text = answer.ToString();
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("You entered an invalid value.");
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("The value you entered is way too big to be handled properly.");
+                }
+            }
+        }
+
+        private void volumeBox2_TextChanged(object sender, EventArgs e)
+        {
+            if (volumeBox2.Focused && volumeBox2.Text.Length > 0)
+            {
+                try
+                {
+                    double value = Double.Parse(volumeBox2.Text);
+                    double answer = converter.convertVolume(volumeComboBox2.SelectedIndex, volumeComboBox1.SelectedIndex, value);
+                    volumeBox1.Text = answer.ToString();
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("You entered an invalid value.");
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("The value you entered is way too big to be handled properly.");
+                }
+            }
+        }
+
+        private void weightBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (weightBox1.Focused && weightBox1.Text.Length > 0)
+            {
+                try
+                {
+                    double value = Double.Parse(weightBox1.Text);
+                    double answer = converter.convertWeight(weightComboBox1.SelectedIndex, weightComboBox2.SelectedIndex, value);
+                    weightBox2.Text = answer.ToString();
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("You entered an invalid value.");
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("The value you entered is way too big to be handled properly.");
+                }
+            }
+        }
+
+        private void weightBox2_TextChanged(object sender, EventArgs e)
+        {
+            if (weightBox2.Focused && weightBox2.Text.Length > 0)
+            {
+                try
+                {
+                    double value = Double.Parse(weightBox2.Text);
+                    double answer = converter.convertWeight(weightComboBox2.SelectedIndex, weightComboBox1.SelectedIndex, value);
+                    weightBox1.Text = answer.ToString();
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("You entered an invalid value.");
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("The value you entered is way too big to be handled properly.");
+                }
+            }
+        }
+
+        private void storeA1Button_Click(object sender, EventArgs e)
+        {
+            sharedData.store("A1", angleBox1.Text);
+        }
+
+        private void retrieveA1Button_Click(object sender, EventArgs e)
+        {
+            object data = sharedData.retrieve("A1");
+            if (data == null)
+            {
+                MessageBox.Show("Variable A1 has not been set yet.");
+            }
+            else if (data.GetType() != typeof(double))
+            {
+                MessageBox.Show("Variable A1 has been stored of a different type.");
+            }
+            else
+            {
+                angleBox1.Text = data.ToString();
+            }
+        }
+
+        private void storeA2Button_Click(object sender, EventArgs e)
+        {
+            sharedData.store("A2", angleBox2.Text);
+        }
+
+        private void retrieveA2Button_Click(object sender, EventArgs e)
+        {
+            object data = sharedData.retrieve("A2");
+            if (data == null)
+            {
+                MessageBox.Show("Variable A2 has not been set yet.");
+            }
+            else if (data.GetType() != typeof(double))
+            {
+                MessageBox.Show("Variable A2 has been stored of a different type.");
+            }
+            else
+            {
+                angleBox2.Text = data.ToString();
+            }
+        }
+
+        private void storeA3Button_Click(object sender, EventArgs e)
+        {
+            sharedData.store("A3", areaBox1.Text);
+        }
+
+        private void retrieveButtonA3_Click(object sender, EventArgs e)
+        {
+            object data = sharedData.retrieve("A3");
+            if (data == null)
+            {
+                MessageBox.Show("Variable A3 has not been set yet.");
+            }
+            else if (data.GetType() != typeof(double))
+            {
+                MessageBox.Show("Variable A3 has been stored of a different type.");
+            }
+            else
+            {
+                areaBox1.Text = data.ToString();
+            }
+        }
+
+        private void storeA4Button_Click(object sender, EventArgs e)
+        {
+            sharedData.store("A4", areaBox2.Text);
+        }
+
+        private void retrieveA4Button_Click(object sender, EventArgs e)
+        {
+            object data = sharedData.retrieve("A4");
+            if (data == null)
+            {
+                MessageBox.Show("Variable A4 has not been set yet.");
+            }
+            else if (data.GetType() != typeof(double))
+            {
+                MessageBox.Show("Variable A4 has been stored of a different type.");
+            }
+            else
+            {
+                areaBox2.Text = data.ToString();
+            }
+        }
+
+        private void storeL1Button_Click(object sender, EventArgs e)
+        {
+            sharedData.store("L1", lengthBox1.Text);
+        }
+
+        private void retrieveL1Button_Click(object sender, EventArgs e)
+        {
+            object data = sharedData.retrieve("L1");
+            if (data == null)
+            {
+                MessageBox.Show("Variable L1 has not been set yet.");
+            }
+            else if (data.GetType() != typeof(double))
+            {
+                MessageBox.Show("Variable L1 has been stored of a different type.");
+            }
+            else
+            {
+                lengthBox1.Text = data.ToString();
+            }
+        }
+
+        private void storeL2Button_Click(object sender, EventArgs e)
+        {
+            sharedData.store("L2", lengthBox2.Text);
+        }
+
+        private void retrieveL2Button_Click(object sender, EventArgs e)
+        {
+            object data = sharedData.retrieve("L2");
+            if (data == null)
+            {
+                MessageBox.Show("Variable L2 has not been set yet.");
+            }
+            else if (data.GetType() != typeof(double))
+            {
+                MessageBox.Show("Variable L2 has been stored of a different type.");
+            }
+            else
+            {
+                lengthBox2.Text = data.ToString();
+            }
+        }
+
+        private void storeT1Button_Click(object sender, EventArgs e)
+        {
+            sharedData.store("T1", tempBox1.Text);
+        }
+
+        private void retrieveT1Button_Click(object sender, EventArgs e)
+        {
+            object data = sharedData.retrieve("T1");
+            if (data == null)
+            {
+                MessageBox.Show("Variable T1 has not been set yet.");
+            }
+            else if (data.GetType() != typeof(double))
+            {
+                MessageBox.Show("Variable T1 has been stored of a different type.");
+            }
+            else
+            {
+                tempBox1.Text = data.ToString();
+            }
+        }
+
+        private void storeT2Button_Click(object sender, EventArgs e)
+        {
+            sharedData.store("T2", tempBox2.Text);
+        }
+
+        private void retrieveT2Button_Click(object sender, EventArgs e)
+        {
+            object data = sharedData.retrieve("T2");
+            if (data == null)
+            {
+                MessageBox.Show("Variable T2 has not been set yet.");
+            }
+            else if (data.GetType() != typeof(double))
+            {
+                MessageBox.Show("Variable T2 has been stored of a different type.");
+            }
+            else
+            {
+                tempBox2.Text = data.ToString();
+            }
+        }
+
+        private void storeV1Button_Click(object sender, EventArgs e)
+        {
+            sharedData.store("V1", volumeBox1.Text);
+        }
+
+        private void retrieveV1Button_Click(object sender, EventArgs e)
+        {
+            object data = sharedData.retrieve("V1");
+            if (data == null)
+            {
+                MessageBox.Show("Variable V1 has not been set yet.");
+            }
+            else if (data.GetType() != typeof(double))
+            {
+                MessageBox.Show("Variable V1 has been stored of a different type.");
+            }
+            else
+            {
+                volumeBox1.Text = data.ToString();
+            }
+        }
+
+        private void storeV2Button_Click(object sender, EventArgs e)
+        {
+            sharedData.store("V2", volumeBox2.Text);
+        }
+
+        private void retrieveV2Button_Click(object sender, EventArgs e)
+        {
+            object data = sharedData.retrieve("V2");
+            if (data == null)
+            {
+                MessageBox.Show("Variable V2 has not been set yet.");
+            }
+            else if (data.GetType() != typeof(double))
+            {
+                MessageBox.Show("Variable V2 has been stored of a different type.");
+            }
+            else
+            {
+                volumeBox2.Text = data.ToString();
+            }
+        }
+
+        private void storeW1Button_Click(object sender, EventArgs e)
+        {
+            sharedData.store("W1", weightBox1.Text);
+        }
+
+        private void retrieveW1Button_Click(object sender, EventArgs e)
+        {
+            object data = sharedData.retrieve("W1");
+            if (data == null)
+            {
+                MessageBox.Show("Variable W1 has not been set yet.");
+            }
+            else if (data.GetType() != typeof(double))
+            {
+                MessageBox.Show("Variable W1 has been stored of a different type.");
+            }
+            else
+            {
+                weightBox1.Text = data.ToString();
+            }
+        }
+
+        private void storeW2Button_Click(object sender, EventArgs e)
+        {
+            sharedData.store("W2", weightBox2.Text);
+        }
+
+        private void retrieveW2Button_Click(object sender, EventArgs e)
+        {
+            object data = sharedData.retrieve("W2");
+            if (data == null)
+            {
+                MessageBox.Show("Variable W2 has not been set yet.");
+            }
+            else if (data.GetType() != typeof(double))
+            {
+                MessageBox.Show("Variable W2 has been stored of a different type.");
+            }
+            else
+            {
+                weightBox2.Text = data.ToString();
+            }
+        }
+
+        private void angleComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
             try
             {
-                double ans = calculator.compute(inputBox.Text);
-                consoleBox.Items.Add(inputBox.Text);
-                consoleBox.Items.Add(ans);
-                inputBox.Text = "";
+                double value = Double.Parse(angleBox2.Text);
+                double answer = converter.convertAngle(angleComboBox2.SelectedIndex, angleComboBox1.SelectedIndex, value);
+                angleBox1.Text = answer.ToString();
             }
-            catch(ArgumentException exception)
+            catch (FormatException)
             {
-                MessageBox.Show(exception.Message);
+                angleBox2.Focus();
+                MessageBox.Show("You entered an invalid value.");
+            }
+            catch (OverflowException)
+            {
+                angleBox2.Focus();
+                MessageBox.Show("The value you entered is way too big to be handled properly.");
+            }
+        }
+
+        private void angleComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                double value = Double.Parse(angleBox1.Text);
+                double answer = converter.convertAngle(angleComboBox1.SelectedIndex, angleComboBox2.SelectedIndex, value);
+                angleBox2.Text = answer.ToString();
+            }
+            catch (FormatException)
+            {
+                angleBox1.Focus();
+                MessageBox.Show("You entered an invalid value.");
+            }
+            catch (OverflowException)
+            {
+                angleBox1.Focus();
+                MessageBox.Show("The value you entered is way too big to be handled properly.");
+            }
+        }
+
+        private void areaComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                double value = Double.Parse(areaBox2.Text);
+                double answer = converter.convertArea(areaComboBox2.SelectedIndex, areaComboBox1.SelectedIndex, value);
+                areaBox1.Text = answer.ToString();
+            }
+            catch (FormatException)
+            {
+                areaBox2.Focus();
+                MessageBox.Show("You entered an invalid value.");
+            }
+            catch (OverflowException)
+            {
+                areaBox2.Focus();
+                MessageBox.Show("The value you entered is way too big to be handled properly.");
+            }
+        }
+
+        private void areaComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                double value = Double.Parse(areaBox2.Text);
+                double answer = converter.convertArea(areaComboBox2.SelectedIndex, areaComboBox1.SelectedIndex, value);
+                areaBox1.Text = answer.ToString();
+            }
+            catch (FormatException)
+            {
+                areaBox2.Focus();
+                MessageBox.Show("You entered an invalid value.");
+            }
+            catch (OverflowException)
+            {
+                areaBox2.Focus();
+                MessageBox.Show("The value you entered is way too big to be handled properly.");
+            }
+        }
+
+        private void lengthComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                double value = Double.Parse(lengthBox2.Text);
+                double answer = converter.convertLength(lengthComboBox2.SelectedIndex, lengthComboBox1.SelectedIndex, value);
+                lengthBox1.Text = answer.ToString();
+            }
+            catch (FormatException)
+            {
+                lengthBox2.Focus();
+                MessageBox.Show("You entered an invalid value.");
+            }
+            catch (OverflowException)
+            {
+                lengthBox2.Focus();
+                MessageBox.Show("The value you entered is way too big to be handled properly.");
+            }
+        }
+
+        private void lengthComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                double value = Double.Parse(lengthBox1.Text);
+                double answer = converter.convertLength(lengthComboBox1.SelectedIndex, lengthComboBox2.SelectedIndex, value);
+                lengthBox2.Text = answer.ToString();
+            }
+            catch (FormatException)
+            {
+                lengthBox1.Focus();
+                MessageBox.Show("You entered an invalid value.");
+            }
+            catch (OverflowException)
+            {
+                lengthBox1.Focus();
+                MessageBox.Show("The value you entered is way too big to be handled properly.");
+            }
+        }
+
+        private void tempComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                double value = Double.Parse(tempBox2.Text);
+                double answer = converter.convertTemp(tempComboBox2.SelectedIndex, tempComboBox1.SelectedIndex, value);
+                tempBox1.Text = answer.ToString();
+            }
+            catch (FormatException)
+            {
+                tempBox2.Focus();
+                MessageBox.Show("You entered an invalid value.");
+            }
+            catch (OverflowException)
+            {
+                tempBox2.Focus();
+                MessageBox.Show("The value you entered is way too big to be handled properly.");
+            }
+        }
+
+        private void tempComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                double value = Double.Parse(tempBox1.Text);
+                double answer = converter.convertTemp(tempComboBox1.SelectedIndex, tempComboBox2.SelectedIndex, value);
+                tempBox2.Text = answer.ToString();
+            }
+            catch (FormatException)
+            {
+                tempBox1.Focus();
+                MessageBox.Show("You entered an invalid value.");
+            }
+            catch (OverflowException)
+            {
+                tempBox1.Focus();
+                MessageBox.Show("The value you entered is way too big to be handled properly.");
+            }
+        }
+
+        private void volumeComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                double value = Double.Parse(volumeBox2.Text);
+                double answer = converter.convertVolume(volumeComboBox2.SelectedIndex, volumeComboBox1.SelectedIndex, value);
+                volumeBox1.Text = answer.ToString();
+            }
+            catch (FormatException)
+            {
+                volumeBox2.Focus();
+                MessageBox.Show("You entered an invalid value.");
+            }
+            catch (OverflowException)
+            {
+                volumeBox2.Focus();
+                MessageBox.Show("The value you entered is way too big to be handled properly.");
+            }
+        }
+
+        private void volumeComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                double value = Double.Parse(volumeBox1.Text);
+                double answer = converter.convertVolume(volumeComboBox1.SelectedIndex, volumeComboBox2.SelectedIndex, value);
+                volumeBox2.Text = answer.ToString();
+            }
+            catch (FormatException)
+            {
+                volumeBox1.Focus();
+                MessageBox.Show("You entered an invalid value.");
+            }
+            catch (OverflowException)
+            {
+                volumeBox1.Focus();
+                MessageBox.Show("The value you entered is way too big to be handled properly.");
+            }
+        }
+
+        private void weightComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                double value = Double.Parse(weightBox2.Text);
+                double answer = converter.convertWeight(weightComboBox2.SelectedIndex, weightComboBox1.SelectedIndex, value);
+                weightBox1.Text = answer.ToString();
+            }
+            catch (FormatException)
+            {
+                weightBox2.Focus();
+                MessageBox.Show("You entered an invalid value.");
+            }
+            catch (OverflowException)
+            {
+                weightBox2.Focus();
+                MessageBox.Show("The value you entered is way too big to be handled properly.");
+            }
+        }
+
+        private void weightComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                double value = Double.Parse(weightBox1.Text);
+                double answer = converter.convertWeight(weightComboBox1.SelectedIndex, weightComboBox2.SelectedIndex, value);
+                weightBox2.Text = answer.ToString();
+            }
+            catch (FormatException)
+            {
+                weightBox1.Focus();
+                MessageBox.Show("You entered an invalid value.");
+            }
+            catch (OverflowException)
+            {
+                weightBox1.Focus();
+                MessageBox.Show("The value you entered is way too big to be handled properly.");
             }
         }
     }
