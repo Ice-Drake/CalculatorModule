@@ -8,10 +8,8 @@ namespace MultiDesktop
 {
     public class Calculator
     {
-        public string Console { get; private set; }
         private SharedData Variables;
 
-        public List<double> Values { get; private set; }
         private double ans;
         private bool degrees; //Radians and degrees switch
 
@@ -22,21 +20,6 @@ namespace MultiDesktop
             degrees = false;
         }
 
-        public void removeVariable(int n)
-        {
-            Values.RemoveAt(n);
-        }
-
-        public void setRadians()
-        {
-            degrees = false;
-        }
-
-        public void setDegrees()
-        {
-            degrees = true;
-        }
-
         private readonly string symbols = "+−/*%^"; //The subtraction symbol is character U+2212 on the Arial Character Map.
         private readonly string SIN = "sin";
         private readonly string COS = "cos";
@@ -45,6 +28,7 @@ namespace MultiDesktop
         private readonly string SEC = "sec";
         private readonly string COT = "cot";
         private readonly string LOG = "log";
+        private readonly string LN = "ln";
         private readonly string FACTORIAL = "!";
         private readonly string ASIN = "arcsin";
         private readonly string ACOS = "arccos";
@@ -62,28 +46,27 @@ namespace MultiDesktop
         private readonly string NEGATIVE = "-"; //This is a hyphen
         private readonly string SQRT = "√";
         private readonly string EQUAL = "=";
+        
         private readonly string precedence2 = "+−";
         private readonly string precedence3 = "*/%";
         private readonly string precedence4 = "^!sincostancotseccscloglnarcsinarccosarctanarccotarcsecarccscsinhcoshtanhcothsechcsch-√"; //So ugly. Will think of better way later.
 
         private readonly string[] tokenList = { "sin", "cos", "tan", "cot", "sec", "csc", "log", "ln", "arcsin", "arccos", "arctan", "arccot", "arcsec", "arccsc", "sinh", "cosh", "tanh", "coth", "sech", "csch" };
 
-        public void clear()
+        public void setRadians()
         {
-            Console = "";
+            degrees = false;
         }
 
-        
-        public void resetVariables()
+        public void setDegrees()
         {
-            Values.Clear();
+            degrees = true;
         }
 
         public double compute(string input)
         {
             bool storeVariable = false;
             string variableName = "";
-
             if (input.Contains(EQUAL)) //If it contains an equal sign, then the user is trying to store a variable
             {
                 if (IsValidVariableName(input))
@@ -98,7 +81,7 @@ namespace MultiDesktop
                     throw new ArgumentException("Invalid variable name");
                 }
             }
-    
+            
             List<string> postFixed = convert(input);
             var stack = new Stack<string>();
 
@@ -108,17 +91,27 @@ namespace MultiDesktop
 
                 if (Double.TryParse(postFixed[i], out retNum)) //If incoming character is a number
                 {                    
-                    stack.Push(postFixed[i]);
+                    stack.Push(Convert.ToDouble(postFixed[i]));
+                }
+
+                else if (postFixed[i].Equals("π"))
+                {
+                    stack.Push(Math.PI);
+                }
+
+                else if (postFixed[i].Equals("e"))
+                {
+                    stack.Push(Math.E);
                 }
 
                 else if (symbols.Contains(postFixed[i])) //Else If incoming character is an arithmetic symbol
                 {
                     if (stack.Count < 2)
                     {
-                        throw new ArgumentException("I honestly do not know what throwing is. Does this even work?");
+                        throw new ArgumentException("Invalid Input");
                     }
-                    string operand = operate(stack.Pop(), stack.Pop(), postFixed[i]).ToString();
-                    stack.Push(operand);
+                    
+                    double operand = operate(stack.Pop(), stack.Pop(), postFixed[i]);
                 }
             }
 
@@ -138,7 +131,6 @@ namespace MultiDesktop
                 {
                     stack.Push(postFixed[i]);
                 }
-
                 else if (symbols.Contains(postFixed[i])) //Else If incoming character is an arithmetic symbol
                 {
                     string operand = operate(stack.Pop(), stack.Pop(), postFixed[i]).ToString();
@@ -147,13 +139,29 @@ namespace MultiDesktop
 
                 else //Else it is a function (Sin, log, etc)
                 {
-                    string operand = performFunction(stack.Pop(), postFixed[i]).ToString();
+                    if (stack.Count < 1)
+                    {
+                        throw new ArgumentException("Why would you put a trig function without a number..? Just why?");
+                    }
+                    double operand = performFunction(stack.Pop(), postFixed[i]);
                     stack.Push(operand);
                 }
             }
 
-            return Convert.ToDouble(stack.Pop());
+            if (!(stack.Count == 1))
+            {
+                throw new ArgumentException("Invalid Input");
+            }
+
+            if (storeVariable)
+            {
+                Variables.store(variableName, Convert.ToDouble(stack.Peek()));
+            }
+
+            ans = Convert.ToDouble(stack.Pop());
+            return ans;
         }
+
 
         /*
          * Performs a basic arithmetic operation
@@ -162,9 +170,8 @@ namespace MultiDesktop
          * <param> anOperator the operator
          * <return> the answer of the operation
          */
-        private double operate(string anOperand1, string anOperand2, string anOperator)
+        private double operate(double operand1, double operand2, string anOperator)
         {
-
             double operand1 = Convert.ToDouble(anOperand1);
             double operand2 = Convert.ToDouble(anOperand2);
             double output = 0;
@@ -183,6 +190,10 @@ namespace MultiDesktop
             }
             else if (anOperator.Equals("/"))
             {
+                if (operand1 == 0)
+                {
+                    throw new ArgumentException("Cannot divide by 0");
+                }
                 output = operand2 / operand1;
             }
 
@@ -195,13 +206,17 @@ namespace MultiDesktop
             {
                 output = Math.Pow(operand2, operand1);
             }
-            
+
             return output;
         }
 
-        private double performFunction(string anOperand, string function)
+        private double performFunction(double operand, string function)
         {
-            double operand = Convert.ToDouble(anOperand);
+            double convertedOperand = operand;
+            if (degrees)
+            {
+                convertedOperand = operand * Math.PI / 180.0;
+            }
 
             double convertedOperand = operand;
             if (degrees)
@@ -213,11 +228,12 @@ namespace MultiDesktop
             {
                 return Math.Sin(convertedOperand);
             }
+
             else if (function.Equals(COS))
             {
                 return Math.Cos(convertedOperand);
             }
-            
+
             else if (function.Equals(TAN))
             {
                 return Math.Tan(convertedOperand);
@@ -240,7 +256,14 @@ namespace MultiDesktop
 
             else if (function.Equals(FACTORIAL))
             {
-                return factorial((int)convertedOperand);
+                if (operand == (int)operand && operand >= 0)
+                {
+                    return factorial((int)operand);
+                }
+                else
+                {
+                    throw new ArgumentException("Donald is useless in KH.");
+                }
             }
 
             else if (function.Equals(ASIN))
@@ -286,11 +309,11 @@ namespace MultiDesktop
             else if (function.Equals(TANH))
             {
                 return Math.Tanh(convertedOperand);
-            } 
+            }
 
             else if (function.Equals(CSCH))
             {
-                return 2 / Math.Pow(Math.E, convertedOperand) - Math.Pow(Math.E, -convertedOperand);
+                return 2 / (Math.Pow(Math.E, convertedOperand) - Math.Pow(Math.E, -convertedOperand));
             }
 
             else if (function.Equals(SECH))
@@ -323,12 +346,17 @@ namespace MultiDesktop
                 return Math.Sqrt(convertedOperand);
             }
 
-            else
+            else if (function.Equals(SQRT))
             {
                 throw new ArgumentException("Idk what happened here"); //The only way to end up here is if the user messed up the # of parenthesis
             }
 
+            else
+            {
+                throw new ArgumentException("Invalid input"); //The only way to end up here is if the user messed up the # of parenthesis
+            }
         }
+
 
         private int factorial(int n)
         {
@@ -496,5 +524,207 @@ namespace MultiDesktop
             int comparison = thisPrecedence.CompareTo(topPrecedence);
             return comparison;
         }
+
+        private List<string> convert(string infix)
+        {
+            List<string> postFix = new List<string>();
+            Stack<string> operators = new Stack<string>();
+
+            for (int i = 0; i < infix.Length; i++)
+            {
+                while (infix[i].Equals(' '))
+                {
+                    i++;
+                }
+
+                if (Char.IsDigit(infix[i]) || infix[i].Equals('.'))
+                {
+                    string number = infix[i].ToString();
+                    while ((i + 1) < infix.Length && (Char.IsDigit(infix[i + 1]) || infix[i + 1].Equals('.')))
+                    {
+                        i++;
+                        number += infix[i];
+                    }
+                    postFix.Add(number);
+                }
+
+                else if (Char.IsLetter(infix[i]))
+                {
+                    //Possible bug: tansin0 will NOT work, but tan sin 0 will. tan(sin 0) also works...
+                    string aToken = infix[i].ToString();
+                    while ((i + 1) < infix.Length && (Char.IsLetter(infix[i + 1]) || Char.IsDigit(infix[i+1])))
+                    {
+                        i++;
+                        aToken += infix[i];
+                    }
+                    if (aToken.Equals("ans"))
+                    {
+                        postFix.Add(ans.ToString());
+                    }
+                    else if (aToken.Equals("e") || aToken.Equals("π"))
+                    {
+                        postFix.Add(aToken);
+                    }
+                    else if (IsFunction(aToken))
+                    {
+                        operators.Push(aToken);
+                    }
+                    else
+                    {
+                        if (Variables.retrieve(aToken) != null)
+                        {
+                            postFix.Add(Variables.retrieve(aToken).ToString());
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Not a variable or function");
+                        }
+                    }
+                }
+                else if (operators.Count == 0 || infix[i].Equals('(') || precedence4.Contains(infix[i].ToString()))
+                {
+                    operators.Push(infix[i].ToString());
+                }
+
+                else if (infix[i].Equals(')'))
+                {
+                    while (!operators.Peek().Equals("("))
+                    {
+                        postFix.Add(operators.Pop());
+                    }
+                    operators.Pop(); //Disposes of '('
+                }
+
+                else //If not ),(, number, or trig function, this character is an operator
+                {
+                    int precedence = comparePrecedence(infix[i].ToString(), operators.Peek());
+                    if (precedence > 0)  //This character has higher precedence
+                    {
+                        operators.Push(infix[i].ToString());
+                    }
+                    else if (precedence < 0) //This character has lower precedence
+                    {
+                        postFix.Add(operators.Pop());
+                        i--;
+                    }
+                    else//This character has the same precedence
+                    {
+                        postFix.Add(operators.Pop());
+                        operators.Push(infix[i].ToString());
+                    }
+                }
+            }
+
+
+            int size = operators.Count;
+            for (int i = 0; i < size; i++)
+            {
+                postFix.Add(operators.Pop());
+            }
+
+            return postFix;
+        }
+
+
+
+        private bool IsFunction(string input)
+        {
+            bool IsTrig = false;
+            foreach (string token in tokenList)
+            {
+                if (input.ToLower().Equals(token))
+                {
+                    IsTrig = true;
+                }
+            }
+            return IsTrig;
+        }
+
+
+        /*
+       * Compares operator precedence
+       * <param> operator1 the operator to compare with
+       * <param> operator2 the operator at the top of the operators stack
+       * <return> positive number if operator1 has higher precedence, negative number if lower precedence, 0 if same precedence
+       */
+        private int comparePrecedence(string operator1, string operator2)
+        {
+            int thisPrecedence;
+            int topPrecedence;
+            if (precedence4.Contains(operator1))
+            {
+                thisPrecedence = 4;
+            }
+            else if (precedence3.Contains(operator1))
+            {
+                thisPrecedence = 3;
+            }
+            else if (precedence2.Contains(operator1))
+            {
+                thisPrecedence = 2;
+            }
+            else
+            {
+                thisPrecedence = 1;
+            }
+
+            if (precedence4.Contains(operator2))
+            {
+                topPrecedence = 4;
+            }
+            else if (precedence3.Contains(operator2))
+            {
+                topPrecedence = 3;
+            }
+            else if (precedence2.Contains(operator2))
+            {
+                topPrecedence = 2;
+            }
+            else
+            {
+                topPrecedence = 1;
+            }
+
+            int comparison = thisPrecedence.CompareTo(topPrecedence);
+            return comparison;
+        }
+
+
+
+        private bool IsValidVariableName(string input)
+        {
+            bool isValid = true;
+            string variableName = input.Substring(0, input.IndexOf(EQUAL));
+            string[] separator = variableName.Split(' ');
+            int n = 0;
+
+            for (int i = 0; i < separator.Length; i++ )
+            {
+                if (separator[i].Equals(""))
+                {
+                    n++;
+                }
+            }
+
+                if ((separator.Length - n) > 1)
+                {
+                    isValid = false;
+                }
+
+            variableName = variableName.Replace(" ", "");
+            for (int i = 0; i < variableName.Length; i++)
+            {
+                if (symbols.Contains(variableName[i].ToString()))
+                {
+                    isValid = false;
+                }
+            }
+                if (IsFunction(variableName) || variableName.Equals("e") || variableName.Equals("π") || Char.IsDigit(variableName[0]))
+                {
+                    isValid = false;
+                }
+            return isValid;
+        }
+
     }
 }
