@@ -52,7 +52,6 @@ namespace MultiDesktop
 
         private readonly string[] tokenList = { "sin", "cos", "tan", "cot", "sec", "csc", "log", "ln", "arcsin", "arccos", "arctan", "arccot", "arcsec", "arccsc", "sinh", "cosh", "tanh", "coth", "sech", "csch" };
 
-
         public void setRadians()
         {
             degrees = false;
@@ -62,6 +61,7 @@ namespace MultiDesktop
         {
             degrees = true;
         }
+
 
         public double compute(string input)
         {
@@ -81,7 +81,6 @@ namespace MultiDesktop
                     throw new ArgumentException("Invalid variable name");
                 }
             }
-            
             List<string> postFixed = convert(input);
             var stack = new Stack<double>();
 
@@ -338,13 +337,10 @@ namespace MultiDesktop
             List<string> postFix = new List<string>();
             Stack<string> operators = new Stack<string>();
 
+            infix = infix.Replace(" ", "");
+
             for (int i = 0; i < infix.Length; i++)
             {
-                while (infix[i].Equals(' '))
-                {
-                    i++;
-                }
-
                 if (Char.IsDigit(infix[i]) || infix[i].Equals('.'))
                 {
                     string number = infix[i].ToString();
@@ -432,7 +428,9 @@ namespace MultiDesktop
 
             return postFix;
         }
-        
+
+
+
         private bool IsFunction(string input)
         {
             bool IsTrig = false;
@@ -504,7 +502,7 @@ namespace MultiDesktop
             string[] separator = variableName.Split(' ');
             int n = 0;
 
-            for (int i = 0; i < separator.Length; i++ )
+            for (int i = 0; i < separator.Length; i++)
             {
                 if (separator[i].Equals(""))
                 {
@@ -512,12 +510,17 @@ namespace MultiDesktop
                 }
             }
 
-                if ((separator.Length - n) > 1)
-                {
-                    isValid = false;
-                }
+            if ((separator.Length - n) > 1)
+            {
+                isValid = false;
+            }
 
             variableName = variableName.Replace(" ", "");
+
+            if (variableName.Contains("(") || variableName.Contains(NEGATIVE) || variableName.Contains(")"))
+            {
+                isValid = false;
+            }
             for (int i = 0; i < variableName.Length; i++)
             {
                 if (symbols.Contains(variableName[i].ToString()))
@@ -525,10 +528,10 @@ namespace MultiDesktop
                     isValid = false;
                 }
             }
-                if (IsFunction(variableName) || variableName.Equals("e") || variableName.Equals("π") || Char.IsDigit(variableName[0]))
-                {
-                    isValid = false;
-                }
+            if (IsFunction(variableName) || variableName.Equals("e") || variableName.Equals("π") || Char.IsDigit(variableName[0]))
+            {
+                isValid = false;
+            }
             return isValid;
         }
 
