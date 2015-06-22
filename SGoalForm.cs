@@ -462,14 +462,26 @@ namespace MultiDesktop
         private void saveButton_Click(object sender, EventArgs e)
         {
             int lGoalID = 0;
+            LGoal relatedGoal = null;
             if (selectButton.Checked)
             {
                 lGoalID = Int32.Parse(goalComboBox.SelectedValue.ToString());
+                relatedGoal = (LGoal)GoalController.GoalList[lGoalID];
             }
 
-            if (m_goal == null)
+            DateTime test = DateTime.Today.AddDays(relatedGoal.Start + 365);
+            if (relatedGoal != null && startDateBox.Value == DateTime.MinValue && dueDateBox.Value > DateTime.Today.AddDays(relatedGoal.Start + 365))
+                MessageBox.Show("The due date of this goal cannot occur later than a year after the start date of its related goal, which is " + DateTime.Today.AddDays(relatedGoal.Start + 365).ToString("d") + ".");
+            else if (relatedGoal != null && startDateBox.Value == DateTime.MinValue && dueDateBox.Value < DateTime.Today.AddDays(relatedGoal.Start + 30))
+                MessageBox.Show("The due date of this goal cannot occur earlier than 30 days after the start date of its related goal, which is " + DateTime.Today.AddDays(relatedGoal.Start + 30).ToString("d") + ".");
+            else if (relatedGoal != null && startDateBox.Value != DateTime.MinValue && startDateBox.Value < DateTime.Today.AddDays(relatedGoal.Start))
+                MessageBox.Show("The start date of this goal cannot occur earlier than the start date of its related goal, which is " + DateTime.Today.AddDays(relatedGoal.Start).ToString("d") + ".");
+            else if (relatedGoal != null && dueDateBox.Value > DateTime.Today.AddDays(relatedGoal.End))
+                MessageBox.Show("The due date of this goal cannot occur later than the due date of its related goal.");
+            else if (m_goal == null)
             {
                 GoalController.createSGoal(summaryField.Text, completedCheckBox.Checked, categoryComboBox.SelectedItem.ToString(), descriptionTextBox.Text, m_predecessors, startDateBox.Value, dueDateBox.Value, importanceComboBox.SelectedIndex * 3 + urgencyComboBox.SelectedIndex + 1, lGoalID);
+                Close();
             }
             else
             {
@@ -485,11 +497,10 @@ namespace MultiDesktop
                     m_goal.LGoal = (LGoal)GoalController.GoalList[lGoalID];
                 else
                     m_goal.LGoal = null;
-                
-                GoalController.updateSGoal(m_goal);
-            }
 
-            Close();
+                GoalController.updateSGoal(m_goal);
+                Close();
+            }
         }
 
         private void deleteButton_Click(object sender, EventArgs e)
