@@ -84,18 +84,8 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Converter.cs" />
-    <Compile Include="JournalBookForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="GanttChartPanel.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="JournalBook.cs" />
-    <Compile Include="JournalPanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="JournalUserControl.xaml.cs">
-      <DependentUpon>JournalUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="PasswordDialog.cs">
       <SubType>Form</SubType>
@@ -114,9 +104,6 @@
     <Compile Include="GoalPanel.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="JournalManagerPanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="IProjectManager.cs" />
     <Compile Include="Vision.cs" />
     <Compile Include="VisionForm.cs">
@@ -133,7 +120,6 @@
     <Compile Include="SGoal.cs" />
     <Compile Include="TaskManager.cs" />
     <Compile Include="TodoManager.cs" />
-    <Compile Include="JournalManager.cs" />
     <Compile Include="EventManager.cs" />
     <Compile Include="CalendarManager.cs" />
     <Compile Include="CalendarPanel.cs">
@@ -201,16 +187,8 @@
       <DependentUpon>CalculatorPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="JournalBookForm.resx">
-      <DependentUpon>JournalBookForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="GanttChartPanel.resx">
       <DependentUpon>GanttChartPanel.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="JournalPanel.resx">
-      <DependentUpon>JournalPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordDialog.resx">
@@ -231,10 +209,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GoalPanel.resx">
       <DependentUpon>GoalPanel.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="JournalManagerPanel.resx">
-      <DependentUpon>JournalManagerPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="VisionForm.resx">
@@ -396,12 +370,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>Setting.mdf</DependentUpon>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="JournalUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

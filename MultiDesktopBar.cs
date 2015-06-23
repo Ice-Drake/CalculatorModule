@@ -29,7 +29,6 @@ namespace MultiDesktop
         private ToolStripButton settingButton;
         private ToolStripButton aboutButton;
         private ToolStripButton exitButton;
-        private ToolStripDropDownButton journalDropDownButton;
         private ToolStrip sideToolbar;
         private ToolStripDropDownButton panelDropDownButton;
         private ToolStripButton desktopButton;
@@ -39,7 +38,6 @@ namespace MultiDesktop
         private ToolStripSeparator menuToolSeparator;
         private ToolStripDropDownButton pluginDropDownButton;
         private ToolStripMenuItem weatherMenu;
-        private ToolStripButton newJournalButton;
         private ToolStripButton newCalendarButton;
 
         #endregion
@@ -48,7 +46,6 @@ namespace MultiDesktop
         private SettingDialog settingDialog;
         private IProjectManager iProjectManager;
         private SortedList<string, MainPanel> panelList;
-        private SortedList<JournalBook, JournalPanel> journalPanels;
         private List<IPanelPlugin> panelPlugins;
         private List<IDatabasePlugin> databasePlugins;
 
@@ -82,8 +79,13 @@ namespace MultiDesktop
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MultiDesktopBar));
             this.computerToolSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.userToolSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.journalDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.sideToolbar = new System.Windows.Forms.ToolStrip();
+            this.panelDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.musicPlayerMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.pictureGalleryMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.rssFeedMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.weatherMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuToolSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.desktopButton = new System.Windows.Forms.ToolStripButton();
             this.computerButton = new System.Windows.Forms.ToolStripButton();
             this.documentButton = new System.Windows.Forms.ToolStripButton();
@@ -91,15 +93,8 @@ namespace MultiDesktop
             this.musicButton = new System.Windows.Forms.ToolStripButton();
             this.newEventButton = new System.Windows.Forms.ToolStripButton();
             this.newTodoButton = new System.Windows.Forms.ToolStripButton();
-            this.newJournalButton = new System.Windows.Forms.ToolStripButton();
             this.newCalendarButton = new System.Windows.Forms.ToolStripButton();
-            this.panelDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
-            this.musicPlayerMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.pictureGalleryMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.rssFeedMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.weatherMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.pluginDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
-            this.menuToolSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.settingButton = new System.Windows.Forms.ToolStripButton();
             this.aboutButton = new System.Windows.Forms.ToolStripButton();
             this.exitButton = new System.Windows.Forms.ToolStripButton();
@@ -118,14 +113,6 @@ namespace MultiDesktop
             this.userToolSeparator.Size = new System.Drawing.Size(24, 6);
             this.userToolSeparator.TextDirection = System.Windows.Forms.ToolStripTextDirection.Vertical90;
             // 
-            // journalDropDownButton
-            // 
-            this.journalDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.journalDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.journalDropDownButton.Name = "journalDropDownButton";
-            this.journalDropDownButton.Size = new System.Drawing.Size(24, 61);
-            this.journalDropDownButton.Text = "Journals";
-            // 
             // sideToolbar
             // 
             this.sideToolbar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
@@ -142,11 +129,9 @@ namespace MultiDesktop
             this.computerToolSeparator,
             this.newEventButton,
             this.newTodoButton,
-            this.newJournalButton,
             this.newCalendarButton,
             this.userToolSeparator,
             this.panelDropDownButton,
-            this.journalDropDownButton,
             this.pluginDropDownButton,
             this.menuToolSeparator,
             this.settingButton,
@@ -160,6 +145,56 @@ namespace MultiDesktop
             this.sideToolbar.TabIndex = 1;
             this.sideToolbar.Text = "Side Toolbar";
             this.sideToolbar.TextDirection = System.Windows.Forms.ToolStripTextDirection.Vertical90;
+            // 
+            // panelDropDownButton
+            // 
+            this.panelDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.panelDropDownButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.musicPlayerMenu,
+            this.pictureGalleryMenu,
+            this.rssFeedMenu,
+            this.weatherMenu});
+            this.panelDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.panelDropDownButton.Name = "panelDropDownButton";
+            this.panelDropDownButton.Size = new System.Drawing.Size(24, 52);
+            this.panelDropDownButton.Text = "Panels";
+            // 
+            // musicPlayerMenu
+            // 
+            this.musicPlayerMenu.CheckOnClick = true;
+            this.musicPlayerMenu.Name = "musicPlayerMenu";
+            this.musicPlayerMenu.Size = new System.Drawing.Size(150, 22);
+            this.musicPlayerMenu.Text = "Music Player";
+            this.musicPlayerMenu.Click += new System.EventHandler(this.musicPlayerMenu_Click);
+            // 
+            // pictureGalleryMenu
+            // 
+            this.pictureGalleryMenu.CheckOnClick = true;
+            this.pictureGalleryMenu.Name = "pictureGalleryMenu";
+            this.pictureGalleryMenu.Size = new System.Drawing.Size(150, 22);
+            this.pictureGalleryMenu.Text = "Picture Gallery";
+            this.pictureGalleryMenu.Click += new System.EventHandler(this.pictureGalleryMenu_Click);
+            // 
+            // rssFeedMenu
+            // 
+            this.rssFeedMenu.CheckOnClick = true;
+            this.rssFeedMenu.Name = "rssFeedMenu";
+            this.rssFeedMenu.Size = new System.Drawing.Size(150, 22);
+            this.rssFeedMenu.Text = "RSS Feed";
+            this.rssFeedMenu.Click += new System.EventHandler(this.rssFeedMenu_Click);
+            // 
+            // weatherMenu
+            // 
+            this.weatherMenu.Name = "weatherMenu";
+            this.weatherMenu.Size = new System.Drawing.Size(150, 22);
+            this.weatherMenu.Text = "Weather";
+            this.weatherMenu.Click += new System.EventHandler(this.weatherMenu_Click);
+            // 
+            // menuToolSeparator
+            // 
+            this.menuToolSeparator.Name = "menuToolSeparator";
+            this.menuToolSeparator.Size = new System.Drawing.Size(24, 6);
+            this.menuToolSeparator.TextDirection = System.Windows.Forms.ToolStripTextDirection.Vertical90;
             // 
             // desktopButton
             // 
@@ -224,16 +259,6 @@ namespace MultiDesktop
             this.newTodoButton.Text = "New To-do";
             this.newTodoButton.Click += new System.EventHandler(this.newTodoButton_Click);
             // 
-            // newJournalButton
-            // 
-            this.newJournalButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.newJournalButton.Image = global::MultiDesktop.Properties.Resources.NewJournal;
-            this.newJournalButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.newJournalButton.Name = "newJournalButton";
-            this.newJournalButton.Size = new System.Drawing.Size(24, 20);
-            this.newJournalButton.Text = "New Journal";
-            this.newJournalButton.Click += new System.EventHandler(this.newJournalButton_Click);
-            // 
             // newCalendarButton
             // 
             this.newCalendarButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -244,50 +269,6 @@ namespace MultiDesktop
             this.newCalendarButton.Text = "New Calendar";
             this.newCalendarButton.Click += new System.EventHandler(this.newCalendarButton_Click);
             // 
-            // panelDropDownButton
-            // 
-            this.panelDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.panelDropDownButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.musicPlayerMenu,
-            this.pictureGalleryMenu,
-            this.rssFeedMenu,
-            this.weatherMenu});
-            this.panelDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.panelDropDownButton.Name = "panelDropDownButton";
-            this.panelDropDownButton.Size = new System.Drawing.Size(24, 52);
-            this.panelDropDownButton.Text = "Panels";
-            // 
-            // musicPlayerMenu
-            // 
-            this.musicPlayerMenu.CheckOnClick = true;
-            this.musicPlayerMenu.Name = "musicPlayerMenu";
-            this.musicPlayerMenu.Size = new System.Drawing.Size(152, 22);
-            this.musicPlayerMenu.Text = "Music Player";
-            this.musicPlayerMenu.Click += new System.EventHandler(this.musicPlayerMenu_Click);
-            // 
-            // pictureGalleryMenu
-            // 
-            this.pictureGalleryMenu.CheckOnClick = true;
-            this.pictureGalleryMenu.Name = "pictureGalleryMenu";
-            this.pictureGalleryMenu.Size = new System.Drawing.Size(152, 22);
-            this.pictureGalleryMenu.Text = "Picture Gallery";
-            this.pictureGalleryMenu.Click += new System.EventHandler(this.pictureGalleryMenu_Click);
-            // 
-            // rssFeedMenu
-            // 
-            this.rssFeedMenu.CheckOnClick = true;
-            this.rssFeedMenu.Name = "rssFeedMenu";
-            this.rssFeedMenu.Size = new System.Drawing.Size(152, 22);
-            this.rssFeedMenu.Text = "RSS Feed";
-            this.rssFeedMenu.Click += new System.EventHandler(this.rssFeedMenu_Click);
-            // 
-            // weatherMenu
-            // 
-            this.weatherMenu.Name = "weatherMenu";
-            this.weatherMenu.Size = new System.Drawing.Size(152, 22);
-            this.weatherMenu.Text = "Weather";
-            this.weatherMenu.Click += new System.EventHandler(this.weatherMenu_Click);
-            // 
             // pluginDropDownButton
             // 
             this.pluginDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -296,12 +277,6 @@ namespace MultiDesktop
             this.pluginDropDownButton.Name = "pluginDropDownButton";
             this.pluginDropDownButton.Size = new System.Drawing.Size(24, 52);
             this.pluginDropDownButton.Text = "Plugin";
-            // 
-            // menuToolSeparator
-            // 
-            this.menuToolSeparator.Name = "menuToolSeparator";
-            this.menuToolSeparator.Size = new System.Drawing.Size(24, 6);
-            this.menuToolSeparator.TextDirection = System.Windows.Forms.ToolStripTextDirection.Vertical90;
             // 
             // settingButton
             // 
@@ -389,7 +364,6 @@ namespace MultiDesktop
             settingManager = new SettingManager();
             settingManager.loadDatabase();
             settingManager.CategoryManager.loadDatabase();
-            settingManager.CalendarManager.JournalManager.loadDatabase();
         }
 
         public void loadCalendars()
@@ -418,10 +392,6 @@ namespace MultiDesktop
             TodoPanel todoPanel = new TodoPanel(calendarManager.TodoManager, goalPlanner.TaskManager);
             panelDropDownButton.DropDownItems.Add(todoPanel.MenuItem);
             panelList.Add("Todo", todoPanel);
-
-            JournalManagerPanel journalManagerPanel = new JournalManagerPanel(calendarManager);
-            panelDropDownButton.DropDownItems.Add(journalManagerPanel.MenuItem);
-            panelList.Add("Journal", journalManagerPanel);
             
             PlannerPanel plannerPanel = new PlannerPanel(calendarManager.EventManager, calendarManager.TodoManager, settingManager.GoalManager);
             panelDropDownButton.DropDownItems.Add(plannerPanel.MenuItem);
@@ -434,8 +404,6 @@ namespace MultiDesktop
             CalendarForm.SettingController = settingManager;
             TodoForm.SettingController = settingManager;
             EventForm.SettingController = settingManager;
-            JournalBookForm.CalendarController = calendarManager;
-            JournalUserControl.CalendarController = calendarManager;
             VisionForm.Controller = goalPlanner.VisionManager;
             LGoalForm.GoalController = goalPlanner;
             LGoalForm.CategoryController = settingManager.CategoryManager;
@@ -444,34 +412,9 @@ namespace MultiDesktop
             TaskForm.TaskController = goalPlanner.TaskManager;
             TaskForm.SettingController = settingManager;
 
-            journalPanels = new SortedList<JournalBook, JournalPanel>();
-
-            foreach (JournalBook journal in calendarManager.JournalManager.JournalList.Values)
-            {
-                JournalPanel panel = new JournalPanel(journal);
-                journalDropDownButton.DropDownItems.Add(panel.MenuItem);
-                journalPanels.Add(journal, panel);
-            }
-
-            calendarManager.JournalManager.JournalBookCreate += JournalManager_JournalBookCreate;
-            calendarManager.JournalManager.JournalBookRemove += JournalManager_JournalBookRemove;
-
             CalculatorPanel calculatorPanel = new CalculatorPanel();
             panelDropDownButton.DropDownItems.Add(calculatorPanel.MenuItem);
             panelList.Add("Calculator", calculatorPanel);
-        }
-
-        private void JournalManager_JournalBookCreate(JournalBook sender)
-        {
-            JournalPanel panel = new JournalPanel(sender);
-            journalDropDownButton.DropDownItems.Add(panel.MenuItem);
-            journalPanels.Add(sender, panel);
-        }
-
-        private void JournalManager_JournalBookRemove(JournalBook sender)
-        {
-            journalDropDownButton.DropDownItems.Remove(journalPanels[sender].MenuItem);
-            journalPanels.Remove(sender);
         }
 
         #region LoadPlugins
@@ -628,12 +571,6 @@ namespace MultiDesktop
         private void newTodoButton_Click(object sender, EventArgs e)
         {
             TodoForm newForm = new TodoForm();
-            newForm.Show();
-        }
-
-        private void newJournalButton_Click(object sender, EventArgs e)
-        {
-            JournalBookForm newForm = new JournalBookForm();
             newForm.Show();
         }
 

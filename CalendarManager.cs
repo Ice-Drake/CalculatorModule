@@ -13,7 +13,6 @@ namespace MultiDesktop
     {
         public TodoManager TodoManager { get; private set; }
         public EventManager EventManager { get; private set; }
-        public JournalManager JournalManager { get; private set; }
         public SortedList<int, Calendar> CalendarList { get; private set; }
         public DataTable CalendarTable { get; private set; }
 
@@ -30,7 +29,6 @@ namespace MultiDesktop
 
             TodoManager = new TodoManager(this);
             EventManager = new EventManager(this);
-            JournalManager = new JournalManager(this, connection);
             CalendarList = new SortedList<int, Calendar>();
             
             CalendarTable = new DataTable();
@@ -104,7 +102,6 @@ namespace MultiDesktop
             //Setup eventhandlers
             TodoManager.TodoModify += new EventHandler(saveCalendar);
             EventManager.EventModify += new EventHandler(saveCalendar);
-            JournalManager.JournalModify += new EventHandler(saveCalendar);
         }
 
         public bool loadCalendar(Calendar calendar, bool initialize = false)
@@ -133,9 +130,6 @@ namespace MultiDesktop
                     {
                         TodoManager.addTodo(iTodo.Current);
                     }
-
-                    // Load the current calendar to the Journal Collection
-                    JournalManager.load(calendar);
 
                     // Add it to the list
                     loadCalendarList.Add(calendar.ID, calendar.IICalendar);
@@ -186,9 +180,6 @@ namespace MultiDesktop
                 {
                     TodoManager.removeTodo(iTodo.Current.UID);
                 }
-
-                // Unload the current calendar from the Journal Collection
-                JournalManager.unload(calendar);
 
                 // Remove the current calendar from the list
                 loadCalendarList.Remove(calendar.ID);
