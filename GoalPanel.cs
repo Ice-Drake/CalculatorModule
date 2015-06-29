@@ -620,10 +620,7 @@ namespace MultiDesktop
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "GoalPanel";
-            this.ShowInTaskbar = false;
             this.Text = "Goal Panel";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);

@@ -43,9 +43,7 @@ namespace MultiDesktop
             this.components = new System.ComponentModel.Container();
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "MainPanel";
-            this.ShowInTaskbar = false;
         }
 
         #endregion

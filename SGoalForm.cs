@@ -469,7 +469,6 @@ namespace MultiDesktop
                 relatedGoal = (LGoal)GoalController.GoalList[lGoalID];
             }
 
-            DateTime test = DateTime.Today.AddDays(relatedGoal.Start + 365);
             if (relatedGoal != null && startDateBox.Value == DateTime.MinValue && dueDateBox.Value > DateTime.Today.AddDays(relatedGoal.Start + 365))
                 MessageBox.Show("The due date of this goal cannot occur later than a year after the start date of its related goal, which is " + DateTime.Today.AddDays(relatedGoal.Start + 365).ToString("d") + ".");
             else if (relatedGoal != null && startDateBox.Value == DateTime.MinValue && dueDateBox.Value < DateTime.Today.AddDays(relatedGoal.Start + 30))

@@ -167,12 +167,18 @@ namespace MultiDesktop
 
         public Category getCategory(string name)
         {
-            return categoryList[name];
+            if (categoryList.ContainsKey(name))
+                return categoryList[name];
+            else
+                return null;
         }
 
         public Subcategory getSubcategory(string name)
         {
-            return subcategoryList[name];
+            if (subcategoryList.ContainsKey(name))
+                return subcategoryList[name];
+            else
+                return null;
         }
 
         public List<TreeNode> CategoryNodeList

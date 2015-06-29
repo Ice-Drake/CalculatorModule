@@ -289,13 +289,60 @@ namespace MultiDesktop
             existingRow["Start"] = existingGoal.StartDate.ToShortDateString();
             if (existingGoal.DueDate != DateTime.MinValue)
                 existingRow["Due"] = existingGoal.DueDate.ToShortDateString();
+            else
+                existingRow["Due"] = DBNull.Value;
             existingRow["Scheme"] = existingGoal.Scheme;
             existingRow["VisionID"] = existingGoal.VisionID;
 
             if (GoalModify != null)
                 GoalModify(existingGoal, null);
 
-            return false;
+            // Ensure all start and due dates of its SGoal remain to be in a valid range
+            foreach (DataRow row in SGoalTable.Select("LGoalID = " + existingGoal.ID))
+            {
+                SGoal goal = (SGoal)GoalList[Int32.Parse(row["ID"].ToString())];
+                if (goal.StartDate != DateTime.MinValue && goal.StartDate < existingGoal.StartDate)
+                {
+                    TimeSpan gap = existingGoal.StartDate - goal.StartDate;
+                    goal.StartDate = existingGoal.StartDate;
+                    if ((existingGoal.DueDate != DateTime.MinValue && goal.DueDate.AddDays(gap.Days) <= existingGoal.DueDate) ||
+                        (existingGoal.DueDate == DateTime.MinValue && goal.DueDate.AddDays(gap.Days) <= existingGoal.StartDate.AddDays(365)))
+                        goal.DueDate = goal.DueDate.AddDays(gap.Days);
+                    else
+                        goal.DueDate = existingGoal.DueDate;
+
+                    updateSGoal(goal);
+                }
+                else if (goal.StartDate == DateTime.MinValue && goal.DueDate.AddDays(-30) < existingGoal.StartDate)
+                {
+                    TimeSpan gap = existingGoal.StartDate - goal.DueDate.AddDays(-30);
+                    goal.DueDate = goal.DueDate.AddDays(gap.Days);
+                    
+                    updateSGoal(goal);
+                }
+                else if (existingGoal.DueDate != DateTime.MinValue && goal.DueDate > existingGoal.DueDate)
+                {
+                    TimeSpan gap = goal.DueDate - existingGoal.DueDate;
+                    goal.DueDate = existingGoal.DueDate;
+
+                    if (goal.StartDate != DateTime.MinValue)
+                        goal.StartDate = goal.StartDate.AddDays(-gap.Days);
+                    
+                    updateSGoal(goal);
+                }
+                else if (existingGoal.DueDate == DateTime.MinValue && goal.DueDate > existingGoal.StartDate.AddDays(365))
+                {
+                    TimeSpan gap = goal.DueDate - existingGoal.StartDate.AddDays(365);
+                    goal.DueDate = existingGoal.StartDate.AddDays(365);
+
+                    if (goal.StartDate != DateTime.MinValue)
+                        goal.StartDate = goal.StartDate.AddDays(-gap.Days);
+
+                    updateSGoal(goal);
+                }
+            }
+
+            return true;
         }
 
         public bool removeLGoal(int id)
@@ -444,6 +491,8 @@ namespace MultiDesktop
             existingRow["Predecessor"] = existingGoal.Predecessors;
             if (existingGoal.StartDate != DateTime.MinValue)
                 existingRow["Start"] = existingGoal.StartDate.ToShortDateString();
+            else
+                existingRow["Due"] = DBNull.Value;
             existingRow["Due"] = existingGoal.DueDate.ToShortDateString();
 
             if (existingGoal.StartDate != DateTime.MinValue && existingGoal.StartDate >= DateTime.Today)
@@ -465,6 +514,45 @@ namespace MultiDesktop
 
             if (GoalModify != null)
                 GoalModify(existingGoal, null);
+
+            // Ensure all start and due dates of its GTask remain to be in a valid range
+            foreach (DataRow row in TaskManager.TaskTable.Select("GoalID = " + existingGoal.ID))
+            {
+                GTask task = (GTask)TaskManager.GTaskList[row["UID"].ToString()];
+                if (existingGoal.StartDate == DateTime.MinValue && task.Todo.Start.Date < existingGoal.DueDate.AddDays(-30))
+                {
+                    TimeSpan gap = existingGoal.DueDate.AddDays(-30) - task.Todo.Start.Date;
+                    task.Todo.Start = new DDay.iCal.iCalDateTime(existingGoal.DueDate.AddDays(-30));
+                    if (task.Todo.Due.Date.AddDays(gap.Days) > existingGoal.DueDate)
+                        task.Todo.Due = new DDay.iCal.iCalDateTime(existingGoal.DueDate);
+                    else
+                        task.Todo.Due = new DDay.iCal.iCalDateTime(task.Todo.Due.Date.AddDays(gap.Days));
+
+                    TaskManager.updateGTask(task);
+                }
+                else if (existingGoal.StartDate != DateTime.MinValue && task.Todo.Start.Date < existingGoal.StartDate)
+                {
+                    TimeSpan gap = existingGoal.StartDate - task.Todo.Start.Date;
+                    task.Todo.Start = new DDay.iCal.iCalDateTime(existingGoal.StartDate);
+                    if (task.Todo.Due.Date.AddDays(gap.Days) > existingGoal.DueDate)
+                        task.Todo.Due = new DDay.iCal.iCalDateTime(existingGoal.DueDate);
+                    else
+                        task.Todo.Due = new DDay.iCal.iCalDateTime(task.Todo.Due.Date.AddDays(gap.Days));
+
+                    TaskManager.updateGTask(task);
+                }
+                else if (task.Todo.Due.Date > existingGoal.DueDate)
+                {
+                    TimeSpan gap = task.Todo.Due.Date - existingGoal.DueDate;
+                    task.Todo.Due = new DDay.iCal.iCalDateTime(existingGoal.DueDate);
+                    if (existingGoal.StartDate != DateTime.MinValue && task.Todo.Start.Date.AddDays(-gap.Days) < existingGoal.StartDate)
+                        task.Todo.Start = new DDay.iCal.iCalDateTime(existingGoal.StartDate);
+                    else if (existingGoal.StartDate != DateTime.MinValue && task.Todo.Start.Date.AddDays(-gap.Days) >= existingGoal.StartDate)
+                        task.Todo.Start = new DDay.iCal.iCalDateTime(task.Todo.Start.Date.AddDays(-gap.Days));
+
+                    TaskManager.updateGTask(task);
+                }
+            }
 
             return true;
         }

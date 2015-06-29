@@ -1286,7 +1286,6 @@ namespace MultiDesktop
             this.Controls.Add(this.monthCalendar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "PlannerPanel";
-            this.ShowInTaskbar = false;
             this.Text = "Planner Panel";
             this.tableLayoutPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.todoDataGridView3)).EndInit();
@@ -1310,7 +1309,6 @@ namespace MultiDesktop
             this.groupBox3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.goalDataGridView)).EndInit();
             this.ResumeLayout(false);
-
         }
 
         #endregion
@@ -1467,34 +1465,42 @@ namespace MultiDesktop
             todoDataGridView1.AutoGenerateColumns = false;
             todoDataGridView1.DataSource = todayTodoView;
             todoDataGridView1.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
+            todoDataGridView1.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridView_CellPainting);
             
             todoDataGridView2.AutoGenerateColumns = false;
             todoDataGridView2.DataSource = tomorrowTodoView;
             todoDataGridView2.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
+            todoDataGridView2.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridView_CellPainting);
 
             todoDataGridView3.AutoGenerateColumns = false;
             todoDataGridView3.DataSource = day3TodoView;
             todoDataGridView3.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
+            todoDataGridView3.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridView_CellPainting);
 
             todoDataGridView4.AutoGenerateColumns = false;
             todoDataGridView4.DataSource = day4TodoView;
             todoDataGridView4.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
+            todoDataGridView4.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridView_CellPainting);
 
             todoDataGridView5.AutoGenerateColumns = false;
             todoDataGridView5.DataSource = day5TodoView;
             todoDataGridView5.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
+            todoDataGridView5.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridView_CellPainting);
 
             todoDataGridView6.AutoGenerateColumns = false;
             todoDataGridView6.DataSource = day6TodoView;
             todoDataGridView6.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
+            todoDataGridView6.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridView_CellPainting);
 
             todoDataGridView7.AutoGenerateColumns = false;
             todoDataGridView7.DataSource = day7TodoView;
             todoDataGridView7.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
+            todoDataGridView7.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridView_CellPainting);
 
             lateTodoDataGridView.AutoGenerateColumns = false;
             lateTodoDataGridView.DataSource = lateTodoView;
             lateTodoDataGridView.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
+            lateTodoDataGridView.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridView_CellPainting);
 
             DataView currentGoalView = new DataView();
             currentGoalView.Table = goalController.SGoalTable;
@@ -1599,43 +1605,85 @@ namespace MultiDesktop
 
         private void dataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            DataGridView dataGridView = (DataGridView)sender;
+            DataGridViewRow dataGridViewRow = ((DataGridView)sender).Rows[e.RowIndex];
+            DataGridViewCell dataGridViewCell = dataGridViewRow.Cells[1];
 
-            foreach (DataGridViewRow row in dataGridView.Rows)
+            int priority = Int32.Parse(dataGridViewRow.Cells[2].Value.ToString());
+
+            if (priority == 1)
             {
-                int priority = Int32.Parse(row.Cells[2].Value.ToString());
-                
+                dataGridViewCell.ToolTipText = "Critical Priority";
+            }
+            else if (priority == 2)
+            {
+                dataGridViewCell.ToolTipText = "Very High Priority";
+            }
+            else if (priority == 3)
+            {
+                dataGridViewCell.ToolTipText = "High Priority";
+            }
+            else if (priority == 4)
+            {
+                dataGridViewCell.ToolTipText = "Above Normal Priority";
+            }
+            else if (priority == 5)
+            {
+                dataGridViewCell.ToolTipText = "Normal Priority";
+            }
+            else if (priority == 6 || priority == 7)
+            {
+                dataGridViewCell.ToolTipText = "Low Priority";
+            }
+            else
+            {
+                dataGridViewCell.ToolTipText = "Very Low Priority";
+            }
+        }
+
+        private void dataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.ColumnIndex == 1)
+            {
+                DataGridViewCell dataGridViewCell = ((DataGridView)sender).Rows[e.RowIndex].Cells[2];
+
+                int priority = Int32.Parse(dataGridViewCell.Value.ToString());
+
                 if (priority == 1)
                 {
-                    row.Cells[3].Style.ForeColor = Color.Red;
+                    dataGridViewCell.ToolTipText = "Critical Priority";
+                    e.CellStyle.ForeColor = Color.Red;
                 }
                 else if (priority == 2)
                 {
-                    row.Cells[3].Style.ForeColor = Color.OrangeRed;
+                    dataGridViewCell.ToolTipText = "Very High Priority";
+                    e.CellStyle.ForeColor = Color.OrangeRed;
                 }
                 else if (priority == 3)
                 {
-                    row.Cells[3].Style.ForeColor = Color.Orange;
+                    dataGridViewCell.ToolTipText = "High Priority";
+                    e.CellStyle.ForeColor = Color.Orange;
                 }
                 else if (priority == 4)
                 {
-                    row.Cells[3].Style.ForeColor = Color.Yellow;
+                    dataGridViewCell.ToolTipText = "Above Normal Priority";
+                    e.CellStyle.ForeColor = Color.Yellow;
                 }
                 else if (priority == 5)
                 {
-                    row.Cells[3].Style.ForeColor = Color.Green;
+                    dataGridViewCell.ToolTipText = "Normal Priority";
+                    e.CellStyle.ForeColor = Color.Green;
                 }
                 else if (priority == 6 || priority == 7)
                 {
-                    row.Cells[3].Style.ForeColor = Color.Teal;
+                    dataGridViewCell.ToolTipText = "Low Priority";
+                    e.CellStyle.ForeColor = Color.Teal;
                 }
                 else
                 {
-                    row.Cells[3].Style.ForeColor = Color.Blue;
+                    dataGridViewCell.ToolTipText = "Very Low Priority";
+                    e.CellStyle.ForeColor = Color.Blue;
                 }
             }
-
-            dataGridView.Update();
         }
 
         private void dataGridView_MouseDown(object sender, MouseEventArgs e)

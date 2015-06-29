@@ -1784,10 +1784,7 @@ namespace MultiDesktop
             this.ClientSize = new System.Drawing.Size(556, 536);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "CalculatorPanel";
-            this.ShowInTaskbar = false;
             this.Text = "Calculator Panel";
             this.tabPage4.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);

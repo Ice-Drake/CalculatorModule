@@ -389,7 +389,7 @@ namespace MultiDesktop
             panelDropDownButton.DropDownItems.Add(calendarPanel.MenuItem);
             panelList.Add("Calendar", calendarPanel);
 
-            TodoPanel todoPanel = new TodoPanel(calendarManager.TodoManager, goalPlanner.TaskManager);
+            TodoPanel todoPanel = new TodoPanel(settingManager);
             panelDropDownButton.DropDownItems.Add(todoPanel.MenuItem);
             panelList.Add("Todo", todoPanel);
             
