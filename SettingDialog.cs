@@ -254,6 +254,7 @@ namespace MultiDesktop
             // 
             // ID
             // 
+            this.ID.DataPropertyName = "ID";
             this.ID.HeaderText = "ID";
             this.ID.Name = "ID";
             this.ID.Visible = false;
@@ -373,7 +374,7 @@ namespace MultiDesktop
 
         private void calendarGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            int id = Int32.Parse(calendarGridView.Rows[e.RowIndex].Cells[3].Value.ToString());
+            int id = Int32.Parse(calendarGridView.Rows[e.RowIndex].Cells[0].Value.ToString());
             CalendarForm newForm = new CalendarForm(controller.CalendarManager.CalendarList[id]);
             newForm.Show();
         }

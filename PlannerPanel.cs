@@ -1313,11 +1313,11 @@ namespace MultiDesktop
 
         #endregion
 
-        public PlannerPanel(EventManager eventManager, TodoManager todoManager, GoalPlanner goalManager) : base("Planner")
+        public PlannerPanel(SettingManager settingManager) : base("Planner")
         {
-            eventController = eventManager;
-            todoController = todoManager;
-            goalController = goalManager;
+            eventController = settingManager.CalendarManager.EventManager;
+            todoController = settingManager.CalendarManager.TodoManager;
+            goalController = settingManager.GoalManager;
 
             monthCalendar = new Library.MonthCalendar(eventController.Calendar.Dates);
 
@@ -1590,7 +1590,7 @@ namespace MultiDesktop
                 case DayOfWeek.Wednesday: return Color.PaleGreen;
                 case DayOfWeek.Thursday: return Color.LightSalmon;
                 case DayOfWeek.Friday: return Color.PaleTurquoise;
-                case DayOfWeek.Saturday: return Color.LightGoldenrodYellow;
+                case DayOfWeek.Saturday: return Color.PeachPuff;
                 default: return Color.Pink;
             }
         }
@@ -1607,36 +1607,57 @@ namespace MultiDesktop
         {
             DataGridViewRow dataGridViewRow = ((DataGridView)sender).Rows[e.RowIndex];
             DataGridViewCell dataGridViewCell = dataGridViewRow.Cells[1];
-
-            int priority = Int32.Parse(dataGridViewRow.Cells[2].Value.ToString());
-
-            if (priority == 1)
+            
+            dataGridViewCell.ToolTipText = "";
+            
+            string uid = dataGridViewRow.Cells[3].Value.ToString();
+            ITodo todo;
+            
+            if (goalController.TaskManager.GTaskList.ContainsKey(uid))
             {
-                dataGridViewCell.ToolTipText = "Critical Priority";
-            }
-            else if (priority == 2)
-            {
-                dataGridViewCell.ToolTipText = "Very High Priority";
-            }
-            else if (priority == 3)
-            {
-                dataGridViewCell.ToolTipText = "High Priority";
-            }
-            else if (priority == 4)
-            {
-                dataGridViewCell.ToolTipText = "Above Normal Priority";
-            }
-            else if (priority == 5)
-            {
-                dataGridViewCell.ToolTipText = "Normal Priority";
-            }
-            else if (priority == 6 || priority == 7)
-            {
-                dataGridViewCell.ToolTipText = "Low Priority";
+                GTask task = goalController.TaskManager.GTaskList[uid];
+                dataGridViewCell.ToolTipText = "Related Goal: " + goalController.GoalList[task.RelatedGoalID].Name + "\n";
+                todo = task.Todo;
             }
             else
             {
-                dataGridViewCell.ToolTipText = "Very Low Priority";
+                todo = todoController.TodoList[uid];
+            }
+
+            if (todo.Description != null && !todo.Description.Equals(""))
+                dataGridViewCell.ToolTipText += todo.Description + "\n";
+                
+            dataGridViewCell.ToolTipText += String.Format("Category: {0}\n", todo.Categories[0]);
+
+            int priority = todo.Priority;
+
+            if (priority == 1)
+            {
+                dataGridViewCell.ToolTipText += "Priority: Critical";
+            }
+            else if (priority == 2)
+            {
+                dataGridViewCell.ToolTipText += "Priority: Very High";
+            }
+            else if (priority == 3)
+            {
+                dataGridViewCell.ToolTipText += "Priority: High";
+            }
+            else if (priority == 4)
+            {
+                dataGridViewCell.ToolTipText += "Priority: Above Normal";
+            }
+            else if (priority == 5)
+            {
+                dataGridViewCell.ToolTipText += "Priority: Normal";
+            }
+            else if (priority == 6 || priority == 7)
+            {
+                dataGridViewCell.ToolTipText += "Priority: Low";
+            }
+            else
+            {
+                dataGridViewCell.ToolTipText += "Priority: Very Low";
             }
         }
 

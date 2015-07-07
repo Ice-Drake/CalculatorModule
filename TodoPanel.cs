@@ -464,6 +464,8 @@ namespace MultiDesktop
         {
             if (e.ColumnIndex == 2)
             {
+                e.CellStyle.BackColor = Color.Silver;
+
                 Category category = categoryController.getCategory(e.Value.ToString());
                 if (category == null)
                 {

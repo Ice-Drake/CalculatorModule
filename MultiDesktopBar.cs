@@ -393,7 +393,7 @@ namespace MultiDesktop
             panelDropDownButton.DropDownItems.Add(todoPanel.MenuItem);
             panelList.Add("Todo", todoPanel);
             
-            PlannerPanel plannerPanel = new PlannerPanel(calendarManager.EventManager, calendarManager.TodoManager, settingManager.GoalManager);
+            PlannerPanel plannerPanel = new PlannerPanel(settingManager);
             panelDropDownButton.DropDownItems.Add(plannerPanel.MenuItem);
             panelList.Add("Planner", plannerPanel);
 

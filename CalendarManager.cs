@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using DDay.iCal;
 using DDay.iCal.Serialization.iCalendar;
@@ -15,15 +16,15 @@ namespace MultiDesktop
         public EventManager EventManager { get; private set; }
         public SortedList<int, Calendar> CalendarList { get; private set; }
         public DataTable CalendarTable { get; private set; }
-
-        private string calendarAbsPath;
+        public string CalendarAbsPath { get; private set; }
+        
         private SortedList<int, IICalendar> loadCalendarList;
         private SqlConnection connection;
         private BindingSource calendarTableBS;
         
         public CalendarManager(string calendarPath)
         {
-            calendarAbsPath = calendarPath;
+            CalendarAbsPath = calendarPath;
             loadCalendarList = new SortedList<int, IICalendar>();
             connection = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\Setting.mdf;Integrated Security=True");
 
@@ -108,7 +109,7 @@ namespace MultiDesktop
         {
             try
             {
-                IICalendarCollection calendars = iCalendar.LoadFromFile(calendarAbsPath + "\\" + calendar.Filename);
+                IICalendarCollection calendars = iCalendar.LoadFromFile(CalendarAbsPath + "\\" + calendar.Filename);
 
                 // Get the enumerator for all calendars
                 IEnumerator<IICalendar> ical = calendars.GetEnumerator();
@@ -210,7 +211,7 @@ namespace MultiDesktop
             return loadCalendarList.Keys[loadCalendarList.IndexOfValue(calendar)];
         }
 
-        public bool createCalendar(string name, string filename, bool included = true)
+        public bool createCalendar(string name, string filename, bool included, bool created = true)
         {
             if (calendarTableBS.Find("Name", name) >= 0 || calendarTableBS.Find("Filename", filename) >= 0)
                 return false;
@@ -233,15 +234,8 @@ namespace MultiDesktop
                 connection.Close();
 
                 Calendar newCalendar = new Calendar(id, filename);
-                iCalendar newIICalendar = new iCalendar();
-                newCalendar.IICalendar = newIICalendar;
-                newCalendar.Included = included;
-
-                // Add it to the list
-                if (included)
-                    loadCalendarList.Add(id, newIICalendar);
-                CalendarList.Add(id, newCalendar);
-
+                newCalendar.Name = name;
+                
                 // Insert to table
                 DataRow newRow = CalendarTable.NewRow();
                 newRow["ID"] = id;
@@ -249,6 +243,20 @@ namespace MultiDesktop
                 newRow["Filename"] = filename;
                 newRow["Included"] = included;
                 CalendarTable.Rows.Add(newRow);
+
+                // Create calendar if needed
+                if (created)
+                {
+                    iCalendar newIICalendar = new iCalendar();
+                    newCalendar.IICalendar = newIICalendar;
+                }
+
+                // Load calendar if included
+                if (included)
+                    loadCalendar(newCalendar);
+
+                // Add it to the list
+                CalendarList.Add(id, newCalendar);
 
                 return true;
             }
@@ -317,7 +325,7 @@ namespace MultiDesktop
             IICalendar calendar = (IICalendar)sender;
             string filename = CalendarList[findCalendarID(calendar)].Filename;
             iCalendarSerializer serializer = new iCalendarSerializer();
-            serializer.Serialize(calendar, calendarAbsPath + "\\" + filename);
+            serializer.Serialize(calendar, CalendarAbsPath + "\\" + filename);
         }
     }
 }
