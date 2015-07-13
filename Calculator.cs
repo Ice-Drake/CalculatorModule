@@ -78,7 +78,7 @@ namespace MultiDesktop
                 }
                 else
                 {
-                    throw new ArgumentException("Invalid variable name");
+                    throw new ArgumentException("Variable name must start with a letter and cannot contain symbols. Do not use reserved words such as sin/log.");
                 }
             }
             List<string> postFixed = convert(input);
@@ -338,6 +338,16 @@ namespace MultiDesktop
             Stack<string> operators = new Stack<string>();
 
             infix = infix.Replace(" ", "");
+
+            for (int i = 0; i < (infix.Length - 1); i++)
+            {
+                if (Char.IsDigit(infix[i]) && Char.IsLetter(infix[i+1]))
+                {
+                    string ohNo = infix[i].ToString() + infix[i+1].ToString();
+                    string ohYes = infix[i].ToString() + "*" + infix[i+1].ToString();
+                    infix = infix.Replace(ohNo, ohYes);
+                }
+            }
 
             for (int i = 0; i < infix.Length; i++)
             {
