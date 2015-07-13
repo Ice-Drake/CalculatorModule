@@ -454,6 +454,33 @@ namespace MultiDesktop
             return IsTrig;
         }
 
+        private double SinPiEqualZero()
+        {
+            string character = SIN;
+            double pi = 3.14159265359;
+            double zero = 0.0;
+
+            if (character.Equals(Math.Sin(pi)))
+            {
+                return zero;
+            }
+
+            return Double.Parse(character);
+        }
+
+        private double TanPiEqualZero()
+        {
+            string character = TAN;
+            double pi = 3.14159265359;
+            double zero = 0.0;
+
+            if (character.Equals(Math.Tan(pi)))
+            {
+                return zero;
+            }
+
+            return Double.Parse(character);
+        }
 
         /*
        * Compares operator precedence
