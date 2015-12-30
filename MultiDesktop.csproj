@@ -64,6 +64,9 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\..\..\..\..\..\..\Program Files\SQLite\2010\bin\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
@@ -172,6 +175,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Calendars\US Holidays.ics">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Goal.sqlite">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Setting.sqlite">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="User.config">
@@ -321,7 +330,7 @@
       <Project>{898ecb12-d464-4514-ae2e-45fe430fe04e}</Project>
       <Name>Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\PluginSDK\PluginSDK.csproj">
+    <ProjectReference Include="..\PluginSDK\PluginSDK.csproj">
       <Project>{67161f85-556e-4def-9899-6464bdc55773}</Project>
       <Name>PluginSDK</Name>
     </ProjectReference>

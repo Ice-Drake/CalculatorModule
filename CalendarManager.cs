@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -19,14 +19,14 @@ namespace MultiDesktop
         public string CalendarAbsPath { get; private set; }
         
         private SortedList<int, IICalendar> loadCalendarList;
-        private SqlConnection connection;
+        private SQLiteConnection connection;
         private BindingSource calendarTableBS;
         
         public CalendarManager(string calendarPath)
         {
             CalendarAbsPath = calendarPath;
             loadCalendarList = new SortedList<int, IICalendar>();
-            connection = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\Setting.mdf;Integrated Security=True");
+            connection = new SQLiteConnection("Data Source=Setting.sqlite;Version=3;");
 
             TodoManager = new TodoManager(this);
             EventManager = new EventManager(this);
@@ -45,9 +45,9 @@ namespace MultiDesktop
 
         public void loadDatabase()
         {
-            SqlCommand command = new SqlCommand("SELECT * FROM Calendar", connection);
+            SQLiteCommand command = new SQLiteCommand("SELECT * FROM Calendar", connection);
             connection.Open();
-            SqlDataReader reader = command.ExecuteReader();
+            SQLiteDataReader reader = command.ExecuteReader();
 
             try
             {
@@ -67,7 +67,7 @@ namespace MultiDesktop
                         newRow["Name"] = name;
                         newRow["Filename"] = filename;
 
-                        if(Boolean.Parse(reader[3].ToString()))
+                        if(reader[3].ToString().Equals("1"))
                         {
                             newRow["Included"] = true;
                             loadCalendar(newCalendar, true);
@@ -140,13 +140,8 @@ namespace MultiDesktop
                 {
                     // Update database
                     calendar.Included = true;
-                    SqlCommand command = new SqlCommand("UPDATE Calendar SET Included = @NewIncluded WHERE ID = @ID", connection);
-                    
-                    command.Parameters.Add("@NewIncluded", SqlDbType.Bit);
-                    command.Parameters["@NewIncluded"].Value = calendar.Included;
-
-                    command.Parameters.Add("@ID", SqlDbType.Int);
-                    command.Parameters["@ID"].Value = calendar.ID;
+                    string query = String.Format("UPDATE Calendar SET Included = {0} WHERE ID = {1}", 1, calendar.ID);
+                    SQLiteCommand command = new SQLiteCommand(query, connection);
 
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -192,13 +187,8 @@ namespace MultiDesktop
                 row["Included"] = false;
 
                 // Update database
-                SqlCommand command = new SqlCommand("UPDATE Calendar SET Included = @NewIncluded WHERE ID = @ID", connection);
-
-                command.Parameters.Add("@NewIncluded", SqlDbType.Bit);
-                command.Parameters["@NewIncluded"].Value = calendar.Included;
-
-                command.Parameters.Add("@ID", SqlDbType.Int);
-                command.Parameters["@ID"].Value = calendar.ID;
+                string query = String.Format("UPDATE Calendar SET Included = {0} WHERE ID = {1}", 0, calendar.ID);
+                SQLiteCommand command = new SQLiteCommand(query, connection);
 
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -218,16 +208,8 @@ namespace MultiDesktop
             else
             {
                 // Insert to database
-                SqlCommand command = new SqlCommand("INSERT INTO Calendar VALUES (@Name, @Filename, @Included); SELECT SCOPE_IDENTITY();", connection);
-
-                command.Parameters.Add("@Name", SqlDbType.VarChar);
-                command.Parameters["@Name"].Value = name;
-
-                command.Parameters.Add("@Filename", SqlDbType.VarChar);
-                command.Parameters["@Filename"].Value = filename;
-
-                command.Parameters.Add("@Included", SqlDbType.Bit);
-                command.Parameters["@Included"].Value = included;
+                string query = String.Format("INSERT INTO Calendar VALUES ('{0}', '{1}', {2}); SELECT LAST_INSERT_ROWID();", name, filename, included ? 1 : 0);
+                SQLiteCommand command = new SQLiteCommand(query, connection);
 
                 connection.Open();
                 int id = Int32.Parse(command.ExecuteScalar().ToString());
@@ -275,13 +257,8 @@ namespace MultiDesktop
                 calendar.Name = newName;
                 
                 // Update database
-                SqlCommand command = new SqlCommand("UPDATE Calendar SET Name = @NewName WHERE ID = @ID", connection);
-
-                command.Parameters.Add("@NewName", SqlDbType.VarChar);
-                command.Parameters["@NewName"].Value = newName;
-
-                command.Parameters.Add("@ID", SqlDbType.Int);
-                command.Parameters["@ID"].Value = calendarID;
+                string query = String.Format("UPDATE Calendar SET Name = '{0}' WHERE ID = {1}", newName, calendarID);
+                SQLiteCommand command = new SQLiteCommand(query, connection);
 
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -308,10 +285,8 @@ namespace MultiDesktop
             CalendarTable.Rows.RemoveAt(calendarTableBS.Find("ID", calendar.ID));
 
             // Remove from database
-            SqlCommand command = new SqlCommand("DELETE FROM Calendar WHERE ID = @ID", connection);
-
-            command.Parameters.Add("@ID", SqlDbType.Int);
-            command.Parameters["@ID"].Value = calendar.ID;
+            string query = String.Format("DELETE FROM Calendar WHERE ID = {0}", calendar.ID);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();

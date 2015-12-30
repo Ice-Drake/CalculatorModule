@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.SQLite;
 using Library;
 
 namespace MultiDesktop
@@ -16,11 +16,11 @@ namespace MultiDesktop
         public ProjectManager ProjectManager { get; private set; }
         public event EventHandler GoalModify;
 
-        private SqlConnection connection;
+        private SQLiteConnection connection;
 
         public GoalPlanner(TodoManager todoManager)
         {
-            connection = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\Goal.mdf;Integrated Security=True");
+            connection = new SQLiteConnection("Data Source=Goal.sqlite;Version=3;");
             VisionManager = new VisionManager(connection);
             TaskManager = new TaskManager(todoManager, connection);
             GoalList = new SortedList<int, Goal>();
@@ -60,12 +60,12 @@ namespace MultiDesktop
             VisionManager.loadDatabase();
 
             connection.Open();
-            using (SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT A.*, B.* FROM LGoal A LEFT JOIN Goal B ON A.ID = B.ID", connection))
+            using (SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter("SELECT A.*, B.* FROM LGoal A LEFT JOIN Goal B ON A.ID = B.ID", connection))
             {
                 dataAdapter.Fill(LGoalTable);
             }
 
-            using (SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT A.*, B.* FROM SGoal A LEFT JOIN Goal B ON A.ID = B.ID", connection))
+            using (SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter("SELECT A.*, B.* FROM SGoal A LEFT JOIN Goal B ON A.ID = B.ID", connection))
             {
                 dataAdapter.Fill(SGoalTable);
             }
@@ -208,22 +208,8 @@ namespace MultiDesktop
             newGoal.Scheme = scheme;
             newGoal.VisionID = visionID;
 
-            SqlCommand command = new SqlCommand("INSERT INTO LGoal (ID, Start, Due, Scheme, VisionID) VALUES (@ID, @Start, @Due, @Scheme, @VisionID)", connection);
-
-            command.Parameters.Add("@ID", SqlDbType.Int);
-            command.Parameters["@ID"].Value = id;
-            
-            command.Parameters.Add("@Start", SqlDbType.Date);
-            command.Parameters["@Start"].Value = startDate;
-            
-            command.Parameters.Add("@Due", SqlDbType.Date);
-            command.Parameters["@Due"].Value = dueDate != DateTime.MinValue ? dueDate : (object)DBNull.Value;
-            
-            command.Parameters.Add("@Scheme", SqlDbType.Int);
-            command.Parameters["@Scheme"].Value = scheme;
-            
-            command.Parameters.Add("@VisionID", SqlDbType.Int);
-            command.Parameters["@VisionID"].Value = visionID;
+            string query = String.Format("INSERT INTO LGoal (ID, Start, Due, Scheme, VisionID) VALUES ({0}, '{1}', '{2}', {3}, {4})", id, startDate.ToShortDateString(), dueDate != DateTime.MinValue ? dueDate.ToShortDateString() : "NULL", scheme, visionID);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -257,22 +243,8 @@ namespace MultiDesktop
         {
             updateGoal(existingGoal);
 
-            SqlCommand command = new SqlCommand("UPDATE LGoal SET Start = @Start, Due = @Due, Scheme = @Scheme, VisionID = @VisionID WHERE ID = @ID", connection);
-
-            command.Parameters.Add("@ID", SqlDbType.Int);
-            command.Parameters["@ID"].Value = existingGoal.ID;
-
-            command.Parameters.Add("@Start", SqlDbType.Date);
-            command.Parameters["@Start"].Value = existingGoal.StartDate;
-
-            command.Parameters.Add("@Due", SqlDbType.Date);
-            command.Parameters["@Due"].Value = existingGoal.DueDate != DateTime.MinValue ? existingGoal.DueDate : (object)DBNull.Value;
-
-            command.Parameters.Add("@Scheme", SqlDbType.Int);
-            command.Parameters["@Scheme"].Value = existingGoal.Scheme;
-
-            command.Parameters.Add("@VisionID", SqlDbType.Int);
-            command.Parameters["@VisionID"].Value = existingGoal.VisionID;
+            string query = String.Format("UPDATE LGoal SET Start = '{0}', Due = '{1}', Scheme = {2}, VisionID = {3} WHERE ID = {4}", existingGoal.StartDate.ToShortDateString(), existingGoal.DueDate != DateTime.MinValue ? existingGoal.DueDate.ToShortDateString() : "NULL", existingGoal.Scheme, existingGoal.VisionID, existingGoal.ID);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -349,10 +321,8 @@ namespace MultiDesktop
         {
             removeGoal(id);
 
-            SqlCommand command = new SqlCommand("DELETE FROM LGoal WHERE ID = @ID", connection);
-
-            command.Parameters.Add("@ID", SqlDbType.Int);
-            command.Parameters["@ID"].Value = id;
+            string query = String.Format("DELETE FROM LGoal WHERE ID = {0}", id);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -386,22 +356,8 @@ namespace MultiDesktop
             if (lGoalID != 0 && GoalList[lGoalID].GetType() == typeof(LGoal))
                 newGoal.LGoal = (LGoal)GoalList[lGoalID];
 
-            SqlCommand command = new SqlCommand("INSERT INTO SGoal (ID, Start, Due, Priority, LGoalID) VALUES (@ID, @Start, @Due, @Priority, @LGoalID)", connection);
-
-            command.Parameters.Add("@ID", SqlDbType.Int);
-            command.Parameters["@ID"].Value = id;
-
-            command.Parameters.Add("@Start", SqlDbType.Date);
-            command.Parameters["@Start"].Value = startDate != DateTime.MinValue ? startDate : (object)DBNull.Value;
-
-            command.Parameters.Add("@Due", SqlDbType.Date);
-            command.Parameters["@Due"].Value = dueDate;
-
-            command.Parameters.Add("@Priority", SqlDbType.Int);
-            command.Parameters["@Priority"].Value = priority;
-
-            command.Parameters.Add("@LGoalID", SqlDbType.Int);
-            command.Parameters["@LGoalID"].Value = lGoalID;
+            string query = String.Format("INSERT INTO SGoal (ID, Start, Due, Priority, LGoalID) VALUES ({0}, '{1}', '{2}', {3}, {4})", id, startDate != DateTime.MinValue ? startDate.ToShortDateString() : "NULL", dueDate.ToShortDateString(), priority, lGoalID);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -459,23 +415,9 @@ namespace MultiDesktop
                 ProjectManager.Ungroup(lGoal, existingGoal);
                 ProjectManager.Group(existingGoal.LGoal, existingGoal);
             }
-            
-            SqlCommand command = new SqlCommand("UPDATE SGoal SET Start = @Start, Due = @Due, Priority = @Priority, LGoalID = @LGoalID WHERE ID = @ID", connection);
 
-            command.Parameters.Add("@ID", SqlDbType.Int);
-            command.Parameters["@ID"].Value = existingGoal.ID;
-
-            command.Parameters.Add("@Start", SqlDbType.Date);
-            command.Parameters["@Start"].Value = existingGoal.StartDate != DateTime.MinValue ? existingGoal.StartDate : (object)DBNull.Value;
-            
-            command.Parameters.Add("@Due", SqlDbType.Date);
-            command.Parameters["@Due"].Value = existingGoal.DueDate;
-            
-            command.Parameters.Add("@Priority", SqlDbType.Int);
-            command.Parameters["@Priority"].Value = existingGoal.Priority;
-            
-            command.Parameters.Add("@LGoalID", SqlDbType.Int);
-            command.Parameters["@LGoalID"].Value = existingGoal.LGoal != null ? existingGoal.LGoal.ID : 0;
+            string query = String.Format("UPDATE SGoal SET Start = '{0}', Due = '{1}', Priority = {2}, LGoalID = {3} WHERE ID = {4}", existingGoal.StartDate != DateTime.MinValue ? existingGoal.StartDate.ToShortDateString() : "NULL", existingGoal.DueDate.ToShortDateString(), existingGoal.Priority, existingGoal.LGoal != null ? existingGoal.LGoal.ID : 0,  existingGoal.ID);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -561,10 +503,8 @@ namespace MultiDesktop
         {
             removeGoal(id);
 
-            SqlCommand command = new SqlCommand("DELETE FROM SGoal WHERE ID = @ID", connection);
-
-            command.Parameters.Add("@ID", SqlDbType.Int);
-            command.Parameters["@ID"].Value = id;
+            string query = String.Format("DELETE FROM SGoal WHERE ID = {0}", id);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -584,22 +524,8 @@ namespace MultiDesktop
 
         private int createGoal(string summary, bool complete, string category, string desc, string predecessor)
         {
-            SqlCommand command = new SqlCommand("INSERT INTO Goal (Summary, Complete, Category, Description, Predecessor) VALUES (@Summary, @Complete, @Category, @Description, @Predecessor); SELECT SCOPE_IDENTITY();", connection);
-
-            command.Parameters.Add("@Summary", SqlDbType.VarChar);
-            command.Parameters["@Summary"].Value = summary;
-            
-            command.Parameters.Add("@Complete", SqlDbType.Bit);
-            command.Parameters["@Complete"].Value = complete;
-            
-            command.Parameters.Add("@Category", SqlDbType.VarChar);
-            command.Parameters["@Category"].Value = category;
-            
-            command.Parameters.Add("@Description", SqlDbType.VarChar);
-            command.Parameters["@Description"].Value = desc;
-            
-            command.Parameters.Add("@Predecessor", SqlDbType.VarChar);
-            command.Parameters["@Predecessor"].Value = predecessor;
+            string query = String.Format("INSERT INTO Goal (Summary, Complete, Category, Description, Predecessor) VALUES ('{0}', {1}, '{2}', '{3}', '{4}'); SELECT LAST_INSERT_ROWID();", summary, complete ? 1 : 0, category, desc, predecessor);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             int id = Int32.Parse(command.ExecuteScalar().ToString());
@@ -610,25 +536,8 @@ namespace MultiDesktop
 
         private bool updateGoal(Goal existingGoal)
         {
-            SqlCommand command = new SqlCommand("UPDATE Goal SET Summary = @Summary, Complete = @Complete, Category = @Category, Description = @Description, Predecessor = @Predecessor WHERE ID = @ID", connection);
-
-            command.Parameters.Add("@ID", SqlDbType.Int);
-            command.Parameters["@ID"].Value = existingGoal.ID;
-            
-            command.Parameters.Add("@Summary", SqlDbType.VarChar);
-            command.Parameters["@Summary"].Value = existingGoal.Name;
-            
-            command.Parameters.Add("@Complete", SqlDbType.Bit);
-            command.Parameters["@Complete"].Value = existingGoal.Complete == 1.0f;
-            
-            command.Parameters.Add("@Category", SqlDbType.VarChar);
-            command.Parameters["@Category"].Value = existingGoal.Category;
-            
-            command.Parameters.Add("@Description", SqlDbType.VarChar);
-            command.Parameters["@Description"].Value = existingGoal.Desc;
-            
-            command.Parameters.Add("@Predecessor", SqlDbType.VarChar);
-            command.Parameters["@Predecessor"].Value = existingGoal.Predecessors;
+            string query = String.Format("UPDATE Goal SET Summary = '{0}', Complete = {1}, Category = '{2}', Description = '{3}', Predecessor = '{4}' WHERE ID = {5}", existingGoal.Name, existingGoal.Complete == 1.0f ? 1 : 0, existingGoal.Category, existingGoal.Desc, existingGoal.Predecessors, existingGoal.ID);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -639,10 +548,8 @@ namespace MultiDesktop
 
         private bool removeGoal(int id)
         {
-            SqlCommand command = new SqlCommand("DELETE FROM Goal WHERE ID = @ID", connection);
-
-            command.Parameters.Add("@ID", SqlDbType.Int);
-            command.Parameters["@ID"].Value = id;
+            string query = String.Format("DELETE FROM Goal WHERE ID = {0}", id);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();

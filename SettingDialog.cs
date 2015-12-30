@@ -355,10 +355,20 @@ namespace MultiDesktop
             }
             else if (controller.CategoryManager.renameSubcategory(categoryNameField.Text, treeView.SelectedNode.Text))
             {
-                int nodeIndex = treeView.Nodes.IndexOf(treeView.SelectedNode);
-                treeView.Nodes.RemoveAt(nodeIndex);
+                TreeNode selectedParent = treeView.SelectedNode.Parent;
+                int nodeIndex = selectedParent.Nodes.IndexOf(treeView.SelectedNode);
+                
+                //Unregister AfterSelect event handler
+                treeView.AfterSelect -= treeView_AfterSelect;
+
+                selectedParent.Nodes.RemoveAt(nodeIndex);
                 TreeNode newNode = new TreeNode(categoryNameField.Text);
-                treeView.Nodes.Insert(nodeIndex, newNode);
+                selectedParent.Nodes.Insert(nodeIndex, newNode);
+
+                treeView.SelectedNode = newNode;
+
+                //Register back AfterSelect event handler
+                treeView.AfterSelect += treeView_AfterSelect;
             }
             else
             {
