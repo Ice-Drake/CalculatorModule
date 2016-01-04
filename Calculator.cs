@@ -116,6 +116,8 @@ namespace MultiDesktop
                 }
             }
 
+            if (operandStack.Count != 1)
+                throw new ArgumentException("Invalid Input");
             ans = Convert.ToDouble(operandStack.Pop());
             if (!variableName.Equals(""))
                 Variables.store(variableName, ans);
@@ -392,8 +394,8 @@ namespace MultiDesktop
                     i++;
                 }
 
-                //Inserts "*" if a number or math function/variable is found after a ")". E.g: (4+2)a --> (4+2) * a
-                else if (tokens[i].Equals(")") && (Char.IsLetterOrDigit(tokens[i + 1][0])))
+                //Inserts "*" if a number, negative sign, or math function/variable is found after a ")". E.g: (4+2)a --> (4+2) * a
+                else if (tokens[i].Equals(")") && (Char.IsLetterOrDigit(tokens[i + 1][0]) || tokens[i+1].Equals(NEGATIVE)))
                 {
                     tokens.Insert(i + 1, "*");
                     i++;
