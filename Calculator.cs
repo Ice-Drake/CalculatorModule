@@ -119,6 +119,7 @@ namespace MultiDesktop
             if (operandStack.Count != 1)
                 throw new ArgumentException("Invalid Input");
             ans = Convert.ToDouble(operandStack.Pop());
+
             if (!variableName.Equals(""))
                 Variables.store(variableName, ans);
             return ans;
@@ -231,62 +232,88 @@ namespace MultiDesktop
         private double performFunction(double operand, string function)
         {
             double convertedOperand = operand;
-            if (degrees) //Convert to radians for calculator to calculate
+            if (degrees && !function[0].Equals('a')) //Convert to radians for calculator to calculate if this function is not an inverse function
                 convertedOperand = operand * Math.PI / 180.0;
-
+            double result = 0;
             switch (function)
             {
                 case SIN:
-                    return Math.Sin(convertedOperand);
+                    result = Math.Sin(convertedOperand);
+                    break;
                 case COS:
-                    return Math.Cos(convertedOperand);
+                    result = Math.Cos(convertedOperand);
+                    break;
                 case TAN:
-                    return Math.Tan(convertedOperand);
+                    result = Math.Tan(convertedOperand);
+                    break;
                 case CSC:
-                    return 1 / Math.Sin(convertedOperand);
+                    result = 1 / Math.Sin(convertedOperand);
+                    break;
                 case SEC:
-                    return 1 / Math.Cos(convertedOperand);
+                    result = 1 / Math.Cos(convertedOperand);
+                    break;
                 case COT:
-                    return 1 / Math.Tan(convertedOperand);
+                    result = 1 / Math.Tan(convertedOperand);
+                    break;
                 case FACTORIAL:
                     //Checks if the operand is both positive and is an integer
                     if (operand == (int)operand && operand >= 0)
-                        return factorial((int)operand);
+                        result = factorial((int)operand);
                     else
                         throw new ArgumentException("Factorial Error: Not an integer or not positive");
+                    break;
                 case ASIN:
-                    return Math.Asin(convertedOperand);
+                    result = Math.Asin(convertedOperand);
+                    break;
                 case ACOS:
-                    return Math.Acos(convertedOperand);
+                    result = Math.Acos(convertedOperand);
+                    break;
                 case ATAN:
-                    return Math.Atan(convertedOperand);
+                    result = Math.Atan(convertedOperand);
+                    break;
                 case ACSC:
-                    return Math.Atan(Math.Sign(convertedOperand) / Math.Sqrt(convertedOperand * convertedOperand - 1));
+                    result = Math.Atan(Math.Sign(convertedOperand) / Math.Sqrt(convertedOperand * convertedOperand - 1));
+                    break;
                 case ASEC:
-                    return 2 * Math.Atan(1) - Math.Atan(Math.Sign(convertedOperand) / Math.Sqrt(convertedOperand * convertedOperand - 1));
+                    result = 2 * Math.Atan(1) - Math.Atan(Math.Sign(convertedOperand) / Math.Sqrt(convertedOperand * convertedOperand - 1));
+                    break;
                 case ACOT:
-                    return 2 * Math.Atan(1) - Math.Atan(convertedOperand);
+                    result = 2 * Math.Atan(1) - Math.Atan(convertedOperand);
+                    break;
                 case SINH:
-                    return Math.Sinh(convertedOperand);
+                    result = Math.Sinh(convertedOperand);
+                    break;
                 case COSH:
-                    return Math.Cosh(convertedOperand);
+                    result = Math.Cosh(convertedOperand);
+                    break;
                 case TANH:
-                    return Math.Tanh(convertedOperand);
+                    result = Math.Tanh(convertedOperand);
+                    break;
                 case CSCH:
-                    return 2 / (Math.Pow(Math.E, convertedOperand) - Math.Pow(Math.E, -convertedOperand));
+                    result = 2 / (Math.Pow(Math.E, convertedOperand) - Math.Pow(Math.E, -convertedOperand));
+                    break;
                 case SECH:
-                    return 2 / (Math.Pow(Math.E, convertedOperand) + Math.Pow(-Math.E, convertedOperand));
+                    result = 2 / (Math.Pow(Math.E, convertedOperand) + Math.Pow(-Math.E, convertedOperand));
+                    break;
                 case COTH:
-                    return (Math.Pow(Math.E, convertedOperand) + Math.Pow(Math.E, -convertedOperand)) / (Math.Pow(Math.E, convertedOperand) - Math.Pow(Math.E, -convertedOperand));
+                    result = (Math.Pow(Math.E, convertedOperand) + Math.Pow(Math.E, -convertedOperand)) / (Math.Pow(Math.E, convertedOperand) - Math.Pow(Math.E, -convertedOperand));
+                    break;
                 case LOG:
-                    return Math.Log10(operand);
+                    result = Math.Log10(operand);
+                    break;
                 case LN:
-                    return Math.Log(operand, Math.E);
+                    result = Math.Log(operand, Math.E);
+                    break;
                 case SQRT:
-                    return Math.Sqrt(operand);
-                default: //Negative sign
-                    return 0.0 - operand;
+                    result = Math.Sqrt(operand);
+                    break;
+                case NEGATIVE:
+                    result = 0.0 - operand;
+                    break;
             }
+            if (degrees && function[0].Equals('a')) //If this is an inverse function, convert the result to degrees before returning
+                result = result * 180.0 / Math.PI;
+            return result;
         }
 
         private int factorial(int n)
