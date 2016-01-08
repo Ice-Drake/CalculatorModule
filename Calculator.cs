@@ -119,7 +119,7 @@ namespace MultiDesktop
             if (operandStack.Count != 1)
                 throw new ArgumentException("Invalid Input");
             ans = Convert.ToDouble(operandStack.Pop());
-
+            ans = Math.Round(ans, 11); //Temporary fix
             if (!variableName.Equals(""))
                 Variables.store(variableName, ans);
             return ans;
@@ -255,13 +255,6 @@ namespace MultiDesktop
                 case COT:
                     result = 1 / Math.Tan(convertedOperand);
                     break;
-                case FACTORIAL:
-                    //Checks if the operand is both positive and is an integer
-                    if (operand == (int)operand && operand >= 0)
-                        result = factorial((int)operand);
-                    else
-                        throw new ArgumentException("Factorial Error: Not an integer or not positive");
-                    break;
                 case ASIN:
                     result = Math.Asin(convertedOperand);
                     break;
@@ -272,13 +265,13 @@ namespace MultiDesktop
                     result = Math.Atan(convertedOperand);
                     break;
                 case ACSC:
-                    result = Math.Atan(Math.Sign(convertedOperand) / Math.Sqrt(convertedOperand * convertedOperand - 1));
+                    result = Math.Asin(1 / convertedOperand);
                     break;
                 case ASEC:
-                    result = 2 * Math.Atan(1) - Math.Atan(Math.Sign(convertedOperand) / Math.Sqrt(convertedOperand * convertedOperand - 1));
+                    result = Math.Acos(1 / convertedOperand);
                     break;
                 case ACOT:
-                    result = 2 * Math.Atan(1) - Math.Atan(convertedOperand);
+                    result = Math.PI / 2 - Math.Atan(convertedOperand);
                     break;
                 case SINH:
                     result = Math.Sinh(convertedOperand);
@@ -290,19 +283,27 @@ namespace MultiDesktop
                     result = Math.Tanh(convertedOperand);
                     break;
                 case CSCH:
-                    result = 2 / (Math.Pow(Math.E, convertedOperand) - Math.Pow(Math.E, -convertedOperand));
+                    result = 1 / Math.Sinh(convertedOperand);
                     break;
                 case SECH:
-                    result = 2 / (Math.Pow(Math.E, convertedOperand) + Math.Pow(-Math.E, convertedOperand));
+                    result = 1 / Math.Cosh(convertedOperand);
                     break;
                 case COTH:
-                    result = (Math.Pow(Math.E, convertedOperand) + Math.Pow(Math.E, -convertedOperand)) / (Math.Pow(Math.E, convertedOperand) - Math.Pow(Math.E, -convertedOperand));
+                    result = 1 / Math.Tanh(convertedOperand);
                     break;
+                //The functions below are NOT trig functions, so they use operand instead of convertedOperand
                 case LOG:
                     result = Math.Log10(operand);
                     break;
                 case LN:
                     result = Math.Log(operand, Math.E);
+                    break;
+                case FACTORIAL:
+                    //Checks if the operand is both positive and is an integer
+                    if (operand == (int)operand && operand >= 0)
+                        result = factorial((int)operand);
+                    else
+                        throw new ArgumentException("Factorial Error: Not an integer or not positive");
                     break;
                 case SQRT:
                     result = Math.Sqrt(operand);

@@ -100,7 +100,6 @@
     <Compile Include="PasswordDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Postfixer.cs" />
     <Compile Include="PredecessorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
