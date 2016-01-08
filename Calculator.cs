@@ -20,7 +20,7 @@ namespace MultiDesktop
             degrees = false;
         }
 
-        private const string symbols = "+−/*%^"; //The subtraction symbol is character U+2212 on the Arial Character Map.
+        private const string operators = "+−/*%^"; //The subtraction symbol is character U+2212 on the Arial Character Map.
         private const string SIN = "sin";
         private const string COS = "cos";
         private const string TAN = "tan";
@@ -46,11 +46,10 @@ namespace MultiDesktop
         private const string EQUAL = "=";
         private const string NEGATIVE = "-"; //This is a hyphen
 
-        private const string precedence2 = "+−";
-        private const string precedence3 = "*/%";
-        private const string precedence4 = "^!sincostancotseccscloglnarcsinarccosarctanarccotarcsecarccscsinhcoshtanhcothsechcsch-√"; //So ugly. Will think of better way later.
-
-        private readonly string[] tokenList = { SIN, COS, TAN, COT, SEC, CSC, LOG, LN, ASIN, ACOS, ATAN, ACOT, ASEC, ACSC, SINH, COSH, TANH, COTH, SECH, CSCH, NEGATIVE };
+        private readonly List<string> lowPrecedence = new List<string>(new string[]{ "+", "−" });
+        private readonly List<string> midPrecedence = new List<string>(new string[]{ "*", "/", "%" });
+        private readonly List<string> highPrecedence = new List<string>(new string[]{ "^", FACTORIAL, SIN, COS, TAN, COT, SEC, CSC, LOG, LN, ASIN, ACOS, ATAN, ACOT, ASEC, ACSC, SINH, COSH, TANH, COTH, SECH, CSCH, NEGATIVE, SQRT });
+        private readonly List<string> tokenList = new List<string>(new string[]{ SIN, COS, TAN, COT, SEC, CSC, LOG, LN, ASIN, ACOS, ATAN, ACOT, ASEC, ACSC, SINH, COSH, TANH, COTH, SECH, CSCH, NEGATIVE });
 
         public void setRadians()
         {
@@ -100,7 +99,7 @@ namespace MultiDesktop
                 {
                     operandStack.Push(ans);
                 }
-                else if (symbols.Contains(postFixed[i])) //If incoming token is an arithmetic symbol
+                else if (operators.Contains(postFixed[i])) //If incoming token is an arithmetic symbol
                 {
                     if (operandStack.Count < 2)
                         throw new ArgumentException("Invalid Input");
@@ -133,7 +132,7 @@ namespace MultiDesktop
         public bool IsCorrectSyntax(List<string> tokens)
         {
             //Expression cannot start or end with an operator
-            if (symbols.Contains(tokens[0]) || symbols.Contains(tokens[tokens.Count - 1]))
+            if (operators.Contains(tokens[0]) || operators.Contains(tokens[tokens.Count - 1]))
                 return false;
 
             for (int i = 0; i < tokens.Count - 1; i++)
@@ -146,7 +145,7 @@ namespace MultiDesktop
                     return false;
             }
 
-            //For loop doesn't check last element
+            //For loop above doesn't check last element
             if (tokens[tokens.Count - 1].Contains(".."))
                 return false;
 
@@ -172,12 +171,12 @@ namespace MultiDesktop
          */
         private bool IsValidVariableName(string input)
         {
-            if (input.Equals("") || input.Contains(" ") || input.Contains("(") || input.Contains(NEGATIVE) || input.Contains(")") || input.Contains("π") || IsFunction(input) || input.Equals("e") || Char.IsDigit(input[0]) || input.Equals("ans"))
+            if (input.Equals("") || input.Contains(" ") || input.Contains("(") || input.Contains(NEGATIVE) || input.Contains(")") || input.Contains("π") || tokenList.Contains(input) || input.Equals("e") || Char.IsDigit(input[0]) || input.Equals("ans"))
                 return false;
 
-            for (int i = 0; i < symbols.Length; i++)
+            for (int i = 0; i < operators.Length; i++)
             {
-                if (input.Contains(symbols[i].ToString()))
+                if (input.Contains(operators[i].ToString()))
                     return false;
             }
             return true;
@@ -335,20 +334,20 @@ namespace MultiDesktop
         {
             int thisPrecedence;
             int topPrecedence;
-            if (precedence4.Contains(operator1))
+            if (highPrecedence.Contains(operator1))
                 thisPrecedence = 4;
-            else if (precedence3.Contains(operator1))
+            else if (midPrecedence.Contains(operator1))
                 thisPrecedence = 3;
-            else if (precedence2.Contains(operator1))
+            else if (lowPrecedence.Contains(operator1))
                 thisPrecedence = 2;
             else
                 thisPrecedence = 1;
 
-            if (precedence4.Contains(operator2))
+            if (highPrecedence.Contains(operator2))
                 topPrecedence = 4;
-            else if (precedence3.Contains(operator2))
+            else if (midPrecedence.Contains(operator2))
                 topPrecedence = 3;
-            else if (precedence2.Contains(operator2))
+            else if (lowPrecedence.Contains(operator2))
                 topPrecedence = 2;
             else
                 topPrecedence = 1;
@@ -458,7 +457,7 @@ namespace MultiDesktop
                     postFix.Add(input);
                 }
                 //If a function, push to top of operator stack
-                else if (IsFunction(input))
+                else if (tokenList.Contains(input))
                 {
                     operators.Push(input);
                 }
@@ -479,7 +478,7 @@ namespace MultiDesktop
                     throw new ArgumentException("Invalid input");
                 }
                 //If the first operator, an operator of precedence 4, or a left parenthesis, push to top of operator stack
-                else if (operators.Count == 0 || input.Equals("(") || precedence4.Contains(input))
+                else if (operators.Count == 0 || input.Equals("(") || highPrecedence.Contains(input))
                 {
                     operators.Push(input);
                 }
@@ -519,22 +518,6 @@ namespace MultiDesktop
                 postFix.Add(operators.Pop()); //Pop all remaining operators
 
             return postFix;
-        }
-
-        /*
-       * Checks if the input is a mathematical function
-       * <param> input the input string
-       * <return> true if this input is a math function, false otherwise
-       */
-        private bool IsFunction(string input)
-        {
-            //Compares the input string with each token in the tokenlist to see if it finds a match
-            foreach (string token in tokenList)
-            {
-                if (input.ToLower().Equals(token))
-                    return true;
-            }
-            return false;
         }
     }
 }
