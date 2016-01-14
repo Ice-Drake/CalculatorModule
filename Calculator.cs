@@ -42,14 +42,22 @@ namespace MultiDesktop
         private const string CSCH = "csch";
         private const string SECH = "sech";
         private const string COTH = "coth";
+        private const string ASINH = "arcsinh";
+        private const string ACOSH = "arccosh";
+        private const string ATANH = "arctanh";
+        private const string ACSCH = "arccsch";
+        private const string ASECH = "arcsech";
+        private const string ACOTH = "arccoth";
         private const string SQRT = "√";
         private const string EQUAL = "=";
         private const string NEGATIVE = "-"; //This is a hyphen
 
+        private const int DECIMALPLACES = 9; //The same number of decimal places shown on an actual scientific calculator
+
         private readonly List<string> lowPrecedence = new List<string>(new string[]{ "+", "−" });
         private readonly List<string> midPrecedence = new List<string>(new string[]{ "*", "/", "%" });
-        private readonly List<string> highPrecedence = new List<string>(new string[]{ "^", FACTORIAL, SIN, COS, TAN, COT, SEC, CSC, LOG, LN, ASIN, ACOS, ATAN, ACOT, ASEC, ACSC, SINH, COSH, TANH, COTH, SECH, CSCH, NEGATIVE, SQRT });
-        private readonly List<string> tokenList = new List<string>(new string[]{ SIN, COS, TAN, COT, SEC, CSC, LOG, LN, ASIN, ACOS, ATAN, ACOT, ASEC, ACSC, SINH, COSH, TANH, COTH, SECH, CSCH, NEGATIVE });
+        private readonly List<string> highPrecedence = new List<string>(new string[]{ "^", FACTORIAL, SIN, COS, TAN, COT, SEC, CSC, LOG, LN, ASIN, ACOS, ATAN, ACOT, ASEC, ACSC, SINH, COSH, TANH, COTH, SECH, CSCH, ASINH, ACOSH, ATANH, ACOTH, ASECH, ACSCH, NEGATIVE, SQRT });
+        private readonly List<string> tokenList = new List<string>(new string[]{ SIN, COS, TAN, COT, SEC, CSC, LOG, LN, ASIN, ACOS, ATAN, ACOT, ASEC, ACSC, SINH, COSH, TANH, COTH, SECH, CSCH, ASINH, ACOSH, ATANH, ACOTH, ASECH, ACSCH, NEGATIVE });
 
         public void setRadians()
         {
@@ -118,7 +126,7 @@ namespace MultiDesktop
             if (operandStack.Count != 1)
                 throw new ArgumentException("Invalid Input");
             ans = Convert.ToDouble(operandStack.Pop());
-            ans = Math.Round(ans, 11); //Temporary fix
+            ans = Math.Round(ans, DECIMALPLACES); //Round the number to a certain number of decimal places if there are too many digits
             if (!variableName.Equals(""))
                 Variables.store(variableName, ans);
             return ans;
@@ -289,6 +297,27 @@ namespace MultiDesktop
                     break;
                 case COTH:
                     result = 1 / Math.Tanh(convertedOperand);
+                    break;
+                case ASINH:
+                    result = Math.Log(convertedOperand + Math.Sqrt(Math.Pow(convertedOperand, 2) + 1), Math.E);
+                    break;
+                case ACOSH:
+                    result = Math.Log(convertedOperand + Math.Sqrt(Math.Pow(convertedOperand, 2) - 1), Math.E);
+                    break;
+                case ATANH:
+                    result = Math.Log((1 + convertedOperand) / (1 - convertedOperand) , Math.E) / 2.0;
+                    break;
+                case ACSCH:
+                    if (convertedOperand > 0)
+                        result = Math.Log((1 + Math.Sqrt(Math.Pow(convertedOperand, 2) + 1)) / convertedOperand, Math.E);
+                    else
+                        result = Math.Log((1 - Math.Sqrt(Math.Pow(convertedOperand, 2) + 1)) / convertedOperand, Math.E);
+                    break;
+                case ASECH:
+                    result = Math.Log((1 / convertedOperand) + Math.Sqrt(Math.Pow(1 / convertedOperand, 2) - 1), Math.E);
+                    break;
+                case ACOTH:
+                    result = Math.Log((convertedOperand + 1) / (convertedOperand - 1), Math.E) / 2.0;
                     break;
                 //The functions below are NOT trig functions, so they use operand instead of convertedOperand
                 case LOG:
