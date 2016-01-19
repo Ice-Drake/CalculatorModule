@@ -142,31 +142,31 @@ namespace MultiDesktop
                     case 0:
                         return value;
                     case 1:
-                        return value;
+                        return value * 3.5315e-5;
                     case 2:
-                        return value;
+                        return value * 0.0610237;
                     case 3:
-                        return value;
+                        return value * 1e-6;
                     case 4:
-                        return value;
+                        return value * 1.30795e-6;
                     case 5:
-                        return value;
+                        return value * 0.0351951;
                     case 6:
-                        return value;
+                        return value * 0.033814;
                     case 7:
-                        return value;
+                        return value * 0.000219969;
                     case 8:
-                        return value;
+                        return value * 0.000264172;
                     case 9:
-                        return value;
+                        return value * 0.001;
                     case 10:
-                        return value;
+                        return value * 0.00175975;
                     case 11:
-                        return value;
+                        return value * 0.00211338;
                     case 12:
-                        return value;
+                        return value * 0.000879877;
                     case 13:
-                        return value;
+                        return value * 0.00105669;
                     default: // Invalid unit
                         return 0;
                 }
@@ -176,33 +176,33 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 28316.8;
                     case 1:
                         return value;
                     case 2:
-                        return value;
+                        return value * 1728;
                     case 3:
-                        return value;
+                        return value * 0.0283168;
                     case 4:
-                        return value;
+                        return value * 0.037037;
                     case 5:
-                        return value;
+                        return value * 996.614;
                     case 6:
-                        return value;
+                        return value * 957.506;
                     case 7:
-                        return value;
+                        return value * 6.22884;
                     case 8:
-                        return value;
+                        return value * 7.48052;
                     case 9:
-                        return value;
+                        return value * 28.3168;
                     case 10:
-                        return value;
+                        return value * 49.8307;
                     case 11:
-                        return value;
+                        return value * 59.8442;
                     case 12:
-                        return value;
+                        return value * 24.9153;
                     case 13:
-                        return value;
+                        return value * 29.9221;
                     default: // Invalid unit
                         return 0;
                 }
@@ -212,33 +212,33 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 16.3871;
                     case 1:
-                        return value;
+                        return value * 0.000578704;
                     case 2:
                         return value;
                     case 3:
-                        return value;
+                        return value * 1.6387e-5;
                     case 4:
-                        return value;
+                        return value * 2.1433e-5;
                     case 5:
-                        return value;
+                        return value * 0.576744;
                     case 6:
-                        return value;
+                        return value * 0.554113;
                     case 7:
-                        return value;
+                        return value * 0.00360465;
                     case 8:
-                        return value;
+                        return value * 0.004329;
                     case 9:
-                        return value;
+                        return value * 0.0163871;
                     case 10:
-                        return value;
+                        return value * 0.0288372;
                     case 11:
-                        return value;
+                        return value * 0.034632;
                     case 12:
-                        return value;
+                        return value * 0.0144186;
                     case 13:
-                        return value;
+                        return value * 0.017316;
                     default: // Invalid unit
                         return 0;
                 }
@@ -248,33 +248,33 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 1e+6;
                     case 1:
-                        return value;
+                        return value * 35.3147;
                     case 2:
-                        return value;
+                        return value * 61023.7;
                     case 3:
                         return value;
                     case 4:
-                        return value;
+                        return value * 1.30795;
                     case 5:
-                        return value;
+                        return value * 35195.1;
                     case 6:
-                        return value;
+                        return value * 33814;
                     case 7:
-                        return value;
+                        return value * 219.969;
                     case 8:
-                        return value;
+                        return value * 264.172;
                     case 9:
-                        return value;
+                        return value * 1000;
                     case 10:
-                        return value;
+                        return value * 1759.75;
                     case 11:
-                        return value;
+                        return value * 2113.38;
                     case 12:
-                        return value;
+                        return value * 879.877;
                     case 13:
-                        return value;
+                        return value * 1056.69;
                     default: // Invalid unit
                         return 0;
                 }
@@ -284,33 +284,33 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 764555;
                     case 1:
-                        return value;
+                        return value * 27;
                     case 2:
-                        return value;
+                        return value * 46656;
                     case 3:
-                        return value;
+                        return value * 0.764555;
                     case 4:
                         return value;
                     case 5:
-                        return value;
+                        return value * 26908.6;
                     case 6:
-                        return value;
+                        return value * 25852.7;
                     case 7:
-                        return value;
+                        return value * 168.179;
                     case 8:
-                        return value;
+                        return value * 201.974;
                     case 9:
-                        return value;
+                        return value * 764.555;
                     case 10:
-                        return value;
+                        return value * 1345.43;
                     case 11:
-                        return value;
+                        return value * 1615.79;
                     case 12:
-                        return value;
+                        return value * 672.714;
                     case 13:
-                        return value;
+                        return value * 807.896;
                     default: // Invalid unit
                         return 0;
                 }
@@ -320,33 +320,33 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 28.4131;
                     case 1:
-                        return value;
+                        return value * 0.0010034;
                     case 2:
-                        return value;
+                        return value * 1.73387;
                     case 3:
-                        return value;
+                        return value * 2.8413e-5;
                     case 4:
-                        return value;
+                        return value * 3.7163e-5;
                     case 5:
                         return value;
                     case 6:
-                        return value;
+                        return value * 0.96076;
                     case 7:
-                        return value;
+                        return value * 0.00625;
                     case 8:
-                        return value;
+                        return value * 0.00750594;
                     case 9:
-                        return value;
+                        return value * 0.0284131;
                     case 10:
-                        return value;
+                        return value * 0.05;
                     case 11:
-                        return value;
+                        return value * 0.0600475;
                     case 12:
-                        return value;
+                        return value * 0.025;
                     case 13:
-                        return value;
+                        return value * 0.0300237;
                     default: // Invalid unit
                         return 0;
                 }
@@ -356,33 +356,33 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 29.5735;
                     case 1:
-                        return value;
+                        return value * 0.00104438;
                     case 2:
-                        return value;
+                        return value * 1.80469;
                     case 3:
-                        return value;
+                        return value * 2.9574e-5;
                     case 4:
-                        return value;
+                        return value * 3.8681e-5;
                     case 5:
-                        return value;
+                        return value * 1.04084;
                     case 6:
                         return value;
                     case 7:
-                        return value;
+                        return value * 0.00650527;
                     case 8:
-                        return value;
+                        return value * 0.0078125;
                     case 9:
-                        return value;
+                        return value * 0.0295735;
                     case 10:
-                        return value;
+                        return value * 0.0520421;
                     case 11:
-                        return value;
+                        return value * 0.0625;
                     case 12:
-                        return value;
+                        return value * 0.0260211;
                     case 13:
-                        return value;
+                        return value * 0.03125;
                     default: // Invalid unit
                         return 0;
                 }
@@ -392,33 +392,33 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 4546.09;
                     case 1:
-                        return value;
+                        return value * 0.160544;
                     case 2:
-                        return value;
+                        return value * 277.419;
                     case 3:
-                        return value;
+                        return value * 0.00454609;
                     case 4:
-                        return value;
+                        return value * 0.00594606;
                     case 5:
-                        return value;
+                        return value * 160;
                     case 6:
-                        return value;
+                        return value * 153.722;
                     case 7:
                         return value;
                     case 8:
-                        return value;
+                        return value * 1.20095;
                     case 9:
-                        return value;
+                        return value * 4.54609;
                     case 10:
-                        return value;
+                        return value * 8;
                     case 11:
-                        return value;
+                        return value * 9.6076;
                     case 12:
-                        return value;
+                        return value * 4;
                     case 13:
-                        return value;
+                        return value * 4.8038;
                     default: // Invalid unit
                         return 0;
                 }
@@ -428,33 +428,33 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 3785.41;
                     case 1:
-                        return value;
+                        return value * 0.133681;
                     case 2:
-                        return value;
+                        return value * 231;
                     case 3:
-                        return value;
+                        return value * 0.00378541;
                     case 4:
-                        return value;
+                        return value * 0.00495113;
                     case 5:
-                        return value;
+                        return value * 133.228;
                     case 6:
-                        return value;
+                        return value * 128;
                     case 7:
-                        return value;
+                        return value * 0.832674;
                     case 8:
                         return value;
                     case 9:
-                        return value;
+                        return value * 3.78541;
                     case 10:
-                        return value;
+                        return value * 6.66139;
                     case 11:
-                        return value;
+                        return value * 8;
                     case 12:
-                        return value;
+                        return value * 3.3307;
                     case 13:
-                        return value;
+                        return value * 4;
                     default: // Invalid unit
                         return 0;
                 }
@@ -464,33 +464,33 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 1000;
                     case 1:
-                        return value;
+                        return value * 0.0353147;
                     case 2:
-                        return value;
+                        return value * 61.0237;
                     case 3:
-                        return value;
+                        return value * 0.001;
                     case 4:
-                        return value;
+                        return value * 0.00130795;
                     case 5:
-                        return value;
+                        return value * 35.1951;
                     case 6:
-                        return value;
+                        return value * 33.814;
                     case 7:
-                        return value;
+                        return value * 0.219969;
                     case 8:
-                        return value;
+                        return value * 0.264172;
                     case 9:
                         return value;
                     case 10:
-                        return value;
+                        return value * 1.75975;
                     case 11:
-                        return value;
+                        return value * 2.11338;
                     case 12:
-                        return value;
+                        return value * 0.879877;
                     case 13:
-                        return value;
+                        return value * 1.05669;
                     default: // Invalid unit
                         return 0;
                 }
@@ -500,33 +500,33 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 568.261;
                     case 1:
-                        return value;
+                        return value * 0.020068;
                     case 2:
-                        return value;
+                        return value * 34.6774;
                     case 3:
-                        return value;
+                        return value * 0.000568261;
                     case 4:
-                        return value;
+                        return value * 0.000743258;
                     case 5:
-                        return value;
+                        return value * 20;
                     case 6:
-                        return value;
+                        return value * 19.2152;
                     case 7:
-                        return value;
+                        return value * 0.125;
                     case 8:
-                        return value;
+                        return value * 0.150119;
                     case 9:
-                        return value;
+                        return value * 0.568261;
                     case 10:
                         return value;
                     case 11:
-                        return value;
+                        return value * 1.20095;
                     case 12:
-                        return value;
+                        return value * 0.5;
                     case 13:
-                        return value;
+                        return value * 0.600475;
                     default: // Invalid unit
                         return 0;
                 }
@@ -536,33 +536,33 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 473.176;
                     case 1:
-                        return value;
+                        return value * 0.0167101;
                     case 2:
-                        return value;
+                        return value * 28.875;
                     case 3:
-                        return value;
+                        return value * 0.000473176;
                     case 4:
-                        return value;
+                        return value * 0.000618891;
                     case 5:
-                        return value;
+                        return value * 16.6535;
                     case 6:
-                        return value;
+                        return value * 16;
                     case 7:
-                        return value;
+                        return value * 0.104084;
                     case 8:
-                        return value;
+                        return value * 0.125;
                     case 9:
-                        return value;
+                        return value * 0.473176;
                     case 10:
-                        return value;
+                        return value * 0.832674;
                     case 11:
                         return value;
                     case 12:
-                        return value;
+                        return value * 0.416337;
                     case 13:
-                        return value;
+                        return value * 0.5;
                     default: // Invalid unit
                         return 0;
                 }
@@ -572,33 +572,33 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 1136.52;
                     case 1:
-                        return value;
+                        return value * 0.0401359;
                     case 2:
-                        return value;
+                        return value * 69.3549;
                     case 3:
-                        return value;
+                        return value * 0.00113652;
                     case 4:
-                        return value;
+                        return value * 0.00148652;
                     case 5:
-                        return value;
+                        return value * 40;
                     case 6:
-                        return value;
+                        return value * 38.4304;
                     case 7:
-                        return value;
+                        return value * 0.25;
                     case 8:
-                        return value;
+                        return value * 0.300237;
                     case 9:
-                        return value;
+                        return value * 1.13652;
                     case 10:
-                        return value;
+                        return value * 2;
                     case 11:
-                        return value;
+                        return value * 2.4019;
                     case 12:
                         return value;
                     case 13:
-                        return value;
+                        return value * 1.20095;
                     default: // Invalid unit
                         return 0;
                 }
@@ -608,31 +608,31 @@ namespace MultiDesktop
                 switch (to)
                 {
                     case 0:
-                        return value;
+                        return value * 946.353;
                     case 1:
-                        return value;
+                        return value * 0.0334201;
                     case 2:
-                        return value;
+                        return value * 57.75;
                     case 3:
-                        return value;
+                        return value * 0.000946353;
                     case 4:
-                        return value;
+                        return value * 0.00123778;
                     case 5:
-                        return value;
+                        return value * 33.307;
                     case 6:
-                        return value;
+                        return value * 32;
                     case 7:
-                        return value;
+                        return value * 0.208169;
                     case 8:
-                        return value;
+                        return value * 0.25;
                     case 9:
-                        return value;
+                        return value * 0.946353;
                     case 10:
-                        return value;
+                        return value * 1.66535;
                     case 11:
-                        return value;
+                        return value * 2;
                     case 12:
-                        return value;
+                        return value * 0.832674;
                     case 13:
                         return value;
                     default: // Invalid unit
