@@ -281,43 +281,43 @@ namespace MultiDesktop
                     result = Math.PI / 2 - Math.Atan(convertedOperand);
                     break;
                 case SINH:
-                    result = Math.Sinh(convertedOperand);
+                    result = Math.Sinh(operand);
                     break;
                 case COSH:
-                    result = Math.Cosh(convertedOperand);
+                    result = Math.Cosh(operand);
                     break;
                 case TANH:
-                    result = Math.Tanh(convertedOperand);
+                    result = Math.Tanh(operand);
                     break;
                 case CSCH:
-                    result = 1 / Math.Sinh(convertedOperand);
+                    result = 1 / Math.Sinh(operand);
                     break;
                 case SECH:
-                    result = 1 / Math.Cosh(convertedOperand);
+                    result = 1 / Math.Cosh(operand);
                     break;
                 case COTH:
-                    result = 1 / Math.Tanh(convertedOperand);
+                    result = 1 / Math.Tanh(operand);
                     break;
                 case ASINH:
-                    result = Math.Log(convertedOperand + Math.Sqrt(Math.Pow(convertedOperand, 2) + 1), Math.E);
+                    result = Math.Log(operand + Math.Sqrt(Math.Pow(operand, 2) + 1), Math.E);
                     break;
                 case ACOSH:
-                    result = Math.Log(convertedOperand + Math.Sqrt(Math.Pow(convertedOperand, 2) - 1), Math.E);
+                    result = Math.Log(operand + Math.Sqrt(Math.Pow(operand, 2) - 1), Math.E);
                     break;
                 case ATANH:
-                    result = Math.Log((1 + convertedOperand) / (1 - convertedOperand) , Math.E) / 2.0;
+                    result = Math.Log((1 + operand) / (1 - operand) , Math.E) / 2.0;
                     break;
                 case ACSCH:
-                    if (convertedOperand > 0)
-                        result = Math.Log((1 + Math.Sqrt(Math.Pow(convertedOperand, 2) + 1)) / convertedOperand, Math.E);
+                    if (operand > 0)
+                        result = Math.Log((1 + Math.Sqrt(Math.Pow(operand, 2) + 1)) / operand, Math.E);
                     else
-                        result = Math.Log((1 - Math.Sqrt(Math.Pow(convertedOperand, 2) + 1)) / convertedOperand, Math.E);
+                        result = Math.Log((1 - Math.Sqrt(Math.Pow(operand, 2) + 1)) / operand, Math.E);
                     break;
                 case ASECH:
-                    result = Math.Log((1 / convertedOperand) + Math.Sqrt(Math.Pow(1 / convertedOperand, 2) - 1), Math.E);
+                    result = Math.Log((1 / operand) + Math.Sqrt(Math.Pow(1 / operand, 2) - 1), Math.E);
                     break;
                 case ACOTH:
-                    result = Math.Log((convertedOperand + 1) / (convertedOperand - 1), Math.E) / 2.0;
+                    result = Math.Log((operand + 1) / (operand - 1), Math.E) / 2.0;
                     break;
                 //The functions below are NOT trig functions, so they use operand instead of convertedOperand
                 case LOG:
@@ -340,7 +340,7 @@ namespace MultiDesktop
                     result = 0.0 - operand;
                     break;
             }
-            if (degrees && function[0].Equals('a')) //If this is an inverse function, convert the result to degrees before returning
+            if (degrees && function[0].Equals('a') && !function.Contains("h")) //If this is an inverse function and not a hyperbolic function, convert the result to degrees before returning
                 result = result * 180.0 / Math.PI;
             return result;
         }
