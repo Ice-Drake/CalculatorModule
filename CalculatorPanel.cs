@@ -1804,6 +1804,10 @@ namespace MultiDesktop
                 consoleBox.Items.Insert(1, "\t\t\t\t\t\t\t\t       " + ans);
                 inputBox.Text = "";
             }
+            catch (ArithmeticException exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
             catch (ArgumentException exception)
             {
                 MessageBox.Show(exception.Message);
@@ -1956,7 +1960,7 @@ namespace MultiDesktop
             int pos = inputBox.SelectionStart;
             if (arcCheckBox.Checked)
             {
-                inputBox.Text = inputBox.Text.Insert(pos, "arcsinh ");
+                inputBox.Text = inputBox.Text.Insert(pos, "arsinh ");
                 inputBox.SelectionStart = pos + 8;
             }
             else
@@ -1973,7 +1977,7 @@ namespace MultiDesktop
             int pos = inputBox.SelectionStart;
             if (arcCheckBox.Checked)
             {
-                inputBox.Text = inputBox.Text.Insert(pos, "arccosh ");
+                inputBox.Text = inputBox.Text.Insert(pos, "arcosh ");
                 inputBox.SelectionStart = pos + 8;
             }
             else
@@ -1990,7 +1994,7 @@ namespace MultiDesktop
             int pos = inputBox.SelectionStart;
             if (arcCheckBox.Checked)
             {
-                inputBox.Text = inputBox.Text.Insert(pos, "arctanh ");
+                inputBox.Text = inputBox.Text.Insert(pos, "artanh ");
                 inputBox.SelectionStart = pos + 8;
             }
             else
@@ -2007,7 +2011,7 @@ namespace MultiDesktop
             int pos = inputBox.SelectionStart;
             if (arcCheckBox.Checked)
             {
-                inputBox.Text = inputBox.Text.Insert(pos, "arccsch ");
+                inputBox.Text = inputBox.Text.Insert(pos, "arcsch ");
                 inputBox.SelectionStart = pos + 8;
             }
             else
@@ -2024,7 +2028,7 @@ namespace MultiDesktop
             int pos = inputBox.SelectionStart;
             if (arcCheckBox.Checked)
             {
-                inputBox.Text = inputBox.Text.Insert(pos, "arcsech ");
+                inputBox.Text = inputBox.Text.Insert(pos, "arsech ");
                 inputBox.SelectionStart = pos + 8;
             }
             else
@@ -2041,7 +2045,7 @@ namespace MultiDesktop
             int pos = inputBox.SelectionStart;
             if (arcCheckBox.Checked)
             {
-                inputBox.Text = inputBox.Text.Insert(pos, "arccoth ");
+                inputBox.Text = inputBox.Text.Insert(pos, "arcoth ");
                 inputBox.SelectionStart = pos + 8;
             }
             else

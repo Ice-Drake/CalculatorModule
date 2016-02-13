@@ -78,12 +78,16 @@
     <Compile Include="AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="BasicOperationExpression.cs" />
     <Compile Include="Calculator.cs" />
     <Compile Include="Calendar.cs" />
     <Compile Include="CalculatorPanel.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Converter.cs" />
+    <Compile Include="Expression.cs" />
+    <Compile Include="FactorialExpression.cs" />
+    <Compile Include="HyperbolicExpression.cs" />
     <Compile Include="JournalBookForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,9 +101,12 @@
     <Compile Include="JournalUserControl.xaml.cs">
       <DependentUpon>JournalUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LogarithmExpression.cs" />
+    <Compile Include="OperatorExpression.cs" />
     <Compile Include="PasswordDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="PowerExpression.cs" />
     <Compile Include="PredecessorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +114,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RealNumber.cs" />
     <Compile Include="SGoalForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,6 +125,11 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="IProjectManager.cs" />
+    <Compile Include="SquareRootExpression.cs" />
+    <Compile Include="TrigonometricExpression.cs" />
+    <Compile Include="TwoOperandExpression.cs" />
+    <Compile Include="SingleOperandExpression.cs" />
+    <Compile Include="Variable.cs" />
     <Compile Include="Vision.cs" />
     <Compile Include="VisionForm.cs">
       <SubType>Form</SubType>
@@ -346,7 +359,7 @@
       <Project>{898ecb12-d464-4514-ae2e-45fe430fe04e}</Project>
       <Name>Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\PluginSDK\PluginSDK.csproj">
+    <ProjectReference Include="..\PluginSDK\PluginSDK.csproj">
       <Project>{67161f85-556e-4def-9899-6464bdc55773}</Project>
       <Name>PluginSDK</Name>
     </ProjectReference>
