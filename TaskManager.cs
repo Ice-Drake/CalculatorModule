@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.SQLite;
 using System.Windows.Forms;
 using DDay.iCal;
 using PluginSDK;
@@ -14,9 +14,9 @@ namespace MultiDesktop
         public DataTable TaskTable { get; private set; }
 
         private TodoManager todoManager;
-        private SqlConnection connection;
+        private SQLiteConnection connection;
 
-        public TaskManager(TodoManager todoManager, SqlConnection connection)
+        public TaskManager(TodoManager todoManager, SQLiteConnection connection)
         {
             this.todoManager = todoManager;
             this.connection = connection;
@@ -35,7 +35,7 @@ namespace MultiDesktop
         public void loadDatabase()
         {
             connection.Open();
-            using (SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Task", connection))
+            using (SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter("SELECT * FROM Task", connection))
             {
                 dataAdapter.Fill(TaskTable);
             }
@@ -100,25 +100,8 @@ namespace MultiDesktop
             newRow["GoalID"] = newTask.RelatedGoalID;
             TaskTable.Rows.Add(newRow);
 
-            SqlCommand command = new SqlCommand("INSERT INTO Task (UID, Summary, Start, Due, Complete, GoalID) VALUES (@UID, @Summary, @Start, @Due, @Complete, @GoalID)", connection);
-
-            command.Parameters.Add("@UID", SqlDbType.VarChar);
-            command.Parameters["@UID"].Value = newTask.Todo.UID;
-
-            command.Parameters.Add("@Summary", SqlDbType.VarChar);
-            command.Parameters["@Summary"].Value = newTask.Todo.Summary;
-
-            command.Parameters.Add("@Start", SqlDbType.Date);
-            command.Parameters["@Start"].Value = newTask.Todo.Start.Date;
-
-            command.Parameters.Add("@Due", SqlDbType.Date);
-            command.Parameters["@Due"].Value = newTask.Todo.Due.Date;
-            
-            command.Parameters.Add("@Complete", SqlDbType.Bit);
-            command.Parameters["@Complete"].Value = newTask.Todo.Status == TodoStatus.Completed;
-
-            command.Parameters.Add("@GoalID", SqlDbType.Int);
-            command.Parameters["@GoalID"].Value = newTask.RelatedGoalID;
+            string query = String.Format("INSERT INTO Task (UID, Summary, Start, Due, Complete, GoalID) VALUES ('{0}', '{1}', '{2}', '{3}', {4}, {5})", newTask.Todo.UID, newTask.Todo.Summary, newTask.Todo.Start.Date.ToShortDateString(), newTask.Todo.Due.Date.ToShortDateString(), newTask.Todo.Status == TodoStatus.Completed ? 1 : 0, newTask.RelatedGoalID);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -145,25 +128,8 @@ namespace MultiDesktop
             existingRow["Complete"] = existingTask.Todo.Status == TodoStatus.Completed;
             existingRow["GoalID"] = existingTask.RelatedGoalID;
 
-            SqlCommand command = new SqlCommand("UPDATE Task SET Summary = @Summary, Start = @Start, Due = @Due, Complete = @Complete, GoalID = @GoalID WHERE UID = @UID", connection);
-
-            command.Parameters.Add("@UID", SqlDbType.VarChar);
-            command.Parameters["@UID"].Value = existingTask.Todo.UID;
-
-            command.Parameters.Add("@Summary", SqlDbType.VarChar);
-            command.Parameters["@Summary"].Value = existingTask.Todo.Summary;
-
-            command.Parameters.Add("@Start", SqlDbType.Date);
-            command.Parameters["@Start"].Value = existingTask.Todo.Start.Date;
-
-            command.Parameters.Add("@Due", SqlDbType.Date);
-            command.Parameters["@Due"].Value = existingTask.Todo.Due.Date;
-
-            command.Parameters.Add("@Complete", SqlDbType.Bit);
-            command.Parameters["@Complete"].Value = existingTask.Todo.Status == TodoStatus.Completed;
-
-            command.Parameters.Add("@GoalID", SqlDbType.Int);
-            command.Parameters["@GoalID"].Value = existingTask.RelatedGoalID;
+            string query = String.Format("UPDATE Task SET Summary = '{0}', Start = '{1}', Due = '{2}', Complete = {3}, GoalID = {4} WHERE UID = '{5}'", existingTask.Todo.Summary, existingTask.Todo.Start.Date.ToShortDateString(), existingTask.Todo.Due.Date.ToShortDateString(), existingTask.Todo.Status == TodoStatus.Completed ? 1 : 0, existingTask.RelatedGoalID, existingTask.Todo.UID);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -178,13 +144,8 @@ namespace MultiDesktop
             DataRow existingRow = TaskTable.Select(String.Format("UID = '{0}'", oldUID))[0];
             existingRow["UID"] = newUID;
 
-            SqlCommand command = new SqlCommand("UPDATE Task SET UID = @NewUID WHERE UID = @OldUID", connection);
-
-            command.Parameters.Add("@OldUID", SqlDbType.VarChar);
-            command.Parameters["@OldUID"].Value = oldUID;
-            
-            command.Parameters.Add("@NewUID", SqlDbType.VarChar);
-            command.Parameters["@NewUID"].Value = newUID;
+            string query = String.Format("UPDATE Task SET UID = '{0}' WHERE UID = '{1}'", newUID, oldUID);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -206,10 +167,8 @@ namespace MultiDesktop
 
             todoManager.removeTodo(existingTodo.UID);
 
-            SqlCommand command = new SqlCommand("DELETE FROM Task WHERE UID = @UID", connection);
-
-            command.Parameters.Add("@UID", SqlDbType.Int);
-            command.Parameters["@UID"].Value = uid;
+            string query = String.Format("DELETE FROM Task WHERE UID = '{0}'", uid);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();

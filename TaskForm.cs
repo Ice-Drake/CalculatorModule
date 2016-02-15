@@ -608,10 +608,16 @@ namespace MultiDesktop
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            if (m_gtask == null)
+            int goalID = Int32.Parse(goalComboBox.SelectedValue.ToString());
+
+            SGoal relatedGoal = (SGoal)SettingController.GoalManager.GoalList[goalID];
+            if (startDateBox.Value < DateTime.Today.AddDays(relatedGoal.Start))
+                MessageBox.Show("The start date of this task cannot occur earlier than the start date of its related goal, which is " + DateTime.Today.AddDays(relatedGoal.Start).ToString("d") + ".");
+            else if (dueDateBox.Value > DateTime.Today.AddDays(relatedGoal.End))
+                MessageBox.Show("The due date of this task cannot occur later than the due date of its related goal, which is " + DateTime.Today.AddDays(relatedGoal.End).ToString("d") + ".");
+            else if (m_gtask == null)
             {
                 GTask newTask;
-                int goalID = Int32.Parse(goalComboBox.SelectedValue.ToString());
                 
                 if (m_todo != null)
                     newTask = new GTask(m_todo, goalID);
@@ -646,10 +652,11 @@ namespace MultiDesktop
                 }
                 else
                     TaskController.addGTask(newTask);
+                Close();
             }
             else
             {
-                m_gtask.RelatedGoalID = Int32.Parse(goalComboBox.SelectedValue.ToString());
+                m_gtask.RelatedGoalID = goalID;
                 m_gtask.Todo.Summary = summaryField.Text;
                 m_gtask.Todo.Start = new iCalDateTime(startDateBox.Value);
                 m_gtask.Todo.Due = new iCalDateTime(dueDateBox.Value);
@@ -669,9 +676,8 @@ namespace MultiDesktop
                     m_gtask.Todo.Class = "PUBLIC";
 
                 TaskController.updateGTask(m_gtask);
+                Close();
             }
-
-            Close();
         }
 
         private void deleteButton_Click(object sender, EventArgs e)

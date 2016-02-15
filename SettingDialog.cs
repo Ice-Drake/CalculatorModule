@@ -254,6 +254,7 @@ namespace MultiDesktop
             // 
             // ID
             // 
+            this.ID.DataPropertyName = "ID";
             this.ID.HeaderText = "ID";
             this.ID.Name = "ID";
             this.ID.Visible = false;
@@ -354,10 +355,20 @@ namespace MultiDesktop
             }
             else if (controller.CategoryManager.renameSubcategory(categoryNameField.Text, treeView.SelectedNode.Text))
             {
-                int nodeIndex = treeView.Nodes.IndexOf(treeView.SelectedNode);
-                treeView.Nodes.RemoveAt(nodeIndex);
+                TreeNode selectedParent = treeView.SelectedNode.Parent;
+                int nodeIndex = selectedParent.Nodes.IndexOf(treeView.SelectedNode);
+                
+                //Unregister AfterSelect event handler
+                treeView.AfterSelect -= treeView_AfterSelect;
+
+                selectedParent.Nodes.RemoveAt(nodeIndex);
                 TreeNode newNode = new TreeNode(categoryNameField.Text);
-                treeView.Nodes.Insert(nodeIndex, newNode);
+                selectedParent.Nodes.Insert(nodeIndex, newNode);
+
+                treeView.SelectedNode = newNode;
+
+                //Register back AfterSelect event handler
+                treeView.AfterSelect += treeView_AfterSelect;
             }
             else
             {
@@ -373,7 +384,7 @@ namespace MultiDesktop
 
         private void calendarGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            int id = Int32.Parse(calendarGridView.Rows[e.RowIndex].Cells[3].Value.ToString());
+            int id = Int32.Parse(calendarGridView.Rows[e.RowIndex].Cells[0].Value.ToString());
             CalendarForm newForm = new CalendarForm(controller.CalendarManager.CalendarList[id]);
             newForm.Show();
         }

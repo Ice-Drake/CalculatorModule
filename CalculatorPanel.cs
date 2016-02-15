@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 using Library;
 using PluginSDK;
 
@@ -15,6 +16,10 @@ namespace MultiDesktop
         private Calculator calculator;
         private Converter converter;
         private SharedData sharedData;
+        private SortedList<string, ICalculatorPlugin> calculatorPlugins;
+
+        #region Component Designer variables
+
         private TabPage tabPage4;
         private TabPage tabPage3;
         private TabPage tabPage1;
@@ -135,9 +140,8 @@ namespace MultiDesktop
         private ComboBox tempComboBox2;
         private ComboBox lengthComboBox2;
         private ComboBox areaComboBox2;
-
-        #region Component Designer variables
-
+        private GroupBox pluginBox;
+        private ComboBox pluginComboBox;
         private IContainer components = null;
 
         #endregion        
@@ -164,6 +168,8 @@ namespace MultiDesktop
         private void InitializeComponent()
         {
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.pluginBox = new System.Windows.Forms.GroupBox();
+            this.pluginComboBox = new System.Windows.Forms.ComboBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.weightComboBox2 = new System.Windows.Forms.ComboBox();
@@ -283,6 +289,7 @@ namespace MultiDesktop
             this.inputBox = new System.Windows.Forms.TextBox();
             this.consoleBox = new System.Windows.Forms.ListBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -299,6 +306,8 @@ namespace MultiDesktop
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.pluginBox);
+            this.tabPage4.Controls.Add(this.pluginComboBox);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
@@ -306,6 +315,25 @@ namespace MultiDesktop
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Plugin";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // pluginBox
+            // 
+            this.pluginBox.Location = new System.Drawing.Point(3, 33);
+            this.pluginBox.Name = "pluginBox";
+            this.pluginBox.Size = new System.Drawing.Size(515, 447);
+            this.pluginBox.TabIndex = 1;
+            this.pluginBox.TabStop = false;
+            this.pluginBox.Text = "Plugin Control";
+            // 
+            // pluginComboBox
+            // 
+            this.pluginComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.pluginComboBox.FormattingEnabled = true;
+            this.pluginComboBox.Location = new System.Drawing.Point(397, 6);
+            this.pluginComboBox.Name = "pluginComboBox";
+            this.pluginComboBox.Size = new System.Drawing.Size(121, 21);
+            this.pluginComboBox.TabIndex = 0;
+            this.pluginComboBox.SelectedIndexChanged += new System.EventHandler(this.pluginComboBox_SelectedIndexChanged);
             // 
             // tabPage3
             // 
@@ -1756,11 +1784,9 @@ namespace MultiDesktop
             this.ClientSize = new System.Drawing.Size(556, 536);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "CalculatorPanel";
-            this.ShowInTaskbar = false;
             this.Text = "Calculator Panel";
+            this.tabPage4.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
@@ -1793,6 +1819,13 @@ namespace MultiDesktop
             calculator = new Calculator();
             converter = new Converter();
             sharedData = new SharedData();
+            calculatorPlugins = new SortedList<string, ICalculatorPlugin>();
+        }
+
+        public void attachPlugin(ICalculatorPlugin plugin)
+        {
+            calculatorPlugins.Add(plugin.SelectionName, plugin);
+            pluginComboBox.Items.Add(plugin.SelectionName);
         }
 
         private void compute()
@@ -1813,6 +1846,8 @@ namespace MultiDesktop
                 MessageBox.Show(exception.Message);
             }
         }
+
+        #region Calculator Event Handlers
 
         private void inputBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -2362,6 +2397,10 @@ namespace MultiDesktop
         {
             compute();
         }
+
+        #endregion
+
+        #region Converter Event Handlers
 
         private void angleBox1_TextChanged(object sender, EventArgs e)
         {
@@ -3116,6 +3155,29 @@ namespace MultiDesktop
             {
                 weightBox1.Focus();
                 MessageBox.Show("The value you entered is way too big to be handled properly.");
+            }
+        }
+
+        #endregion
+
+        private void pluginComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ICalculatorPlugin plugin = calculatorPlugins[pluginComboBox.SelectedItem.ToString()];
+            if (plugin != null)
+            {
+                pluginBox.Controls.Clear();
+                if (plugin.GetType() == typeof(ICalculatorFormPlugin))
+                {
+                    pluginBox.Controls.Add((ICalculatorFormPlugin)plugin);
+                }
+                else
+                {
+                    ElementHost host = new ElementHost();
+                    host.Size = new Size(503, 422);
+                    host.Location = new Point(6, 19);
+                    host.Child = (ICalculatorWPFPlugin)plugin;
+                    pluginBox.Controls.Add(host);
+                }
             }
         }
     }

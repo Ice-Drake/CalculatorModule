@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
+using System.Data.SQLite;
 
 namespace MultiDesktop
 {
     public class SettingManager
     {
-        private SqlConnection connection;
+        private SQLiteConnection connection;
         
         public SettingManager()
         {
-            connection = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\Setting.mdf;Integrated Security=True");
+            connection = new SQLiteConnection("Data Source=Setting.sqlite;Version=3;");
         }
 
         public void loadDatabase()

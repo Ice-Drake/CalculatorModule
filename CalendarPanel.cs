@@ -181,10 +181,7 @@ namespace MultiDesktop
             this.Controls.Add(this.eventGroupBox);
             this.Controls.Add(this.monthCalendar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "CalendarPanel";
-            this.ShowInTaskbar = false;
             this.Text = "Calendar Panel";
             this.calendarContextMenu.ResumeLayout(false);
             this.eventGroupBox.ResumeLayout(false);

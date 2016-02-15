@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.SQLite;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -11,21 +11,21 @@ namespace MultiDesktop
     {
         private SortedList<string, Category> categoryList;
         private SortedList<string, Subcategory> subcategoryList;
-        private SqlConnection dbConnection;
+        private SQLiteConnection connection;
 
         public CategoryManager()
         {
             categoryList = new SortedList<string, Category>();
             subcategoryList = new SortedList<string, Subcategory>();
 
-            dbConnection = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\Setting.mdf;Integrated Security=True");
+            connection = new SQLiteConnection("Data Source=Setting.sqlite;Version=3;");
         }
 
         public void loadDatabase()
         {
-            SqlCommand categoryCommand = new SqlCommand("SELECT * FROM Category", dbConnection);
-            dbConnection.Open();
-            SqlDataReader categoryReader = categoryCommand.ExecuteReader();
+            SQLiteCommand categoryCommand = new SQLiteCommand("SELECT * FROM Category", connection);
+            connection.Open();
+            SQLiteDataReader categoryReader = categoryCommand.ExecuteReader();
 
             try
             {
@@ -44,8 +44,8 @@ namespace MultiDesktop
                 categoryReader.Close();
             }
 
-            SqlCommand subcategoryCommand = new SqlCommand("SELECT * FROM Subcategory", dbConnection);
-            SqlDataReader subcategoryReader = subcategoryCommand.ExecuteReader();
+            SQLiteCommand subcategoryCommand = new SQLiteCommand("SELECT * FROM Subcategory", connection);
+            SQLiteDataReader subcategoryReader = subcategoryCommand.ExecuteReader();
 
             try
             {
@@ -63,19 +63,19 @@ namespace MultiDesktop
                 subcategoryReader.Close();
             }
 
-            dbConnection.Close();
+            connection.Close();
         }
 
         public void updateCategory(string name)
         {
             Category category = categoryList[name];
-            SqlCommand command = new SqlCommand("UPDATE Category SET Color = @color WHERE Name = @name", dbConnection);
-            command.Parameters.AddWithValue("@color", category.Color.ToString());
-            command.Parameters.AddWithValue("@name", category.Name);
+            
+            string query = String.Format("UPDATE Category SET Color = '{0}' WHERE Name = '{1}'", category.Color.ToString(), category.Name);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
-            dbConnection.Open();
+            connection.Open();
             command.ExecuteNonQuery();
-            dbConnection.Close();
+            connection.Close();
         }
 
         public bool addSubcategory(Subcategory subcategory)
@@ -83,17 +83,12 @@ namespace MultiDesktop
             if (categoryList.ContainsKey(subcategory.Name) || subcategoryList.ContainsKey(subcategory.Name))
                 return false;
 
-            SqlCommand command = new SqlCommand("INSERT INTO Subcategory (Name, Category) VALUES (@Name, @Category)", dbConnection);
+            string query = String.Format("INSERT INTO Subcategory (Name, Category) VALUES ('{0}', '{1}')", subcategory.Name, subcategory.Category.Name);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
-            command.Parameters.Add("@Name", SqlDbType.VarChar);
-            command.Parameters["@Name"].Value = subcategory.Name;
-
-            command.Parameters.Add("@Category", SqlDbType.VarChar);
-            command.Parameters["@Category"].Value = subcategory.Category.Name;
-
-            dbConnection.Open();
+            connection.Open();
             command.ExecuteNonQuery();
-            dbConnection.Close();
+            connection.Close();
             
             subcategoryList.Add(subcategory.Name, subcategory);
 
@@ -112,17 +107,12 @@ namespace MultiDesktop
                 Subcategory subcategory = subcategoryList[oldName];
                 subcategoryList.Remove(oldName);
 
-                SqlCommand command = new SqlCommand("UPDATE Subcategory SET Name = @NewName WHERE Name = @OldName", dbConnection);
+                string query = String.Format("UPDATE Subcategory SET Name = '{0}' WHERE Name = '{1}'", newName, oldName);
+                SQLiteCommand command = new SQLiteCommand(query, connection);
 
-                command.Parameters.Add("@OldName", SqlDbType.VarChar);
-                command.Parameters["@OldName"].Value = oldName;
-
-                command.Parameters.Add("@NewName", SqlDbType.VarChar);
-                command.Parameters["@NewName"].Value = newName;
-
-                dbConnection.Open();
+                connection.Open();
                 command.ExecuteNonQuery();
-                dbConnection.Close();
+                connection.Close();
 
                 subcategory.Name = newName;
                 subcategoryList.Add(newName, subcategory);
@@ -138,14 +128,12 @@ namespace MultiDesktop
             {
                 subcategoryList.Remove(name);
 
-                SqlCommand command = new SqlCommand("DELETE FROM Subcategory WHERE Name = @Name", dbConnection);
+                string query = String.Format("DELETE FROM Subcategory WHERE Name = '{0}'", name);
+                SQLiteCommand command = new SQLiteCommand(query, connection);
 
-                command.Parameters.Add("@Name", SqlDbType.VarChar);
-                command.Parameters["@Name"].Value = name;
-
-                dbConnection.Open();
+                connection.Open();
                 command.ExecuteNonQuery();
-                dbConnection.Close();
+                connection.Close();
 
                 if (CategoryModified != null)
                     CategoryModified(this, new EventArgs());
@@ -167,12 +155,18 @@ namespace MultiDesktop
 
         public Category getCategory(string name)
         {
-            return categoryList[name];
+            if (categoryList.ContainsKey(name))
+                return categoryList[name];
+            else
+                return null;
         }
 
         public Subcategory getSubcategory(string name)
         {
-            return subcategoryList[name];
+            if (subcategoryList.ContainsKey(name))
+                return subcategoryList[name];
+            else
+                return null;
         }
 
         public List<TreeNode> CategoryNodeList

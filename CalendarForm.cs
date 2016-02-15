@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
-using System.Text;
+using System.IO;
 using System.Windows.Forms;
 
 namespace MultiDesktop
@@ -121,7 +121,6 @@ namespace MultiDesktop
             // 
             // filenameField
             // 
-            this.filenameField.Enabled = false;
             this.filenameField.Location = new System.Drawing.Point(78, 29);
             this.filenameField.Name = "filenameField";
             this.filenameField.Size = new System.Drawing.Size(118, 20);
@@ -193,11 +192,12 @@ namespace MultiDesktop
         public CalendarForm(Calendar calendar)
         {
             InitializeComponent();
+            filenameField.Enabled = false;
             browseButton.Enabled = false;
             m_calendar = calendar;
 
             nameField.Text = m_calendar.Name;
-            filenameField.Text = m_calendar.Name;
+            filenameField.Text = m_calendar.Filename;
             includedCheckBox.Checked = m_calendar.Included;
         }
 
@@ -205,10 +205,41 @@ namespace MultiDesktop
         {
             if (m_calendar == null)
             {
-                if (!SettingController.CalendarManager.createCalendar(nameField.Text, filenameField.Text))
-                    MessageBox.Show("Name or Filename already existed. Please enter a different one.");
+                string path = Path.GetDirectoryName(filenameField.Text);
+                if (path.Equals(""))
+                    path = SettingController.CalendarManager.CalendarAbsPath;
+                string filename = Path.GetFileName(filenameField.Text);
+
+                if (filename.Equals(""))
+                    MessageBox.Show("Filename cannot be empty. Please enter a filename.");
+                else if (!Path.GetExtension(filename).Equals(".ics"))
+                    MessageBox.Show("Invalid file extension! Required *.ics extension.");
+                else if (File.Exists(SettingController.CalendarManager.CalendarAbsPath + "\\" + filename) && !path.Equals(SettingController.CalendarManager.CalendarAbsPath))
+                {
+                    MessageBox.Show("Filename already existed. Please move, rename, or delete it and try again or add that file instead.");
+                    System.Diagnostics.Process.Start(SettingController.CalendarManager.CalendarAbsPath);
+                }
                 else
-                    Close();
+                {
+                    if (path.Equals(SettingController.CalendarManager.CalendarAbsPath))
+                    {
+                        if (!SettingController.CalendarManager.createCalendar(nameField.Text, filename, includedCheckBox.Checked))
+                            MessageBox.Show("Name or filename already existed on database. Please use a different name or filename.");
+                        else
+                            Close();
+                    }
+                    else if (File.Exists(path + "\\" + filename))
+                    {
+                        File.Copy(path + "\\" + filename, SettingController.CalendarManager.CalendarAbsPath + "\\" + filename);
+
+                        if (!SettingController.CalendarManager.createCalendar(nameField.Text, filename, includedCheckBox.Checked, false))
+                            MessageBox.Show("Name or filename already existed on database. Please use a different name or filename.");
+                        else
+                            Close();
+                    }
+                    else
+                        MessageBox.Show("Invalid file path or filename! Please correct and try again.");
+                }
             }
             else
             {
@@ -242,7 +273,10 @@ namespace MultiDesktop
             dialog.Filter = "ical files (*.ics)|*.ics";
 
             if (dialog.ShowDialog() == DialogResult.OK)
+            {
                 filenameField.Text = dialog.FileName;
+                filenameField.Enabled = false;
+            }
         }
     }
 }

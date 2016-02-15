@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.SQLite;
 
 namespace MultiDesktop
 {
@@ -10,9 +10,9 @@ namespace MultiDesktop
         public SortedList<int, Vision> VisionList { get; private set; }
         public DataTable VisionTable { get; private set; }
 
-        private SqlConnection connection;
+        private SQLiteConnection connection;
 
-        public VisionManager(SqlConnection connection)
+        public VisionManager(SQLiteConnection connection)
         {
             this.connection = connection;
             VisionList = new SortedList<int, Vision>();
@@ -27,7 +27,7 @@ namespace MultiDesktop
         public void loadDatabase()
         {
             connection.Open();
-            using (SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Vision", connection))
+            using (SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter("SELECT * FROM Vision", connection))
             {
                 dataAdapter.Fill(VisionTable);
             }
@@ -45,13 +45,8 @@ namespace MultiDesktop
 
         public Vision createVision(string summary, string desc)
         {
-            SqlCommand command = new SqlCommand("INSERT INTO Vision(Summary, Description) VALUES(@Summary, @Description); SELECT SCOPE_IDENTITY();", connection);
-
-            command.Parameters.Add("@Summary", SqlDbType.VarChar);
-            command.Parameters["@Summary"].Value = summary;
-            
-            command.Parameters.Add("@Description", SqlDbType.VarChar);
-            command.Parameters["@Description"].Value = desc;
+            string query = String.Format("INSERT INTO Vision(Summary, Description) VALUES('{0}', '{1}'); SELECT LAST_INSERT_ROWID();", summary, desc);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             int id = Int32.Parse(command.ExecuteScalar().ToString());
@@ -72,16 +67,8 @@ namespace MultiDesktop
 
         public bool updateVision(Vision existingVision)
         {
-            SqlCommand command = new SqlCommand("UPDATE Vision SET Summary = @Summary, Description = @Description WHERE ID = @ID", connection);
-
-            command.Parameters.Add("@ID", SqlDbType.Int);
-            command.Parameters["@ID"].Value = existingVision.ID;
-
-            command.Parameters.Add("@Summary", SqlDbType.VarChar);
-            command.Parameters["@Summary"].Value = existingVision.Summary;
-
-            command.Parameters.Add("@Description", SqlDbType.VarChar);
-            command.Parameters["@Description"].Value = existingVision.Desc;
+            string query = String.Format("UPDATE Vision SET Summary = '{0}', Description = '{1}' WHERE ID = {2}", existingVision.Summary, existingVision.Desc, existingVision.ID);
+            SQLiteCommand command = new SQLiteCommand(query, connection);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -100,10 +87,8 @@ namespace MultiDesktop
             {
                 VisionList.Remove(id);
 
-                SqlCommand command = new SqlCommand("DELETE FROM Vision WHERE ID = @ID", connection);
-
-                command.Parameters.Add("@ID", SqlDbType.Int);
-                command.Parameters["@ID"].Value = id;
+                string query = String.Format("DELETE FROM Vision WHERE ID = {0}", id);
+                SQLiteCommand command = new SQLiteCommand(query, connection);
 
                 connection.Open();
                 command.ExecuteNonQuery();

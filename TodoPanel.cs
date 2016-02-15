@@ -11,6 +11,7 @@ namespace MultiDesktop
 {
     public class TodoPanel : MainPanel
     {
+        private CategoryManager categoryController;
         private TodoManager todoController;
         private TaskManager taskController;
 
@@ -363,10 +364,7 @@ namespace MultiDesktop
             this.ClientSize = new System.Drawing.Size(402, 261);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "TodoPanel";
-            this.ShowInTaskbar = false;
             this.Text = "To-do Panel";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -376,16 +374,16 @@ namespace MultiDesktop
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.completedTodoGridView)).EndInit();
             this.ResumeLayout(false);
-
         }
 
         #endregion
 
-        public TodoPanel(TodoManager todoManager, TaskManager taskManager) : base("Todo Manager")
+        public TodoPanel(SettingManager settingManager) : base("Todo Manager")
         {
             InitializeComponent();
-            todoController = todoManager;
-            taskController = taskManager;
+            categoryController = settingManager.CategoryManager;
+            todoController = settingManager.CalendarManager.TodoManager;
+            taskController = settingManager.GoalManager.TaskManager;
 
             DataView assignedTodoView = new DataView();
             assignedTodoView.Table = todoController.TodoTable;
@@ -401,16 +399,19 @@ namespace MultiDesktop
             
             assignedTodoGridView.AutoGenerateColumns = false;
             assignedTodoGridView.DataSource = assignedTodoView;
+            assignedTodoGridView.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridView_CellPainting);
             assignedTodoGridView.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
             assignedTodoGridView.CellContentDoubleClick += new DataGridViewCellEventHandler(dataGridView_CellContentDoubleClick);
 
             unassignedTodoGridView.AutoGenerateColumns = false;
             unassignedTodoGridView.DataSource = unassignedTodoView;
+            unassignedTodoGridView.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridView_CellPainting);
             unassignedTodoGridView.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
             unassignedTodoGridView.CellContentDoubleClick += new DataGridViewCellEventHandler(dataGridView_CellContentDoubleClick);
 
             completedTodoGridView.AutoGenerateColumns = false;
             completedTodoGridView.DataSource = completedTodoView;
+            completedTodoGridView.CellPainting += new DataGridViewCellPaintingEventHandler(dataGridView_CellPainting);
             completedTodoGridView.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView_CellFormatting);
             completedTodoGridView.CellContentDoubleClick += new DataGridViewCellEventHandler(dataGridView_CellContentDoubleClick);
         }
@@ -423,45 +424,59 @@ namespace MultiDesktop
 
                 if (priority == 1)
                 {
-                    e.CellStyle.ForeColor = Color.Red;
                     e.Value = "Critical";
                     e.FormattingApplied = true;
                 }
                 else if (priority == 2)
                 {
-                    e.CellStyle.ForeColor = Color.OrangeRed;
                     e.Value = "Very High";
                     e.FormattingApplied = true;
                 }
                 else if (priority == 3)
                 {
-                    e.CellStyle.ForeColor = Color.Orange;
                     e.Value = "High";
                     e.FormattingApplied = true;
                 }
                 else if (priority == 4)
                 {
-                    e.CellStyle.ForeColor = Color.Yellow;
                     e.Value = "Above Normal";
                     e.FormattingApplied = true;
                 }
                 else if (priority == 5)
                 {
-                    e.CellStyle.ForeColor = Color.Green;
                     e.Value = "Normal";
                     e.FormattingApplied = true;
                 }
-                else if (priority == 4 || priority == 3)
+                else if (priority == 6 || priority == 7)
                 {
-                    e.CellStyle.ForeColor = Color.Teal;
                     e.Value = "Low";
                     e.FormattingApplied = true;
                 }
                 else
                 {
-                    e.CellStyle.ForeColor = Color.Blue;
                     e.Value = "Very Low";
                     e.FormattingApplied = true;
+                }
+            }
+        }
+
+        private void dataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.ColumnIndex == 2)
+            {
+                e.CellStyle.BackColor = Color.Silver;
+
+                Category category = categoryController.getCategory(e.Value.ToString());
+                if (category == null)
+                {
+                    Subcategory subcategory = categoryController.getSubcategory(e.Value.ToString());
+                    if (subcategory != null)
+                        category = subcategory.Category;
+                }
+
+                if (category != null)
+                {
+                    e.CellStyle.ForeColor = category.Color;
                 }
             }
         }
