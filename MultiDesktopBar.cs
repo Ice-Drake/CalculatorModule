@@ -47,7 +47,7 @@ namespace MultiDesktop
         private IProjectManager iProjectManager;
         private SortedList<string, MainPanel> panelList;
         private List<IPanelPlugin> panelPlugins;
-        private List<IDatabasePlugin> databasePlugins;
+        private List<ITaskManagementPlugin> taskManagementPlugins;
 
         //Member variables
         /// <summary>
@@ -424,7 +424,7 @@ namespace MultiDesktop
             //Retrieve a plugin collection using our custom Configuration section handler
             Dictionary<string, ArrayList> plugins = (Dictionary<string, ArrayList>)System.Configuration.ConfigurationManager.GetSection("plugins");
             panelPlugins = new List<IPanelPlugin>();
-            databasePlugins = new List<IDatabasePlugin>();
+            taskManagementPlugins = new List<ITaskManagementPlugin>();
 
             pluginDropDownButton.DropDownItems.Clear();
 
@@ -432,11 +432,11 @@ namespace MultiDesktop
             //no need to create one for each menu item separately
             EventHandler panelHandler = new EventHandler(OnPanelPluginClick);
 
-            if (plugins["IProjDatabase"].Count > 0)
+            if (plugins["ITaskManagementPlugin"].Count > 0)
             {
                 iProjectManager = new IProjectManager();
 
-                foreach (IProjDatabase plugin in plugins["IProjDatabase"])
+                foreach (ITaskManagementPlugin plugin in plugins["ITaskManagementPlugin"])
                 {
                     iProjectManager.addDatabase(plugin);
 
@@ -454,19 +454,10 @@ namespace MultiDesktop
                 ((PlannerPanel)panelList["Planner"]).expandPanel(iProjectManager);
             }
 
-            foreach (IDatabasePlugin plugin in plugins["IDatabasePlugin"])
+            CalculatorPanel calculatorPanel = (CalculatorPanel)panelList["Calculator"];
+            foreach (ICalculator plugin in plugins["ICalculatorPlugin"])
             {
-                databasePlugins.Add(plugin);
-
-                panelPlugins.Add(plugin);
-                ToolStripMenuItem item = new ToolStripMenuItem();
-                item.Name = plugin.PanelName;
-                item.CheckOnClick = true;
-                item.Size = new System.Drawing.Size(152, 22);
-                item.Text = plugin.PanelName;
-                item.Click += new System.EventHandler(panelHandler);
-                pluginDropDownButton.DropDownItems.Add(item);
-                plugin.PanelClosing += new FormClosingEventHandler(plugin_PanelClosing);
+                calculatorPanel.attachPlugin(plugin);
             }
 
             foreach (IPanelPlugin plugin in plugins["IPanelPlugin"])
@@ -492,7 +483,7 @@ namespace MultiDesktop
                 iProjectManager.loadDatabase();
             }
 
-            foreach(IDatabasePlugin plugin in databasePlugins)
+            foreach (ITaskManagementPlugin plugin in taskManagementPlugins)
             {
                 plugin.loadDatabase();
             }

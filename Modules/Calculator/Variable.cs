@@ -19,10 +19,8 @@ namespace MultiDesktop
             object value = sharedData.retrieve(Name);
             if (value == null)
                 throw new ArithmeticException(String.Format("Variable {0} is undefined!", Name));
-            else if (value is Numeral)
-                return (Numeral)value;
             else
-                throw new ArgumentException(String.Format("Variable {0} is not a numeral!", Name));
+                return (Numeral)value;
         }
     }
 }

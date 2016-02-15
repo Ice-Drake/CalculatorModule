@@ -1,4 +1,6 @@
-﻿namespace MultiDesktop
+﻿using PluginSDK;
+
+namespace MultiDesktop
 {
     public abstract class SingleOperandExpression : OperatorExpression
     {

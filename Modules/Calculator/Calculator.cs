@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using PluginSDK;
 
-
 namespace MultiDesktop
 {
     public class Calculator
@@ -121,6 +120,9 @@ namespace MultiDesktop
 
             //Handle cases of inputting expression in wrong notation (prefix, postfix, etc.)
             bool isPreviousLiteral = false;
+
+            //Handle special case of using constant in front of PI without multiplication sign
+            bool isPreviousConstant = false;
 
             //Following the shunting-yard algorithm
             while (pos < infix.Length)
@@ -334,6 +336,7 @@ namespace MultiDesktop
                         isPreviousLiteral = true;
                     }
                     isPreviousRightParenthesis = false;
+                    isPreviousConstant = false;
                 }
                 //Check if it is a real number
                 else if (r.Index == pos && r.Success)
@@ -350,9 +353,8 @@ namespace MultiDesktop
 
                         operators.Push(expression);
                     }
-
                     //Handle cases of inputting expression in wrong notation (prefix, postfix, etc.)
-                    if (isPreviousLiteral)
+                    else if (isPreviousLiteral)
                     {
                         throw new ArithmeticException("There is missing operator(s) or it is out of place!");
                     }
@@ -363,12 +365,25 @@ namespace MultiDesktop
                     isPreviousOperator = false;
                     isPreviousRightParenthesis = false;
                     isPreviousLiteral = true;
+                    isPreviousConstant = true;
                 }
                 //Check if it is PI
                 else if (infix[pos] == 'π')
                 {
                     //Handle special case of using parenthesis instead of multiplication
                     if (isPreviousRightParenthesis)
+                    {
+                        TwoOperandExpression expression = new BasicOperationExpression(BasicOp.Multiply);
+
+                        while (operators.Count > 0 && operators.Peek() is OperatorExpression && expression.CompareTo(operators.Peek()) > 0)
+                        {
+                            postFix.Enqueue((OperatorExpression)operators.Pop());
+                        }
+
+                        operators.Push(expression);
+                    }
+                    //Handle special case of using constant in front of PI without multiplication sign
+                    else if (isPreviousConstant)
                     {
                         TwoOperandExpression expression = new BasicOperationExpression(BasicOp.Multiply);
 
@@ -386,6 +401,7 @@ namespace MultiDesktop
                     isPreviousOperator = false;
                     isPreviousRightParenthesis = false;
                     isPreviousLiteral = true;
+                    isPreviousConstant = false;
                 }
                 //Check if it is a left parenthesis
                 else if (infix[pos] == '(')
@@ -409,6 +425,7 @@ namespace MultiDesktop
                     isPreviousOperator = false;
                     isPreviousRightParenthesis = false;
                     isPreviousLiteral = false;
+                    isPreviousConstant = false;
                 }
                 //Check if it is a right parenthesis
                 else if (infix[pos] == ')')
@@ -424,6 +441,7 @@ namespace MultiDesktop
                     isPreviousOperator = false;
                     isPreviousRightParenthesis = true;
                     isPreviousLiteral = false;
+                    isPreviousConstant = false;
                 }
                 //Check if it is a whitespace
                 else if (infix[pos] == ' ')
@@ -483,6 +501,7 @@ namespace MultiDesktop
                     isPreviousOperator = true;
                     isPreviousRightParenthesis = false;
                     isPreviousLiteral = false;
+                    isPreviousConstant = false;
                 }
 
                 //Look for next match if already parsed

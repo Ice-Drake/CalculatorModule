@@ -34,9 +34,9 @@ namespace MultiDesktop
 		public object Create(object parent, object configContext, System.Xml.XmlNode section)
 		{
             Dictionary<string, ArrayList> collection = new Dictionary<string, ArrayList>();
-            ArrayList projectPlugins = new ArrayList();
-            ArrayList databasePlugins = new ArrayList();
             ArrayList panelPlugins = new ArrayList();
+            ArrayList taskManagementPlugins = new ArrayList();
+            ArrayList calculatorPlugins = new ArrayList();
 			
             foreach(XmlNode node in section.ChildNodes)
 			{
@@ -47,17 +47,17 @@ namespace MultiDesktop
                     //passing in the type name specified in the attribute value
                     object plugObject = Activator.CreateInstance(Type.GetType(node.Attributes["name"].Value));
 
-                    //Project Database Plugin
-                    if (node.Attributes["type"].Value.Equals("IProjDatabase"))
+                    //Task Management Plugin
+                    if (node.Attributes["type"].Value.Equals("ITaskManagementPlugin"))
                     {
-                        //Add this to the project plugin list
-                        projectPlugins.Add(plugObject);
+                        //Add this to the task management plugin list
+                        taskManagementPlugins.Add(plugObject);
                     }
-                    //Database Plugin
-                    else if (node.Attributes["type"].Value.Equals("IDatabasePlugin"))
+                    //Calculator Plugin
+                    else if (node.Attributes["type"].Value.Equals("ICalculatorPlugin"))
                     {
-                        //Add this to the project plugin list
-                        databasePlugins.Add(plugObject);
+                        //Add this to the calculator plugin list
+                        calculatorPlugins.Add(plugObject);
                     }
                     //Panel Plugin
                     else if (node.Attributes["type"].Value.Equals("IPanelPlugin"))
@@ -73,8 +73,8 @@ namespace MultiDesktop
 				}
 			}
 
-            collection.Add("IProjDatabase", projectPlugins);
-            collection.Add("IDatabasePlugin", databasePlugins);
+            collection.Add("ITaskManagementPlugin", taskManagementPlugins);
+            collection.Add("ICalculatorPlugin", calculatorPlugins);
             collection.Add("IPanelPlugin", panelPlugins);
 
 			return collection;

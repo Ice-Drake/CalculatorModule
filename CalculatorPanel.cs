@@ -16,7 +16,7 @@ namespace MultiDesktop
         private Calculator calculator;
         private Converter converter;
         private SharedData sharedData;
-        private SortedList<string, ICalculatorPlugin> calculatorPlugins;
+        private SortedList<string, ICalculator> calculatorPlugins;
 
         #region Component Designer variables
 
@@ -403,7 +403,7 @@ namespace MultiDesktop
             this.storeW2Button.TabIndex = 8;
             this.storeW2Button.Text = "→W2";
             this.storeW2Button.UseVisualStyleBackColor = true;
-            this.storeW2Button.Click += new System.EventHandler(this.storeW2Button_Click);
+            this.storeW2Button.Click += new System.EventHandler(this.storeVariableButtonHandler);
             // 
             // retrieveW2Button
             // 
@@ -413,7 +413,7 @@ namespace MultiDesktop
             this.retrieveW2Button.TabIndex = 7;
             this.retrieveW2Button.Text = "←W2";
             this.retrieveW2Button.UseVisualStyleBackColor = true;
-            this.retrieveW2Button.Click += new System.EventHandler(this.retrieveW2Button_Click);
+            this.retrieveW2Button.Click += new System.EventHandler(this.retrieveVariableButtonHandler);
             // 
             // storeW1Button
             // 
@@ -423,7 +423,7 @@ namespace MultiDesktop
             this.storeW1Button.TabIndex = 6;
             this.storeW1Button.Text = "→W1";
             this.storeW1Button.UseVisualStyleBackColor = true;
-            this.storeW1Button.Click += new System.EventHandler(this.storeW1Button_Click);
+            this.storeW1Button.Click += new System.EventHandler(this.storeVariableButtonHandler);
             // 
             // retrieveW1Button
             // 
@@ -433,7 +433,7 @@ namespace MultiDesktop
             this.retrieveW1Button.TabIndex = 5;
             this.retrieveW1Button.Text = "←W1";
             this.retrieveW1Button.UseVisualStyleBackColor = true;
-            this.retrieveW1Button.Click += new System.EventHandler(this.retrieveW1Button_Click);
+            this.retrieveW1Button.Click += new System.EventHandler(this.retrieveVariableButtonHandler);
             // 
             // weightBox2
             // 
@@ -542,7 +542,7 @@ namespace MultiDesktop
             this.storeV2Button.TabIndex = 8;
             this.storeV2Button.Text = "→V2";
             this.storeV2Button.UseVisualStyleBackColor = true;
-            this.storeV2Button.Click += new System.EventHandler(this.storeV2Button_Click);
+            this.storeV2Button.Click += new System.EventHandler(this.storeVariableButtonHandler);
             // 
             // retrieveV2Button
             // 
@@ -552,7 +552,7 @@ namespace MultiDesktop
             this.retrieveV2Button.TabIndex = 7;
             this.retrieveV2Button.Text = "←V2";
             this.retrieveV2Button.UseVisualStyleBackColor = true;
-            this.retrieveV2Button.Click += new System.EventHandler(this.retrieveV2Button_Click);
+            this.retrieveV2Button.Click += new System.EventHandler(this.retrieveVariableButtonHandler);
             // 
             // storeV1Button
             // 
@@ -562,7 +562,7 @@ namespace MultiDesktop
             this.storeV1Button.TabIndex = 6;
             this.storeV1Button.Text = "→V1";
             this.storeV1Button.UseVisualStyleBackColor = true;
-            this.storeV1Button.Click += new System.EventHandler(this.storeV1Button_Click);
+            this.storeV1Button.Click += new System.EventHandler(this.storeVariableButtonHandler);
             // 
             // retrieveV1Button
             // 
@@ -572,7 +572,7 @@ namespace MultiDesktop
             this.retrieveV1Button.TabIndex = 5;
             this.retrieveV1Button.Text = "←V1";
             this.retrieveV1Button.UseVisualStyleBackColor = true;
-            this.retrieveV1Button.Click += new System.EventHandler(this.retrieveV1Button_Click);
+            this.retrieveV1Button.Click += new System.EventHandler(this.retrieveVariableButtonHandler);
             // 
             // volumeBox2
             // 
@@ -670,7 +670,7 @@ namespace MultiDesktop
             this.storeT2Button.TabIndex = 8;
             this.storeT2Button.Text = "→T2";
             this.storeT2Button.UseVisualStyleBackColor = true;
-            this.storeT2Button.Click += new System.EventHandler(this.storeT2Button_Click);
+            this.storeT2Button.Click += new System.EventHandler(this.storeVariableButtonHandler);
             // 
             // retrieveT2Button
             // 
@@ -680,7 +680,7 @@ namespace MultiDesktop
             this.retrieveT2Button.TabIndex = 7;
             this.retrieveT2Button.Text = "←T2";
             this.retrieveT2Button.UseVisualStyleBackColor = true;
-            this.retrieveT2Button.Click += new System.EventHandler(this.retrieveT2Button_Click);
+            this.retrieveT2Button.Click += new System.EventHandler(this.retrieveVariableButtonHandler);
             // 
             // storeT1Button
             // 
@@ -690,7 +690,7 @@ namespace MultiDesktop
             this.storeT1Button.TabIndex = 6;
             this.storeT1Button.Text = "→T1";
             this.storeT1Button.UseVisualStyleBackColor = true;
-            this.storeT1Button.Click += new System.EventHandler(this.storeT1Button_Click);
+            this.storeT1Button.Click += new System.EventHandler(this.storeVariableButtonHandler);
             // 
             // retrieveT1Button
             // 
@@ -700,7 +700,7 @@ namespace MultiDesktop
             this.retrieveT1Button.TabIndex = 5;
             this.retrieveT1Button.Text = "←T1";
             this.retrieveT1Button.UseVisualStyleBackColor = true;
-            this.retrieveT1Button.Click += new System.EventHandler(this.retrieveT1Button_Click);
+            this.retrieveT1Button.Click += new System.EventHandler(this.retrieveVariableButtonHandler);
             // 
             // tempBox2
             // 
@@ -803,7 +803,7 @@ namespace MultiDesktop
             this.storeL2Button.TabIndex = 8;
             this.storeL2Button.Text = "→L2";
             this.storeL2Button.UseVisualStyleBackColor = true;
-            this.storeL2Button.Click += new System.EventHandler(this.storeL2Button_Click);
+            this.storeL2Button.Click += new System.EventHandler(this.storeVariableButtonHandler);
             // 
             // retrieveL2Button
             // 
@@ -813,7 +813,7 @@ namespace MultiDesktop
             this.retrieveL2Button.TabIndex = 7;
             this.retrieveL2Button.Text = "←L2";
             this.retrieveL2Button.UseVisualStyleBackColor = true;
-            this.retrieveL2Button.Click += new System.EventHandler(this.retrieveL2Button_Click);
+            this.retrieveL2Button.Click += new System.EventHandler(this.retrieveVariableButtonHandler);
             // 
             // storeL1Button
             // 
@@ -823,7 +823,7 @@ namespace MultiDesktop
             this.storeL1Button.TabIndex = 6;
             this.storeL1Button.Text = "→L1";
             this.storeL1Button.UseVisualStyleBackColor = true;
-            this.storeL1Button.Click += new System.EventHandler(this.storeL1Button_Click);
+            this.storeL1Button.Click += new System.EventHandler(this.storeVariableButtonHandler);
             // 
             // retrieveL1Button
             // 
@@ -833,7 +833,7 @@ namespace MultiDesktop
             this.retrieveL1Button.TabIndex = 5;
             this.retrieveL1Button.Text = "←L1";
             this.retrieveL1Button.UseVisualStyleBackColor = true;
-            this.retrieveL1Button.Click += new System.EventHandler(this.retrieveL1Button_Click);
+            this.retrieveL1Button.Click += new System.EventHandler(this.retrieveVariableButtonHandler);
             // 
             // lengthBox2
             // 
@@ -943,7 +943,7 @@ namespace MultiDesktop
             this.storeA4Button.TabIndex = 8;
             this.storeA4Button.Text = "→A4";
             this.storeA4Button.UseVisualStyleBackColor = true;
-            this.storeA4Button.Click += new System.EventHandler(this.storeA4Button_Click);
+            this.storeA4Button.Click += new System.EventHandler(this.storeVariableButtonHandler);
             // 
             // retrieveA4Button
             // 
@@ -953,7 +953,7 @@ namespace MultiDesktop
             this.retrieveA4Button.TabIndex = 7;
             this.retrieveA4Button.Text = "←A4";
             this.retrieveA4Button.UseVisualStyleBackColor = true;
-            this.retrieveA4Button.Click += new System.EventHandler(this.retrieveA4Button_Click);
+            this.retrieveA4Button.Click += new System.EventHandler(this.retrieveVariableButtonHandler);
             // 
             // storeA3Button
             // 
@@ -963,7 +963,7 @@ namespace MultiDesktop
             this.storeA3Button.TabIndex = 6;
             this.storeA3Button.Text = "→A3";
             this.storeA3Button.UseVisualStyleBackColor = true;
-            this.storeA3Button.Click += new System.EventHandler(this.storeA3Button_Click);
+            this.storeA3Button.Click += new System.EventHandler(this.storeVariableButtonHandler);
             // 
             // retrieveButtonA3
             // 
@@ -973,7 +973,7 @@ namespace MultiDesktop
             this.retrieveButtonA3.TabIndex = 5;
             this.retrieveButtonA3.Text = "←A3";
             this.retrieveButtonA3.UseVisualStyleBackColor = true;
-            this.retrieveButtonA3.Click += new System.EventHandler(this.retrieveButtonA3_Click);
+            this.retrieveButtonA3.Click += new System.EventHandler(this.retrieveVariableButtonHandler);
             // 
             // areaBox2
             // 
@@ -1067,7 +1067,7 @@ namespace MultiDesktop
             this.storeA2Button.TabIndex = 8;
             this.storeA2Button.Text = "→A2";
             this.storeA2Button.UseVisualStyleBackColor = true;
-            this.storeA2Button.Click += new System.EventHandler(this.storeA2Button_Click);
+            this.storeA2Button.Click += new System.EventHandler(this.storeVariableButtonHandler);
             // 
             // retrieveA2Button
             // 
@@ -1077,7 +1077,7 @@ namespace MultiDesktop
             this.retrieveA2Button.TabIndex = 7;
             this.retrieveA2Button.Text = "←A2";
             this.retrieveA2Button.UseVisualStyleBackColor = true;
-            this.retrieveA2Button.Click += new System.EventHandler(this.retrieveA2Button_Click);
+            this.retrieveA2Button.Click += new System.EventHandler(this.retrieveVariableButtonHandler);
             // 
             // storeA1Button
             // 
@@ -1087,7 +1087,7 @@ namespace MultiDesktop
             this.storeA1Button.TabIndex = 6;
             this.storeA1Button.Text = "→A1";
             this.storeA1Button.UseVisualStyleBackColor = true;
-            this.storeA1Button.Click += new System.EventHandler(this.storeA1Button_Click);
+            this.storeA1Button.Click += new System.EventHandler(this.storeVariableButtonHandler);
             // 
             // retrieveA1Button
             // 
@@ -1097,7 +1097,7 @@ namespace MultiDesktop
             this.retrieveA1Button.TabIndex = 5;
             this.retrieveA1Button.Text = "←A1";
             this.retrieveA1Button.UseVisualStyleBackColor = true;
-            this.retrieveA1Button.Click += new System.EventHandler(this.retrieveA1Button_Click);
+            this.retrieveA1Button.Click += new System.EventHandler(this.retrieveVariableButtonHandler);
             // 
             // angleBox2
             // 
@@ -1819,10 +1819,10 @@ namespace MultiDesktop
             calculator = new Calculator();
             converter = new Converter();
             sharedData = new SharedData();
-            calculatorPlugins = new SortedList<string, ICalculatorPlugin>();
+            calculatorPlugins = new SortedList<string, ICalculator>();
         }
 
-        public void attachPlugin(ICalculatorPlugin plugin)
+        public void attachPlugin(ICalculator plugin)
         {
             calculatorPlugins.Add(plugin.SelectionName, plugin);
             pluginComboBox.Items.Add(plugin.SelectionName);
@@ -2654,268 +2654,160 @@ namespace MultiDesktop
             }
         }
 
-        private void storeA1Button_Click(object sender, EventArgs e)
+        private void storeVariableButtonHandler(object sender, EventArgs e)
         {
-            sharedData.store("A1", angleBox1.Text);
+            string varName;
+            TextBox textBox;
+
+            if (sender.Equals(storeA1Button))
+            {
+                varName = "A1";
+                textBox = angleBox1;
+            }
+            else if (sender.Equals(storeA2Button))
+            {
+                varName = "A2";
+                textBox = angleBox2;
+            }
+            else if (sender.Equals(storeA3Button))
+            {
+                varName = "A3";
+                textBox = areaBox1;
+            }
+            else if (sender.Equals(storeA4Button))
+            {
+                varName = "A4";
+                textBox = areaBox2;
+            }
+            else if (sender.Equals(storeL1Button))
+            {
+                varName = "L1";
+                textBox = lengthBox1;
+            }
+            else if (sender.Equals(storeL2Button))
+            {
+                varName = "L2";
+                textBox = lengthBox2;
+            }
+            else if (sender.Equals(storeT1Button))
+            {
+                varName = "T1";
+                textBox = tempBox1;
+            }
+            else if (sender.Equals(storeT2Button))
+            {
+                varName = "T2";
+                textBox = tempBox2;
+            }
+            else if (sender.Equals(storeV1Button))
+            {
+                varName = "V1";
+                textBox = volumeBox1;
+            }
+            else if (sender.Equals(storeV2Button))
+            {
+                varName = "V2";
+                textBox = volumeBox2;
+            }
+            else if (sender.Equals(storeW1Button))
+            {
+                varName = "W1";
+                textBox = weightBox1;
+            }
+            else //if (sender.Equals(storeW2Button))
+            {
+                varName = "W2";
+                textBox = weightBox2;
+            }
+
+            try
+            {
+                sharedData.store(varName, new RealNumber(Double.Parse(textBox.Text)));
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Cannot save an invalid value!");
+            }
+            catch (OverflowException)
+            {
+                MessageBox.Show("Cannot save such a huge value!");
+            }
         }
 
-        private void retrieveA1Button_Click(object sender, EventArgs e)
+        private void retrieveVariableButtonHandler(object sender, EventArgs e)
         {
-            object data = sharedData.retrieve("A1");
-            if (data == null)
+            string varName;
+            TextBox textBox;
+
+            if (sender.Equals(storeA1Button))
             {
-                MessageBox.Show("Variable A1 has not been set yet.");
+                varName = "A1";
+                textBox = angleBox1;
             }
-            else if (data.GetType() != typeof(double))
+            else if (sender.Equals(storeA2Button))
             {
-                MessageBox.Show("Variable A1 has been stored of a different type.");
+                varName = "A2";
+                textBox = angleBox2;
             }
+            else if (sender.Equals(storeA3Button))
+            {
+                varName = "A3";
+                textBox = areaBox1;
+            }
+            else if (sender.Equals(storeA4Button))
+            {
+                varName = "A4";
+                textBox = areaBox2;
+            }
+            else if (sender.Equals(storeL1Button))
+            {
+                varName = "L1";
+                textBox = lengthBox1;
+            }
+            else if (sender.Equals(storeL2Button))
+            {
+                varName = "L2";
+                textBox = lengthBox2;
+            }
+            else if (sender.Equals(storeT1Button))
+            {
+                varName = "T1";
+                textBox = tempBox1;
+            }
+            else if (sender.Equals(storeT2Button))
+            {
+                varName = "T2";
+                textBox = tempBox2;
+            }
+            else if (sender.Equals(storeV1Button))
+            {
+                varName = "V1";
+                textBox = volumeBox1;
+            }
+            else if (sender.Equals(storeV2Button))
+            {
+                varName = "V2";
+                textBox = volumeBox2;
+            }
+            else if (sender.Equals(storeW1Button))
+            {
+                varName = "W1";
+                textBox = weightBox1;
+            }
+            else //if (sender.Equals(storeW2Button))
+            {
+                varName = "W2";
+                textBox = weightBox2;
+            }
+
+            Numeral numeral = sharedData.retrieve(varName);
+
+            if (numeral == null)
+                MessageBox.Show("Cannot retrieve a nonexistence variable!");
+            else if (numeral.GetType() != typeof(RealNumber))
+                MessageBox.Show(String.Format("Cannot retrieve the variable containing {0}!", numeral.TypeName.ToLower()));
             else
-            {
-                angleBox1.Text = data.ToString();
-            }
-        }
-
-        private void storeA2Button_Click(object sender, EventArgs e)
-        {
-            sharedData.store("A2", angleBox2.Text);
-        }
-
-        private void retrieveA2Button_Click(object sender, EventArgs e)
-        {
-            object data = sharedData.retrieve("A2");
-            if (data == null)
-            {
-                MessageBox.Show("Variable A2 has not been set yet.");
-            }
-            else if (data.GetType() != typeof(double))
-            {
-                MessageBox.Show("Variable A2 has been stored of a different type.");
-            }
-            else
-            {
-                angleBox2.Text = data.ToString();
-            }
-        }
-
-        private void storeA3Button_Click(object sender, EventArgs e)
-        {
-            sharedData.store("A3", areaBox1.Text);
-        }
-
-        private void retrieveButtonA3_Click(object sender, EventArgs e)
-        {
-            object data = sharedData.retrieve("A3");
-            if (data == null)
-            {
-                MessageBox.Show("Variable A3 has not been set yet.");
-            }
-            else if (data.GetType() != typeof(double))
-            {
-                MessageBox.Show("Variable A3 has been stored of a different type.");
-            }
-            else
-            {
-                areaBox1.Text = data.ToString();
-            }
-        }
-
-        private void storeA4Button_Click(object sender, EventArgs e)
-        {
-            sharedData.store("A4", areaBox2.Text);
-        }
-
-        private void retrieveA4Button_Click(object sender, EventArgs e)
-        {
-            object data = sharedData.retrieve("A4");
-            if (data == null)
-            {
-                MessageBox.Show("Variable A4 has not been set yet.");
-            }
-            else if (data.GetType() != typeof(double))
-            {
-                MessageBox.Show("Variable A4 has been stored of a different type.");
-            }
-            else
-            {
-                areaBox2.Text = data.ToString();
-            }
-        }
-
-        private void storeL1Button_Click(object sender, EventArgs e)
-        {
-            sharedData.store("L1", lengthBox1.Text);
-        }
-
-        private void retrieveL1Button_Click(object sender, EventArgs e)
-        {
-            object data = sharedData.retrieve("L1");
-            if (data == null)
-            {
-                MessageBox.Show("Variable L1 has not been set yet.");
-            }
-            else if (data.GetType() != typeof(double))
-            {
-                MessageBox.Show("Variable L1 has been stored of a different type.");
-            }
-            else
-            {
-                lengthBox1.Text = data.ToString();
-            }
-        }
-
-        private void storeL2Button_Click(object sender, EventArgs e)
-        {
-            sharedData.store("L2", lengthBox2.Text);
-        }
-
-        private void retrieveL2Button_Click(object sender, EventArgs e)
-        {
-            object data = sharedData.retrieve("L2");
-            if (data == null)
-            {
-                MessageBox.Show("Variable L2 has not been set yet.");
-            }
-            else if (data.GetType() != typeof(double))
-            {
-                MessageBox.Show("Variable L2 has been stored of a different type.");
-            }
-            else
-            {
-                lengthBox2.Text = data.ToString();
-            }
-        }
-
-        private void storeT1Button_Click(object sender, EventArgs e)
-        {
-            sharedData.store("T1", tempBox1.Text);
-        }
-
-        private void retrieveT1Button_Click(object sender, EventArgs e)
-        {
-            object data = sharedData.retrieve("T1");
-            if (data == null)
-            {
-                MessageBox.Show("Variable T1 has not been set yet.");
-            }
-            else if (data.GetType() != typeof(double))
-            {
-                MessageBox.Show("Variable T1 has been stored of a different type.");
-            }
-            else
-            {
-                tempBox1.Text = data.ToString();
-            }
-        }
-
-        private void storeT2Button_Click(object sender, EventArgs e)
-        {
-            sharedData.store("T2", tempBox2.Text);
-        }
-
-        private void retrieveT2Button_Click(object sender, EventArgs e)
-        {
-            object data = sharedData.retrieve("T2");
-            if (data == null)
-            {
-                MessageBox.Show("Variable T2 has not been set yet.");
-            }
-            else if (data.GetType() != typeof(double))
-            {
-                MessageBox.Show("Variable T2 has been stored of a different type.");
-            }
-            else
-            {
-                tempBox2.Text = data.ToString();
-            }
-        }
-
-        private void storeV1Button_Click(object sender, EventArgs e)
-        {
-            sharedData.store("V1", volumeBox1.Text);
-        }
-
-        private void retrieveV1Button_Click(object sender, EventArgs e)
-        {
-            object data = sharedData.retrieve("V1");
-            if (data == null)
-            {
-                MessageBox.Show("Variable V1 has not been set yet.");
-            }
-            else if (data.GetType() != typeof(double))
-            {
-                MessageBox.Show("Variable V1 has been stored of a different type.");
-            }
-            else
-            {
-                volumeBox1.Text = data.ToString();
-            }
-        }
-
-        private void storeV2Button_Click(object sender, EventArgs e)
-        {
-            sharedData.store("V2", volumeBox2.Text);
-        }
-
-        private void retrieveV2Button_Click(object sender, EventArgs e)
-        {
-            object data = sharedData.retrieve("V2");
-            if (data == null)
-            {
-                MessageBox.Show("Variable V2 has not been set yet.");
-            }
-            else if (data.GetType() != typeof(double))
-            {
-                MessageBox.Show("Variable V2 has been stored of a different type.");
-            }
-            else
-            {
-                volumeBox2.Text = data.ToString();
-            }
-        }
-
-        private void storeW1Button_Click(object sender, EventArgs e)
-        {
-            sharedData.store("W1", weightBox1.Text);
-        }
-
-        private void retrieveW1Button_Click(object sender, EventArgs e)
-        {
-            object data = sharedData.retrieve("W1");
-            if (data == null)
-            {
-                MessageBox.Show("Variable W1 has not been set yet.");
-            }
-            else if (data.GetType() != typeof(double))
-            {
-                MessageBox.Show("Variable W1 has been stored of a different type.");
-            }
-            else
-            {
-                weightBox1.Text = data.ToString();
-            }
-        }
-
-        private void storeW2Button_Click(object sender, EventArgs e)
-        {
-            sharedData.store("W2", weightBox2.Text);
-        }
-
-        private void retrieveW2Button_Click(object sender, EventArgs e)
-        {
-            object data = sharedData.retrieve("W2");
-            if (data == null)
-            {
-                MessageBox.Show("Variable W2 has not been set yet.");
-            }
-            else if (data.GetType() != typeof(double))
-            {
-                MessageBox.Show("Variable W2 has been stored of a different type.");
-            }
-            else
-            {
-                weightBox2.Text = data.ToString();
-            }
+                textBox.Text = ((RealNumber)numeral).getValue().ToString();
         }
 
         private void angleComboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -3162,7 +3054,7 @@ namespace MultiDesktop
 
         private void pluginComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ICalculatorPlugin plugin = calculatorPlugins[pluginComboBox.SelectedItem.ToString()];
+            ICalculator plugin = calculatorPlugins[pluginComboBox.SelectedItem.ToString()];
             if (plugin != null)
             {
                 pluginBox.Controls.Clear();

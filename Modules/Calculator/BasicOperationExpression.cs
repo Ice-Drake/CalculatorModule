@@ -65,11 +65,7 @@ namespace MultiDesktop
 
                 //Store variable
                 SharedData sharedData = new SharedData();
-                object var = sharedData.retrieve(newVar.Name);
-                if (var != null)
-                    var = result;
-                else
-                    sharedData.store(newVar.Name, result);
+                sharedData.store(newVar.Name, result);
 
                 return result;
             }
