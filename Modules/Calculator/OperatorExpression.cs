@@ -15,6 +15,6 @@ namespace MultiDesktop
             return ((OperatorExpression)obj).precedence - precedence + (leftAssociative ? 1 : 0);
         }
 
-        public abstract double evaluate();
+        public abstract Numeral evaluate();
     }
 }

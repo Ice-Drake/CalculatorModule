@@ -9,11 +9,11 @@ namespace MultiDesktop
 {
     public class Calculator
     {
-        private double ans;
+        private Numeral ans;
 
         public Calculator()
         {
-            ans = 0;
+            ans = null;
         }
 
         private const char MINUS = '−';
@@ -33,14 +33,21 @@ namespace MultiDesktop
 
         public void clear()
         {
-            ans = 0;
+            ans = null;
         }
 
         public double compute(string input)
         {
             ans = parseExpression(convert(input)).evaluate();
-            ans = Math.Round(ans, DECIMALPLACES); //Round the number to a certain number of decimal places if there are too many digits
-            return ans;
+
+            //Round the answer to a certain number of decimal places if it is a real number
+            if (ans.GetType() == typeof(RealNumber))
+            {
+                double answer = Math.Round(((RealNumber)ans).getValue(), DECIMALPLACES);
+                ans = new RealNumber(answer);
+                return answer;
+            }
+            return 0;
         }
 
         /// <summary>
@@ -261,7 +268,10 @@ namespace MultiDesktop
                             throw new ArithmeticException("There is missing operator(s) or it is out of place!");
                         }
 
-                        postFix.Enqueue(new RealNumber(ans));
+                        if (ans == null)
+                            throw new ArithmeticException("ans is undefined!");
+
+                        postFix.Enqueue((Expression)ans);
                         pos += 3;
 
                         isPreviousOperator = false;

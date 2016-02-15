@@ -2,6 +2,6 @@
 {
     public interface Expression
     {
-        double evaluate();
+        Numeral evaluate();
     }
 }

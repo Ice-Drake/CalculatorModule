@@ -14,13 +14,15 @@ namespace MultiDesktop
             Name = name;
         }
 
-        public double evaluate()
+        public Numeral evaluate()
         {
             object value = sharedData.retrieve(Name);
             if (value == null)
                 throw new ArithmeticException(String.Format("Variable {0} is undefined!", Name));
+            else if (value is Numeral)
+                return (Numeral)value;
             else
-                return Double.Parse(value.ToString());
+                throw new ArgumentException(String.Format("Variable {0} is not a numeral!", Name));
         }
     }
 }
