@@ -86,6 +86,9 @@ namespace MultiDesktop
                 }
             }
 
+            if (operand.Count != 1)
+                throw new ArithmeticException("There is missing operator(s)!");
+
             return operand.Pop();
         }
 
@@ -431,13 +434,15 @@ namespace MultiDesktop
                 else if (infix[pos] == ')')
                 {
                     if (operators.Count == 0)
-                        throw new ArgumentException("Too many ')'!");
+                        throw new ArithmeticException("There is a mismatch of parentheses with either extra ')' or missing '('!");
+
                     //Pop all operators and add them to the queue until a "(" is found
                     while (operators.Peek().GetType() != typeof(char) || !operators.Peek().Equals('('))
                     {
                         postFix.Enqueue((Expression)operators.Pop());
+                        
                         if (operators.Count == 0)
-                            throw new ArgumentException("Too many ')'!");
+                            throw new ArithmeticException("There is a mismatch of parentheses with either extra ')' or missing '('!");
                     }
                     operators.Pop(); //Dispose '('
                     pos++;
