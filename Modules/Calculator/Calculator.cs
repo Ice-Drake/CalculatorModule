@@ -430,10 +430,14 @@ namespace MultiDesktop
                 //Check if it is a right parenthesis
                 else if (infix[pos] == ')')
                 {
+                    if (operators.Count == 0)
+                        throw new ArgumentException("Too many ')'!");
                     //Pop all operators and add them to the queue until a "(" is found
                     while (operators.Peek().GetType() != typeof(char) || !operators.Peek().Equals('('))
                     {
                         postFix.Enqueue((Expression)operators.Pop());
+                        if (operators.Count == 0)
+                            throw new ArgumentException("Too many ')'!");
                     }
                     operators.Pop(); //Dispose '('
                     pos++;
