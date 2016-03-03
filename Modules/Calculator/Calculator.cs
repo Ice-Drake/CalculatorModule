@@ -313,8 +313,9 @@ namespace MultiDesktop
                     //Then it must be a variable
                     else
                     {
-                        //Handle special case of using parenthesis instead of multiplication
-                        if (isPreviousRightParenthesis)
+                        //Handle cases of implying multiplication with just using parenthesis
+                        //or inputting a constant in front of a variable
+                        if (isPreviousRightParenthesis || isPreviousConstant)
                         {
                             TwoOperandExpression expression = new BasicOperationExpression(BasicOp.Multiply);
 
@@ -324,12 +325,6 @@ namespace MultiDesktop
                             }
 
                             operators.Push(expression);
-                        }
-
-                        //Handle cases of inputting expression in wrong notation (prefix, postfix, etc.)
-                        if (isPreviousLiteral)
-                        {
-                            throw new ArithmeticException("There is missing operator(s) or it is out of place!");
                         }
 
                         postFix.Enqueue(new Variable(v.Value));
