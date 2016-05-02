@@ -33,7 +33,7 @@ namespace MultiDesktop
                 throw new ArithmeticException(String.Format("Cannot evaluate the factorial of {0}!", numeral.TypeName.ToLower()));
         }
 
-        private uint factorial(uint n)
+        private double factorial(uint n)
         {
             if (n == 0)
                 return 1;

@@ -252,7 +252,7 @@ namespace MultiDesktop
                         isPreviousLiteral = false;
                     }
                     //Check if it is ans
-                    else if (v.Value.Equals("ans"))
+                    else if (v.Value.ToLower().Equals("ans"))
                     {
                         //Handle special case of using parenthesis instead of multiplication
                         if (isPreviousRightParenthesis)

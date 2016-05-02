@@ -2874,18 +2874,18 @@ namespace MultiDesktop
         {
             try
             {
-                double value = Double.Parse(areaBox2.Text);
-                double answer = converter.convertArea(areaComboBox2.SelectedIndex, areaComboBox1.SelectedIndex, value);
-                areaBox1.Text = answer.ToString();
+                double value = Double.Parse(areaBox1.Text);
+                double answer = converter.convertArea(areaComboBox1.SelectedIndex, areaComboBox2.SelectedIndex, value);
+                areaBox2.Text = answer.ToString();
             }
             catch (FormatException)
             {
-                areaBox2.Focus();
+                areaBox1.Focus();
                 MessageBox.Show("You entered an invalid value.");
             }
             catch (OverflowException)
             {
-                areaBox2.Focus();
+                areaBox1.Focus();
                 MessageBox.Show("The value you entered is way too big to be handled properly.");
             }
         }

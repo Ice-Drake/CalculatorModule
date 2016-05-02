@@ -74,7 +74,7 @@ namespace MultiDesktop
                     fromFactor = 0.001076391041671;
                     break;
                 case 4: // Convert square inches to square feet
-                    fromFactor = 0.0069444444444444;
+                    fromFactor = 1.0/144;
                     break;
                 case 5: // Convert square kilometers to square feet
                     fromFactor = 10763910.41670972;
@@ -122,13 +122,13 @@ namespace MultiDesktop
                     toFactor = 92903.04;
                     break;
                 case 9: // Convert square feet to square yards
-                    toFactor = 1/9;
+                    toFactor = 1.0/9;
                     break;
                 default: // Convert square feet to square feet
                     break;
             }
 
-            return fromFactor * toFactor;
+            return value * fromFactor * toFactor;
         }
 
         public double convertLength(int from, int to, double value)
@@ -151,10 +151,10 @@ namespace MultiDesktop
                     fromFactor = 6;
                     break;
                 case 5: // Convert hands to feet
-                    fromFactor = 1/3;
+                    fromFactor = 1.0/3;
                     break;
                 case 6: // Convert inches to feet
-                    fromFactor = 1/12;
+                    fromFactor = 1.0/12;
                     break;
                 case 7: // Convert kilometers to feet
                     fromFactor = 3280.839895013123;
@@ -205,10 +205,10 @@ namespace MultiDesktop
                     toFactor = 30.48;
                     break;
                 case 2: // Convert feet to chains
-                    toFactor = 1/66;
+                    toFactor = 1.0/66;
                     break;
                 case 3: // Convert feet to fathoms
-                    toFactor = 1/6;
+                    toFactor = 1.0/6;
                     break;
                 case 5: // Convert feet to hands
                     toFactor = 3;
@@ -244,19 +244,19 @@ namespace MultiDesktop
                     toFactor = 72.27000072270001;
                     break;
                 case 16: // Convert feet to rods
-                    toFactor = 2/33;
+                    toFactor = 2.0/33;
                     break;
                 case 17: // Convert feet to spans
-                    toFactor = 4/3;
+                    toFactor = 4.0/3;
                     break;
                 case 18: // Convert feet to yards
-                    toFactor = 1/3;
+                    toFactor = 1.0/3;
                     break;
                 default: // Convert feet to feet
                     break;
             }
 
-            return fromFactor * toFactor;
+            return value * fromFactor * toFactor;
         }
 
         public double convertTemp(int from, int to, double value)
@@ -401,7 +401,7 @@ namespace MultiDesktop
                     break;
             }
 
-            return fromFactor * toFactor;
+            return value * fromFactor * toFactor;
         }
 
         public double convertWeight(int from, int to, double value)
@@ -415,7 +415,7 @@ namespace MultiDesktop
                     fromFactor = 0.2;
                     break;
                 case 1: // Convert centigram to gram
-                    fromFactor = 1/100;
+                    fromFactor = 1.0/100;
                     break;
                 case 2: // Convert decigram to gram
                     fromFactor = 0.1;
@@ -433,7 +433,7 @@ namespace MultiDesktop
                     fromFactor = 1016046.9088;
                     break;
                 case 8: // Convert milligram to gram
-                    fromFactor = 1/1000;
+                    fromFactor = 1.0/1000;
                     break;
                 case 9: // Convert ounce to gram
                     fromFactor = 28.349523125;
@@ -469,10 +469,10 @@ namespace MultiDesktop
                     toFactor = 0.1;
                     break;
                 case 5: // Convert gram to hectogram
-                    toFactor = 1/100;
+                    toFactor = 1.0/100;
                     break;
                 case 6: // Convert gram to kilogram
-                    toFactor = 1/1000;
+                    toFactor = 1.0/1000;
                     break;
                 case 7: // Convert gram to long ton
                     toFactor = 9.842065276110606 * Math.Pow(10, -7);
@@ -499,7 +499,7 @@ namespace MultiDesktop
                     break;
             }
 
-            return fromFactor * toFactor;
+            return value * fromFactor * toFactor;
         }
     }
 }
